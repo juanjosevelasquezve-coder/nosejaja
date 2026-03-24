@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plantillas PPTX</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230b6f7f' d='M4 3h11l5 5v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z' opacity='.2'/%3E%3Cpath fill='%230b6f7f' d='M15 3v5h5'/%3E%3Cpath fill='%230b6f7f' d='M9 9.5h6v1.5H9V9.5zm0 3h6v1.5H9v-1.5zm0 3h6v1.5H9v-1.5z'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="/vendor/jszip.min.js"></script>
+    <script src="/vendor/pptxgen.min.js"></script>
+    <style>
+      body {
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        background: linear-gradient(180deg, #e8f5f6 0%, #e3eef0 100%);
+        min-height: 100dvh;
+        overflow: hidden;
+      }
+
+      .ppt-shell {
+        padding: clamp(14px, 2vw, 28px);
+        gap: clamp(12px, 1.5vw, 22px);
+        width: 100%;
+        min-height: 100dvh;
+      }
+
+      .ppt-shell .app-rail {
+        background: linear-gradient(180deg, #0f7789 0%, #0b5f6d 100%);
+        border: 1px solid rgba(9, 90, 104, 0.3);
+        box-shadow: 0 14px 28px rgba(7, 60, 70, 0.28);
+      }
+
+      .ppt-shell .rail-btn.is-current {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .workspace {
+        border-radius: 32px;
+        border: 1px solid #d2e5e8;
+        background: linear-gradient(145deg, #f9fdff 0%, #f1f6f8 100%);
+        padding: clamp(14px, 2vw, 22px);
+        box-shadow: 0 18px 32px rgba(37, 74, 88, 0.12);
+        height: calc(100dvh - 28px);
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 16px;
+      }
+
+      .workspace-top {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .workspace-top h1 {
+        margin: 0;
+        font: 900 1.4rem/1 "Outfit", "Manrope", sans-serif;
+        letter-spacing: -0.02em;
+        color: #0f1f29;
+      }
+
+      .workspace-top .workspace-chip {
+        background: rgba(15, 119, 137, 0.12);
+        color: #0f6b62;
+        font-weight: 800;
+        padding: 8px 12px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 14px;
+        min-height: 0;
+      }
+
+      .panel-card {
+        background: #ffffff;
+        border: 1px solid #dde7ec;
+        border-radius: 18px;
+        padding: 14px;
+        box-shadow: 0 10px 28px rgba(32, 60, 82, 0.08);
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 12px;
+        min-height: 0;
+      }
+
+      .panel-card header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .panel-card h2 {
+        margin: 0;
+        font: 800 1.08rem/1 "Outfit", "Manrope", sans-serif;
+        letter-spacing: -0.01em;
+        color: #0f1f29;
+      }
+
+      .panel-card p {
+        margin: 4px 0 0;
+        color: #5c6c76;
+        font-size: 0.95rem;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 12px;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        font-weight: 700;
+        color: #11303a;
+        font-size: 0.95rem;
+      }
+
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #c5d8de;
+        padding: 12px;
+        background: #ffffff;
+        color: #0f1f29;
+        font: 700 1rem/1.3 "Manrope", "Segoe UI", sans-serif;
+        outline: none;
+        box-shadow: inset 0 0 0 1px rgba(14, 119, 137, 0.08);
+      }
+
+      textarea {
+        min-height: 150px;
+        resize: vertical;
+      }
+
+      .template-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+      }
+
+      .template-card {
+        border: 1px solid #cfe4e9;
+        border-radius: 14px;
+        padding: 10px;
+        display: grid;
+        gap: 10px;
+        cursor: pointer;
+        transition: transform 80ms ease, border-color 120ms ease, box-shadow 120ms ease;
+        background: #f9fcfd;
+      }
+
+      .template-card:hover {
+        transform: translateY(-2px);
+        border-color: #0f7789;
+        box-shadow: 0 10px 20px rgba(15, 95, 109, 0.12);
+      }
+
+      .template-card input {
+        justify-self: end;
+      }
+
+      .template-thumb {
+        height: 140px;
+        border-radius: 12px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .template-thumb::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.24) 100%);
+      }
+
+      .dropzone {
+        border: 1px dashed #8fbec6;
+        border-radius: 14px;
+        padding: 16px;
+        min-height: 140px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        background: rgba(12, 118, 137, 0.04);
+        color: #0f4b5c;
+        gap: 6px;
+        transition: border-color 140ms ease, background 140ms ease;
+      }
+
+      .dropzone.dragover {
+        border-color: #0f7789;
+        background: rgba(15, 119, 137, 0.08);
+      }
+
+      .dropzone img {
+        max-width: 100%;
+        max-height: 120px;
+        border-radius: 10px;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      button {
+        border: 1px solid #0f7789;
+        background: linear-gradient(135deg, #0f7789 0%, #0b5f6d 100%);
+        color: #f7fdfd;
+        font: 800 0.95rem/1 "Manrope", sans-serif;
+        border-radius: 12px;
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: transform 0.1s ease, filter 0.2s ease;
+      }
+
+      button:hover {
+        filter: brightness(1.08);
+        transform: translateY(-1px);
+      }
+
+      button.secondary {
+        background: #ffffff;
+        color: #0f1f29;
+        border-color: #c5d8de;
+      }
+
+      .slide-list {
+        display: grid;
+        gap: 10px;
+        max-height: 420px;
+        overflow: auto;
+      }
+
+      .slide-item {
+        border: 1px solid #d6e5ea;
+        border-radius: 12px;
+        padding: 10px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        background: #ffffff;
+      }
+
+      .slide-item h4 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .slide-item p {
+        margin: 4px 0 0;
+        color: #61757e;
+        font-size: 0.92rem;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(15, 119, 137, 0.12);
+        color: #0f6b62;
+        font-weight: 800;
+        font-size: 0.82rem;
+      }
+
+      .note {
+        margin: 4px 0 0;
+        color: #5c6c76;
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 820px) {
+        .workspace {
+          height: auto;
+          min-height: 100dvh;
+        }
+        .workspace-top {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="dashboard-shell ppt-shell">
+      <div id="dynamic-island" class="dynamic-island" role="status" aria-live="polite" aria-atomic="true"></div>
+      <aside class="app-rail" aria-label="Navegacion">
+        <a class="rail-btn" href="/index.html" title="Pagina principal">
+          <i class="bi bi-house-door-fill"></i>
+        </a>
+        <a class="rail-btn" href="/AdaptadorSALES.html" aria-label="Adaptador SALES" title="Adaptador SALES">
+          <i class="bi bi-file-earmark-bar-graph-fill"></i>
+        </a>
+        <a class="rail-btn" href="/InformesHACKY.html" aria-label="Informes HACKY" title="Informes HACKY">
+          <i class="bi bi-bar-chart-fill"></i>
+        </a>
+        <a class="rail-btn" href="/AutoActividad.html" aria-label="Actividad" title="Actividad automatica">
+          <i class="bi bi-mouse3-fill"></i>
+        </a>
+        <a class="rail-btn" href="/enviarvideosHACKY.html" aria-label="Enviar videos" title="Enviar videos">
+          <i class="bi bi-image-fill"></i>
+        </a>
+        <a class="rail-btn is-current" href="/PlantillasPPTX.html" aria-current="page" title="Plantillas PPTX">
+          <i class="bi bi-easel3-fill"></i>
+        </a>
+      </aside>
+
+      <section class="workspace">
+        <header class="workspace-top">
+          <p class="workspace-kicker">
+            <a class="workspace-home-link" href="/index.html" aria-label="Ir al inicio" title="Inicio">
+              <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+            </a>
+            ProyecJO
+          </p>
+          <h1>Plantillas de PPTX al vuelo</h1>
+          <span class="workspace-chip"><i class="bi bi-easel3"></i> Crea una presentacion lista para usar</span>
+        </header>
+
+        <div class="grid">
+          <section class="panel-card" aria-label="Configurar slide">
+            <header>
+              <div>
+                <h2>Diseño base</h2>
+                <p>Elige la plantilla visual sobre la que se dibujan tus textos e imagen.</p>
+              </div>
+              <span class="pill"><i class="bi bi-palette-fill"></i> 3 estilos</span>
+            </header>
+
+            <div class="template-list" id="templateList">
+              <label class="template-card" data-template="claro">
+                <div class="template-thumb" style="background-image: linear-gradient(135deg,#f6fbff 0%,#e3eef5 100%), linear-gradient(90deg,#0f7789 0%,#0b5f6d 100%);"></div>
+                <div>
+                  <strong>Claro profesional</strong>
+                  <p class="note">Fondo limpio, barra lateral turquesa, buen contraste para fotos claras.</p>
+                </div>
+                <input type="radio" name="template" value="claro" checked />
+              </label>
+
+              <label class="template-card" data-template="oscuro">
+                <div class="template-thumb" style="background-image: linear-gradient(135deg,#0f172a 0%,#111827 100%), radial-gradient(circle at 20% 20%,rgba(56,189,248,0.4) 0%, transparent 42%);"></div>
+                <div>
+                  <strong>Oscuro minimal</strong>
+                  <p class="note">Bisel tenue, bloques de color acento, ideal para imágenes brillantes.</p>
+                </div>
+                <input type="radio" name="template" value="oscuro" />
+              </label>
+
+              <label class="template-card" data-template="tarjetas">
+                <div class="template-thumb" style="background-image: linear-gradient(180deg,#fef9e7 0%,#f4ede3 100%), repeating-linear-gradient(90deg,rgba(12,118,137,0.12) 0, rgba(12,118,137,0.12) 6%, transparent 6%, transparent 12%);"></div>
+                <div>
+                  <strong>Tarjetas</strong>
+                  <p class="note">Bloques redondeados, tarjetas apiladas y tipografía gruesa.</p>
+                </div>
+                <input type="radio" name="template" value="tarjetas" />
+              </label>
+
+              <label class="template-card" data-template="retro">
+                <div class="template-thumb" style="background-image: linear-gradient(135deg,#201e1c 0%,#2b2a29 100%), linear-gradient(45deg,#d7c8a2 0%,#d7c8a200 70%);"></div>
+                <div>
+                  <strong>Retro duo tono</strong>
+                  <p class="note">Fondo negro/arena, bloques alternados y tipografía gruesa estilo propuesta.</p>
+                </div>
+                <input type="radio" name="template" value="retro" />
+              </label>
+            </div>
+          </section>
+
+          <section class="panel-card" aria-label="Contenido del slide">
+            <header>
+              <div>
+                <h2>Contenido</h2>
+                <p>Define títulos, cuerpo y pega una imagen si la necesitas.</p>
+              </div>
+              <span class="pill"><i class="bi bi-body-text"></i> Texto + imagen</span>
+            </header>
+
+            <form id="slideForm" class="form-grid">
+              <label>
+                Título del slide
+                <input id="titleInput" type="text" name="title" placeholder="Ej: Resultados Q1" required />
+              </label>
+              <label>
+                Subtítulo / contenido
+                <textarea id="contentInput" name="content" placeholder="Ideas clave, bullets o párrafos" required></textarea>
+              </label>
+              <label>
+                Imagen (pega, arrastra o explora)
+                <div id="dropZone" class="dropzone" tabindex="0">
+                  <div>
+                    <i class="bi bi-images"></i>
+                    <div>Arrastra o pega una imagen (PNG/JPG/WebP)</div>
+                    <small class="note">Ctrl+V desde el portapapeles también funciona</small>
+                  </div>
+                </div>
+                <input id="imageInput" type="file" accept="image/*" hidden />
+              </label>
+              <label>
+                Notas rápidas
+                <input id="notesInput" type="text" name="notes" placeholder="Ej: Slide de portada" />
+              </label>
+
+              <div class="controls" style="grid-column: 1 / -1;">
+                <button type="submit"><i class="bi bi-plus-circle"></i> Añadir a la presentación</button>
+                <button type="button" class="secondary" id="clearForm"><i class="bi bi-eraser"></i> Limpiar</button>
+                <label style="display:flex;align-items:center;gap:8px;font-weight:700;color:#0f1f29;">
+                  <input id="autoRotate" type="checkbox" checked />
+                  Alternar estilos automáticamente
+                </label>
+                <span class="note">Si está activo, cada slide usa el siguiente estilo de la lista.</span>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel-card" aria-label="Importar guion completo">
+            <header>
+              <div>
+                <h2>Importar guion</h2>
+                <p>Pega tu listado de “Diapositiva 1…12” y se crean todas.</p>
+              </div>
+              <span class="pill"><i class="bi bi-lightning-charge"></i> Rápido</span>
+            </header>
+            <div class="form-grid">
+              <label style="grid-column: 1 / -1;">
+                Guion de presentación
+                <textarea id="outlineInput" placeholder="Diapositiva 1 – Título&#10;Contenido línea 1&#10;Contenido línea 2&#10;🎯 Tip: ..."></textarea>
+              </label>
+            </div>
+            <div class="controls">
+              <button type="button" id="importOutline"><i class="bi bi-upload"></i> Importar guion</button>
+              <button type="button" class="secondary" id="clearOutline"><i class="bi bi-trash3"></i> Limpiar</button>
+              <span class="note">Detecta encabezados “Diapositiva X – …” y los separa en slides.</span>
+            </div>
+          </section>
+
+          <section class="panel-card" aria-label="Lista de slides">
+            <header>
+              <div>
+                <h2>Slides listos</h2>
+                <p>Reordena o elimina antes de exportar.</p>
+              </div>
+              <span class="pill" id="counter">0 listos</span>
+            </header>
+
+            <div class="slide-list" id="slideList" aria-live="polite"></div>
+
+            <div class="controls">
+              <button id="generateBtn"><i class="bi bi-filetype-ppt"></i> Generar PPTX</button>
+              <button class="secondary" id="resetAll"><i class="bi bi-trash"></i> Vaciar lista</button>
+            </div>
+            <p class="note">Los diseños se dibujan con PptxGenJS, no necesitas tener PowerPoint abierto.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const slideForm = document.getElementById("slideForm");
+      const titleInput = document.getElementById("titleInput");
+      const contentInput = document.getElementById("contentInput");
+      const notesInput = document.getElementById("notesInput");
+      const dropZone = document.getElementById("dropZone");
+      const imageInput = document.getElementById("imageInput");
+      const slideList = document.getElementById("slideList");
+      const counter = document.getElementById("counter");
+      const generateBtn = document.getElementById("generateBtn");
+      const resetAllBtn = document.getElementById("resetAll");
+      const clearFormBtn = document.getElementById("clearForm");
+      const outlineInput = document.getElementById("outlineInput");
+      const importOutlineBtn = document.getElementById("importOutline");
+      const clearOutlineBtn = document.getElementById("clearOutline");
+      const autoRotate = document.getElementById("autoRotate");
+      const island = document.getElementById("dynamic-island");
+
+      let imageDataUrl = "";
+      const slides = [];
+
+      function showToast(message, variant = "ok") {
+        island.textContent = message;
+        island.classList.remove("ok", "error");
+        island.classList.add("show", variant === "error" ? "error" : "ok");
+        setTimeout(() => island.classList.remove("show"), 2400);
+      }
+
+      function currentTemplate() {
+        if (autoRotate?.checked) {
+          const order = ["retro", "oscuro", "claro", "tarjetas"];
+          currentTemplate.idx = (currentTemplate.idx ?? -1) + 1;
+          const next = order[currentTemplate.idx % order.length];
+          const radio = document.querySelector(`input[name="template"][value="${next}"]`);
+          if (radio) radio.checked = true;
+          return next;
+        }
+        const checked = document.querySelector('input[name="template"]:checked');
+        return checked ? checked.value : "claro";
+      }
+
+      function renderSlides() {
+        counter.textContent = `${slides.length} listos`;
+        slideList.innerHTML = slides
+          .map(
+            (s, idx) => `
+              <div class="slide-item">
+                <div>
+                  <h4>${idx + 1}. ${s.title}</h4>
+                  <p>${s.content.slice(0, 120)}${s.content.length > 120 ? "…" : ""}</p>
+                  <span class="pill">${s.template}</span>
+                  ${s.notes ? `<span class="pill" style="background:rgba(15,119,137,0.1);color:#0f4b5c">${s.notes}</span>` : ""}
+                  ${s.image ? `<span class="pill" style="background:rgba(12,118,137,0.08);color:#0f4b5c"><i class="bi bi-image"></i> imagen</span>` : ""}
+                </div>
+                <div class="controls">
+                  <button class="secondary" data-move="up" data-idx="${idx}" aria-label="Subir slide ${idx + 1}"><i class="bi bi-arrow-up"></i></button>
+                  <button class="secondary" data-move="down" data-idx="${idx}" aria-label="Bajar slide ${idx + 1}"><i class="bi bi-arrow-down"></i></button>
+                  <button class="secondary" data-remove="${idx}" aria-label="Eliminar slide ${idx + 1}"><i class="bi bi-x-lg"></i></button>
+                </div>
+              </div>
+            `
+          )
+          .join("");
+      }
+
+      function resetForm() {
+        slideForm.reset();
+        imageDataUrl = "";
+        dropZone.innerHTML = `
+          <div>
+            <i class="bi bi-images"></i>
+            <div>Arrastra o pega una imagen (PNG/JPG/WebP)</div>
+            <small class="note">Ctrl+V desde el portapapeles también funciona</small>
+          </div>`;
+      }
+
+      async function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function handleImageFile(file) {
+        if (!file || !file.type.startsWith("image/")) {
+          showToast("El archivo no es una imagen", "error");
+          return;
+        }
+        imageDataUrl = await fileToDataUrl(file);
+        dropZone.innerHTML = `<img src="${imageDataUrl}" alt="preview" />`;
+      }
+
+      dropZone.addEventListener("click", () => imageInput.click());
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+      });
+      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+      dropZone.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+        const file = e.dataTransfer.files[0];
+        await handleImageFile(file);
+      });
+
+      imageInput.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        await handleImageFile(file);
+      });
+
+      document.addEventListener("paste", async (e) => {
+        const item = Array.from(e.clipboardData.items).find((i) => i.type.startsWith("image/"));
+        if (item) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          await handleImageFile(file);
+          showToast("Imagen pegada desde el portapapeles");
+        }
+      });
+
+      slideList.addEventListener("click", (e) => {
+        const removeIdx = e.target.closest("button")?.dataset?.remove;
+        const move = e.target.closest("button")?.dataset?.move;
+        const idx = Number(e.target.closest("button")?.dataset?.idx);
+
+        if (removeIdx !== undefined) {
+          slides.splice(Number(removeIdx), 1);
+          renderSlides();
+          return;
+        }
+        if (move === "up" && idx > 0) {
+          [slides[idx - 1], slides[idx]] = [slides[idx], slides[idx - 1]];
+          renderSlides();
+        }
+        if (move === "down" && idx < slides.length - 1) {
+          [slides[idx + 1], slides[idx]] = [slides[idx], slides[idx + 1]];
+          renderSlides();
+        }
+      });
+
+      clearFormBtn.addEventListener("click", () => resetForm());
+
+      slideForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const title = titleInput.value.trim();
+        const content = contentInput.value.trim();
+        if (!title || !content) {
+          showToast("Falta título o contenido", "error");
+          return;
+        }
+
+        slides.push({
+          title,
+          content,
+          template: currentTemplate(),
+          image: imageDataUrl,
+          notes: notesInput.value.trim(),
+        });
+
+        renderSlides();
+        resetForm();
+        showToast("Slide agregado");
+      });
+
+      resetAllBtn.addEventListener("click", () => {
+        slides.length = 0;
+        renderSlides();
+      });
+
+      clearOutlineBtn?.addEventListener("click", () => {
+        outlineInput.value = "";
+      });
+
+      function parseOutline(raw) {
+        const lines = raw.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+        const result = [];
+        let current = null;
+
+        const isHeading = (line) => /^diapositiva\s+\d+/i.test(line) || /^slide\s+\d+/i.test(line);
+
+        for (const line of lines) {
+          if (isHeading(line)) {
+            // push previous
+            if (current) result.push(current);
+            const match = line.match(/^(?:diapositiva|slide)\s+\d+\s*[–-]?\s*(.+)?/i);
+            const title = match && match[1] ? match[1].trim() : line;
+            current = { title: title || line, content: [], notes: [] };
+            continue;
+          }
+
+          if (!current) {
+            // If no heading yet, create one generic
+            current = { title: "Sin título", content: [], notes: [] };
+          }
+
+          if (/^(🎯|🎨|🖼️|🖼|Tip\b|Ícono|Icono|Icono sugerido)/i.test(line)) {
+            current.notes.push(line);
+          } else {
+            current.content.push(line);
+          }
+        }
+        if (current) result.push(current);
+        return result;
+      }
+
+      importOutlineBtn?.addEventListener("click", () => {
+        const raw = outlineInput.value.trim();
+        if (!raw) {
+          showToast("Pega un guion primero", "error");
+          return;
+        }
+        const parsed = parseOutline(raw);
+        if (!parsed.length) {
+          showToast("No encontré diapositivas", "error");
+          return;
+        }
+        parsed.forEach((item) => {
+          slides.push({
+            title: item.title,
+            content: item.content.join("\n"),
+            template: currentTemplate(),
+            image: "",
+            notes: item.notes.join(" · "),
+          });
+        });
+        renderSlides();
+        showToast(`Importé ${parsed.length} diapositivas`);
+      });
+
+      function applyTemplate(pptx, slide, template) {
+        if (template === "oscuro") {
+          slide.background = { color: "111827" };
+          slide.addShape(pptx.ShapeType.rect, {
+            x: 0,
+            y: 0,
+            w: "100%",
+            h: 1.1,
+            fill: { color: "0f7789" },
+            line: { color: "0f7789" },
+          });
+          slide.addShape(pptx.ShapeType.rect, {
+            x: 0,
+            y: 1.1,
+            w: 0.5,
+            h: "100%",
+            fill: { color: "0b5f6d" },
+            line: { color: "0b5f6d" },
+          });
+          return;
+        }
+
+        if (template === "retro") {
+          // Paleta retro-duo mejorada (beige + carbón)
+          const beige = "e4d1ab";
+          const dark = "1c1c1c";
+
+          slide.background = { color: beige };
+
+          // Header oscuro compacto
+          slide.addShape(pptx.ShapeType.rect, {
+            x: 0,
+            y: 0,
+            w: "100%",
+            h: 0.95,
+            fill: { color: dark },
+            line: { color: dark },
+          });
+
+          // Sidebar delgada para imagen
+          slide.addShape(pptx.ShapeType.rect, {
+            x: 0,
+            y: 0.95,
+            w: 2.6,
+            h: 6.1,
+            fill: { color: dark },
+            line: { color: dark },
+          });
+          return;
+        }
+
+        if (template === "tarjetas") {
+          slide.background = { color: "fef9e7" };
+          slide.addShape(pptx.ShapeType.roundRect, {
+            x: 0.5,
+            y: 0.6,
+            w: 4.4,
+            h: 5.2,
+            fill: { color: "ffffff" },
+            line: { color: "d8d0c3" },
+            rx: 0.3,
+            ry: 0.3,
+          });
+          slide.addShape(pptx.ShapeType.roundRect, {
+            x: 5.1,
+            y: 1.0,
+            w: 4.4,
+            h: 4.6,
+            fill: { color: "ffffff" },
+            line: { color: "d8d0c3" },
+            rx: 0.3,
+            ry: 0.3,
+          });
+          slide.addShape(pptx.ShapeType.rect, {
+            x: 0,
+            y: 0,
+            w: "100%",
+            h: 0.4,
+            fill: { color: "0f7789" },
+            line: { color: "0f7789" },
+          });
+          return;
+        }
+
+        slide.background = { color: "f6fbff" };
+        slide.addShape(pptx.ShapeType.rect, {
+          x: 0,
+          y: 0,
+          w: 0.8,
+          h: "100%",
+          fill: { color: "0f7789" },
+          line: { color: "0f7789" },
+        });
+        slide.addShape(pptx.ShapeType.rect, {
+          x: 0.8,
+          y: 0,
+          w: 0.12,
+          h: "100%",
+          fill: { color: "0b5f6d" },
+          line: { color: "0b5f6d" },
+        });
+      }
+
+      const BASE_FONT = "Arial";
+      const TITLE_FONT = "Arial Black";
+
+      function addContentToSlide(slide, item) {
+        const commonTitle = {
+          x: item.template === "oscuro" ? 0.8 : 1.2,
+          y: 0.4,
+          w: 8.2,
+          h: 1,
+          fontFace: TITLE_FONT,
+          fontSize: 32,
+          color: item.template === "oscuro" ? "d9f4ff" : "0f1f29",
+          bold: true,
+        };
+        // Ajustes por plantilla
+        if (item.template === "retro") {
+          commonTitle.x = 0.5;
+          commonTitle.y = 0.1;
+          commonTitle.w = 9.6;
+          commonTitle.color = "e4d1ab";
+          commonTitle.fontSize = 34;
+          commonTitle.align = "center";
+        }
+
+        slide.addText(item.title, commonTitle);
+
+        slide.addText(item.content, {
+          x: item.template === "oscuro" ? 0.9 : item.template === "retro" ? 3.1 : 1.3,
+          y: item.template === "retro" ? 1.4 : 1.4,
+          w: item.template === "retro" ? 6.6 : 4.8,
+          h: 4.6,
+          fontFace: BASE_FONT,
+          fontSize: 22,
+          color: item.template === "oscuro" ? "dbeafe" : item.template === "retro" ? "111" : "1f2937",
+          bullet: { type: "number" },
+          lineSpacing: 32,
+        });
+
+        if (item.image) {
+          const imgOpts =
+            item.template === "retro"
+              ? { x: 0.25, y: 1.35, w: 2.1, h: 3.9, sizing: { type: "cover", w: 2.1, h: 3.9 } }
+              : { x: 6.2, y: 1.6, w: 3.4, h: 3.8, sizing: { type: "contain", w: 3.4, h: 3.8 } };
+          slide.addImage({ data: item.image, ...imgOpts });
+        }
+
+        if (item.notes) {
+          slide.addText(item.notes, {
+            x: item.template === "retro" ? 3.1 : 0.9,
+            y: 6.0,
+            w: item.template === "retro" ? 6.6 : 8.6,
+            h: 0.7,
+            fontFace: BASE_FONT,
+            fontSize: 14,
+            color: item.template === "oscuro" ? "9ca3af" : item.template === "retro" ? "3f352c" : "4b5563",
+          });
+        }
+      }
+
+      generateBtn.addEventListener("click", async () => {
+        if (!slides.length) {
+          showToast("Agrega al menos un slide", "error");
+          return;
+        }
+        if (typeof window.PptxGenJS === "undefined") {
+          showToast("No se pudo cargar PptxGenJS (revisa internet o el CDN)", "error");
+          return;
+        }
+        try {
+          const pptx = new PptxGenJS();
+          pptx.author = "ProyecJO";
+          pptx.subject = "Plantillas rápidas";
+          pptx.layout = "LAYOUT_16x9";
+          pptx.title = slides[0].title;
+
+          slides.forEach((item) => {
+            const s = pptx.addSlide();
+            applyTemplate(pptx, s, item.template);
+            addContentToSlide(s, item);
+          });
+
+          const now = new Date();
+          const stamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+            now.getDate()
+          ).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;
+          await pptx.writeFile({ fileName: `plantilla-${stamp}.pptx` });
+          showToast("PPTX generado");
+        } catch (err) {
+          console.error(err);
+          showToast(`Error al generar: ${err?.message || err}`, "error");
+        }
+      });
+
+      renderSlides();
+    </script>
+  </body>
+</html>

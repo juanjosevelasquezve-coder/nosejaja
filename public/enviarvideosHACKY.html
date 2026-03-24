@@ -1,0 +1,2949 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enviar Videos HACKY</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23a01616' d='M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v.2l-10 6.1L4 6.2V6z'/%3E%3Cpath fill='%23a01616' opacity='.18' d='M4 8.2v9.8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.2l-9.48 5.79a1 1 0 0 1-1.04 0L4 8.2z'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        background: linear-gradient(180deg, #f2efe7 0%, #ebe7dc 100%);
+        min-height: 100dvh;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      .sales-shell {
+        background: transparent;
+        padding: clamp(14px, 2vw, 30px);
+        gap: clamp(12px, 1.5vw, 22px);
+        width: 100%;
+        min-height: 100dvh;
+        height: auto !important;
+        align-content: start;
+      }
+      .sales-shell .app-rail {
+        border-radius: 26px;
+        border: 1px solid rgba(29, 45, 41, 0.18);
+        background: linear-gradient(180deg, #3a1c1c 0%, #241212 100%);
+        box-shadow: 0 14px 28px rgba(29, 44, 40, 0.25);
+      }
+      .sales-shell .rail-btn {
+        border-radius: 12px;
+        background: rgba(255, 107, 107, 0.12);
+      }
+      .sales-shell .rail-btn:hover,
+      .sales-shell .rail-btn.active {
+        background: rgba(255, 107, 107, 0.22);
+      }
+      .sales-shell .rail-btn.is-current {
+        background: rgba(255, 77, 77, 0.28);
+      }
+      .sales-shell .rail-auth,
+      .sales-shell .rail-btn-top {
+        border-color: rgba(255, 107, 107, 0.28);
+      }
+      .sales-workspace {
+        border-radius: 40px;
+        border: 1px solid #e6c2c2;
+        background: #fff5f5;
+        padding: clamp(16px, 2vw, 28px);
+        gap: clamp(16px, 1.8vw, 24px);
+        box-shadow: 0 20px 34px rgba(84, 30, 30, 0.16);
+      }
+      .sales-workspace .workspace-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "brand"
+          "flow";
+        gap: 10px 14px;
+        padding: 0;
+        align-items: center;
+      }
+      .sales-workspace .workspace-kicker {
+        grid-area: brand;
+        margin: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.9rem;
+        color: #17231f;
+        letter-spacing: -0.02em;
+        font-family: "Outfit", "Manrope", sans-serif;
+      }
+      .sales-workspace .workspace-kicker .workspace-home-link {
+        color: #d32f2f;
+        margin-right: 10px;
+        padding-right: 18px;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+      .sales-workspace .workspace-kicker .workspace-home-link::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 56%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 22px;
+        background: rgba(34, 51, 40, 0.28);
+      }
+      .sales-workspace .workspace-kicker::before {
+        content: none;
+      }
+      .sales-workspace .workspace-top h1 {
+        display: none;
+      }
+      .sales-workspace .workspace-flow {
+        grid-area: flow;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: nowrap;
+      }
+      .sales-workspace .workspace-auth {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+      }
+      .sales-workspace .workspace-auth--panel {
+        position: absolute;
+        top: clamp(36px, 5vh, 44px);
+        right: clamp(12px, 1.2vw, 16px);
+        z-index: 10;
+      }
+      .sales-workspace .workspace-auth-btn {
+        width: auto;
+        min-width: 36px;
+        min-height: 36px;
+        border-radius: 999px;
+        border: 1px solid #d7dfd0;
+        background: #f8fbf4;
+        color: #2c3f33;
+        padding: 0 10px;
+        font-size: 0.78rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        transition:
+          padding 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          gap 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          background 240ms ease,
+          transform 140ms ease;
+      }
+      .sales-workspace .workspace-auth-btn i {
+        font-size: 1.02rem;
+        line-height: 1;
+        flex: 0 0 auto;
+      }
+      .sales-workspace .workspace-auth-btn .workspace-auth-btn__label {
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        font: 800 0.82rem/1 "Outfit", "Manrope", sans-serif;
+        letter-spacing: 0.01em;
+        transform: translateX(-4px);
+        transition:
+          max-width 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          opacity 260ms ease,
+          transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .sales-workspace .workspace-auth-btn:hover,
+      .sales-workspace .workspace-auth-btn:focus-visible {
+        padding: 0 12px;
+        gap: 7px;
+        background: #eff6e8;
+        transform: translateY(-1px);
+      }
+      .sales-workspace .workspace-auth-btn:hover .workspace-auth-btn__label,
+      .sales-workspace .workspace-auth-btn:focus-visible .workspace-auth-btn__label {
+        max-width: 110px;
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .sales-workspace .workspace-auth-btn:active {
+        transform: translateY(0);
+      }
+      .sales-workspace #auth-logout-btn {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        margin-top: 0;
+        min-height: 34px;
+        border-radius: 9999px;
+        border: 1px solid #d9d9d9;
+        background: #f8f8f8;
+        color: #27352c;
+        padding: 0 11px 0 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        white-space: nowrap;
+        font: 800 0.85rem/1 "Manrope", sans-serif;
+        cursor: pointer;
+        overflow: hidden;
+        box-shadow: none;
+        transition: background 140ms ease;
+      }
+      .sales-workspace #auth-logout-btn:hover {
+        background: #eceee9;
+      }
+      .sales-workspace #auth-logout-btn i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1em;
+        height: 1em;
+        font-size: 0.94rem;
+        line-height: 1;
+      }
+      .sales-workspace #auth-logout-btn span {
+        display: inline-flex;
+        align-items: center;
+        line-height: 1;
+      }
+      .sales-workspace .workspace-auth .rail-avatar-wrap {
+        width: 36px;
+        height: 36px;
+        background: #f2d6d6;
+        box-shadow: inset 0 0 0 1px rgba(25, 42, 32, 0.18);
+        border: none;
+        padding: 0;
+        cursor: pointer;
+      }
+      .sales-workspace .workspace-auth .rail-avatar-wrap.is-open {
+        box-shadow:
+          inset 0 0 0 1px rgba(25, 42, 32, 0.18),
+          0 0 0 2px rgba(208, 69, 69, 0.42);
+      }
+      .sales-workspace .workspace-auth .rail-avatar-fallback {
+        color: #23352b;
+        font-size: 0.9rem;
+      }
+      .sales-workspace .workspace-auth-btn[hidden],
+      .sales-workspace .workspace-auth-logout[hidden] {
+        display: none !important;
+      }
+      .sales-workspace #auth-avatar-wrap:not([hidden]) + #auth-logout-btn[hidden] {
+        display: inline-flex !important;
+      }
+      .sales-workspace .flow-step {
+        width: 34px;
+        height: 6px;
+        border-radius: 999px;
+        padding: 0;
+        border: none;
+        font-size: 0;
+        background: #d8ddd8;
+      }
+      .sales-workspace .flow-step i {
+        display: none;
+      }
+      .sales-workspace .flow-step.is-active {
+        background: #b71c1c;
+      }
+      .sales-workspace .flow-step.is-soft {
+        background: #ff6b6b;
+      }
+      .sales-workspace .layout {
+        grid-template-columns: minmax(520px, 1.2fr) minmax(300px, 0.72fr);
+        gap: clamp(16px, 2vw, 28px);
+      }
+      .sales-workspace .left-panel,
+      .sales-workspace .right-panel {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+      }
+      .sales-workspace .left-panel {
+        display: grid;
+        grid-template-rows: auto auto auto auto;
+        gap: 14px;
+      }
+      .sales-workspace .header-block {
+        display: grid;
+        gap: 14px;
+      }
+      .sales-workspace .panel-title {
+        margin: 0;
+        font-family: "Outfit", "Manrope", sans-serif;
+        font-size: clamp(2rem, 4.1vw, 3.05rem);
+        line-height: 0.94;
+        letter-spacing: -0.03em;
+        color: #17231f;
+        max-width: 12ch;
+      }
+      .sales-workspace .lead {
+        margin: 0;
+        max-width: 60ch;
+        color: #4e5f59;
+        font-size: 0.9rem;
+        line-height: 1.55;
+      }
+      .sales-workspace .hero-badges {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .sales-workspace .work-card {
+        border: 1px solid #e2e7dd;
+        border-radius: 22px;
+        min-height: 138px;
+        background: #f0f2ed;
+        color: #3f544e;
+        display: grid;
+        place-items: center;
+        gap: 10px;
+        padding: 10px 8px;
+        text-align: center;
+        font: 800 0.85rem/1.2 "Manrope", sans-serif;
+      }
+      .sales-workspace .work-card i {
+        font-size: 1.8rem;
+        color: #d32f2f;
+      }
+      .sales-workspace .work-card.is-active {
+        background: #2a1616;
+        border-color: #2a1616;
+        color: #f5fbef;
+        position: relative;
+      }
+      .sales-workspace .work-card.is-active i {
+        color: #ff6b6b;
+      }
+      .sales-workspace .work-card.is-active::after {
+        content: "\25CF";
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        position: absolute;
+        top: 9px;
+        right: 9px;
+        background: #ff6b6b;
+        color: #2a1616;
+        font-size: 0.7rem;
+        font-weight: 900;
+      }
+      .sales-workspace .wizard-dots {
+        display: inline-flex;
+        align-items: center;
+        justify-self: center;
+        gap: 8px;
+      }
+      .sales-workspace .wizard-dots span {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: #e6c2c2;
+      }
+      .sales-workspace .wizard-dots span.is-active {
+        background: #b71c1c;
+      }
+      .sales-workspace .load-block {
+        display: grid;
+        gap: 10px;
+      }
+      .sales-workspace .dropzone {
+        border: 1px dashed #e0b0b0;
+        border-radius: 22px;
+        background:
+          radial-gradient(620px 280px at 50% 0%, rgba(255, 107, 107, 0.22) 0%, rgba(255, 107, 107, 0) 60%),
+          #fff7f7;
+        min-height: 195px;
+        gap: 10px;
+      }
+      .sales-workspace .dropzone.is-disabled {
+        opacity: 0.72;
+        pointer-events: none;
+        filter: grayscale(0.1);
+      }
+      .sales-workspace .dropzone.drag-over {
+        border-color: #d04545;
+        background: #fff0f0;
+      }
+      .sales-workspace .drop-title {
+        font-family: "Outfit", "Manrope", sans-serif;
+        font-size: 1.04rem;
+        color: #1f2d28;
+      }
+      .sales-workspace .drop-or {
+        color: #68786d;
+        font-size: 0.83rem;
+      }
+      .sales-workspace .dropzone small {
+        color: #78847c;
+        font-size: 0.74rem;
+      }
+      .sales-workspace .cta {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-size: 0.84rem;
+        background: linear-gradient(100deg, #d32f2f 0%, #ff6b6b 100%);
+        color: #2b1414;
+        box-shadow: none;
+      }
+      .table-paste {
+        width: 100%;
+        min-height: 120px;
+        resize: none;
+        border-radius: 18px;
+        border: 1px solid #e2bcbc;
+        padding: 12px 14px;
+        font: 800 0.8rem/1.35 "Manrope", "Segoe UI", sans-serif;
+        color: #1b2a20;
+        background: #ffffff;
+        outline: none;
+      }
+      .table-paste:focus {
+        box-shadow: none;
+      }
+      .sales-workspace .table-preview {
+        position: absolute;
+        inset: 0;
+        padding: 14px;
+        overflow: auto;
+      }
+      .sales-workspace .table-preview__wrap {
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 18px;
+        border: 1px solid rgba(25, 42, 32, 0.12);
+        padding: 12px;
+        backdrop-filter: blur(2px);
+      }
+      .sales-workspace .table-preview__meta {
+        margin: 0 0 10px;
+        font: 900 0.78rem/1.2 "Manrope", "Segoe UI", sans-serif;
+        color: rgba(25, 42, 32, 0.75);
+      }
+      .sales-workspace .table-preview__table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font: 800 0.72rem/1.25 "Manrope", "Segoe UI", sans-serif;
+        color: #1b2a20;
+      }
+      .sales-workspace .table-preview__table thead th {
+        position: sticky;
+        top: 0;
+        background: #ffe9e9;
+        color: #7a1f1f;
+        text-align: left;
+        padding: 10px 10px;
+        border-bottom: 1px solid rgba(46, 35, 74, 0.18);
+        z-index: 1;
+      }
+      .sales-workspace .table-preview__table tbody td {
+        padding: 10px 10px;
+        border-bottom: 1px solid rgba(25, 42, 32, 0.08);
+        vertical-align: top;
+        max-width: 420px;
+        word-break: break-word;
+      }
+      .sales-workspace .table-preview__table tbody tr:hover td {
+        background: rgba(181, 163, 220, 0.12);
+      }
+      .sales-workspace .summary-row {
+        border: 1px solid #e2bcbc;
+        border-radius: 14px;
+        background: #fff5f5;
+        padding: 8px;
+        gap: 8px;
+      }
+      .sales-workspace .summary-pill {
+        border: 1px solid #e6c2c2;
+        border-radius: 11px;
+        min-height: 40px;
+        background: #ffffff;
+        color: #2b3b32;
+        font-size: 0.8rem;
+        font-weight: 800;
+        box-shadow: none;
+      }
+      .sales-workspace .left-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: start;
+        gap: 12px;
+        width: 100%;
+      }
+      .sales-workspace .back-btn {
+        min-height: 46px;
+        min-width: 112px;
+        border-radius: 999px;
+        border: 1px solid #d4d9cf;
+        background: #f6f7f4;
+        color: #27352c;
+        font: 800 0.85rem/1 "Manrope", sans-serif;
+        cursor: pointer;
+      }
+      .sales-workspace .back-btn:hover {
+        background: #eceee9;
+      }
+      .sales-workspace .submit-btn {
+        --progress: 0%;
+        flex: none;
+        width: 100%;
+        min-height: 48px;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #d32f2f var(--progress), #ff6b6b var(--progress));
+        color: #1a311f;
+        font: 800 0.92rem/1 "Outfit", "Manrope", sans-serif;
+        letter-spacing: 0.01em;
+        box-shadow: none;
+      }
+      .sales-workspace .submit-btn:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(90deg, #c62828 var(--progress), #ff5a5a var(--progress));
+      }
+      .sales-workspace .submit-btn i {
+        font-size: 1rem;
+      }
+      .sales-workspace .status {
+        display: block;
+        margin: 0;
+        min-height: 1.2em;
+        font-size: 0.76rem;
+      }
+      .sales-workspace .right-panel {
+        border-radius: 30px;
+        padding: 12px;
+        background: linear-gradient(180deg, #ffe2e2 0%, #ffb3b3 100%);
+        border: 1px solid #e0b0b0;
+        display: grid;
+        min-height: 0;
+        position: relative;
+      }
+      .sales-workspace .viewer {
+        min-height: 0;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        gap: 10px;
+      }
+      .sales-workspace .viewer-head {
+        display: none;
+      }
+      .sales-workspace .viewer-canvas {
+        border: 1px solid rgba(122, 31, 31, 0.28);
+        border-radius: 24px;
+        min-height: clamp(380px, 58vh, 620px);
+        background:
+          radial-gradient(
+            120% 140% at 0% 0%,
+            rgba(255, 245, 245, 0.98) 0%,
+            rgba(255, 201, 201, 0.96) 44%,
+            rgba(255, 154, 154, 0.98) 100%
+          );
+      }
+      .sales-workspace #preview-image {
+        max-width: 96%;
+        max-height: 96%;
+        object-fit: contain;
+        filter: drop-shadow(0 10px 18px rgba(33, 61, 33, 0.34));
+      }
+      .sales-workspace #empty-preview {
+        margin: 0;
+        border: 1px dashed rgba(122, 31, 31, 0.32);
+        border-radius: 12px;
+        background: rgba(255, 250, 250, 0.82);
+        color: #4a1f1f;
+        font-size: 0.8rem;
+        font-weight: 800;
+        padding: 10px 12px;
+      }
+      .sales-workspace .selected-files--overlay {
+        top: auto;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        justify-content: flex-start;
+      }
+      .sales-workspace .file-tag {
+        border-color: rgba(34, 57, 40, 0.16);
+        background: rgba(255, 255, 255, 0.84);
+        color: #1f3328;
+        box-shadow: none;
+      }
+      .sales-workspace .preview-filmstrip {
+        border: 1px solid rgba(41, 70, 38, 0.24);
+        border-radius: 999px;
+        background: rgba(247, 252, 242, 0.8);
+        min-height: 56px;
+        padding: 7px;
+        gap: 6px;
+      }
+      .sales-workspace .preview-details {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #30453c;
+      }
+      .sales-workspace .film-thumb {
+        width: 44px;
+        height: 44px;
+        border-radius: 11px;
+        border: 1px solid rgba(58, 87, 53, 0.28);
+        background: #eef6e5;
+        overflow: visible;
+        position: relative;
+      }
+      .sales-workspace .film-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .sales-workspace .film-thumb-index {
+        position: absolute;
+        right: 2px;
+        bottom: 2px;
+        min-width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        padding: 0 3px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 800;
+        color: #ffffff;
+        background: rgba(27, 44, 26, 0.8);
+      }
+      .sales-workspace .film-thumb.is-active {
+        border-color: #b71c1c;
+        box-shadow: 0 0 0 2px rgba(183, 28, 28, 0.22);
+      }
+      .sales-workspace .presence-panel {
+        display: none;
+      }
+      .sales-workspace .viewer {
+        display: none;
+      }
+      .sales-workspace .profile-art {
+        margin: 0;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 715 / 1024;
+        border-radius: 24px;
+        overflow: hidden;
+        display: block;
+        border: 1px solid rgba(33, 51, 30, 0.18);
+        box-shadow: 0 18px 30px rgba(37, 61, 33, 0.2);
+      }
+      .sales-workspace .profile-art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+      @media (max-width: 1220px) {
+        .sales-workspace .hero-badges {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 1080px) {
+        .sales-shell {
+          grid-template-columns: 1fr;
+          padding: 10px;
+        }
+        .sales-shell .app-rail {
+          width: auto;
+          border-radius: 18px;
+          padding: 8px 10px;
+          gap: 6px;
+          flex-direction: row;
+          justify-content: flex-start;
+          overflow-x: auto;
+          overflow-y: hidden;
+        }
+        .sales-shell .rail-auth {
+          margin-top: 0;
+          margin-left: auto;
+          border-top: none;
+          padding-top: 0;
+          display: inline-flex;
+          align-items: center;
+        }
+        .sales-shell .rail-btn-top {
+          margin-bottom: 0;
+          padding-bottom: 0;
+          border-bottom: none;
+        }
+        .sales-workspace {
+          border-width: 9px;
+          border-radius: 28px;
+          padding: 12px;
+        }
+        .sales-workspace .layout {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+        .sales-workspace .viewer-canvas {
+          min-height: 360px;
+        }
+      }
+      @media (max-width: 760px) {
+        .sales-workspace .workspace-top {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            "brand"
+            "flow";
+        }
+        .sales-workspace .workspace-auth {
+          gap: 6px;
+        }
+        .sales-workspace .workspace-auth-btn,
+        .sales-workspace #auth-logout-btn,
+        .sales-workspace .workspace-auth .rail-avatar-wrap {
+          height: 34px;
+        }
+        .sales-workspace .workspace-auth-btn {
+          min-width: 34px;
+          padding: 0 9px;
+        }
+        .sales-workspace #auth-logout-btn,
+        .sales-workspace .workspace-auth .rail-avatar-wrap {
+          width: 34px;
+        }
+        .sales-workspace #auth-logout-btn {
+          width: auto;
+          min-height: 32px;
+          padding: 0 10px;
+          font-size: 0.74rem;
+        }
+        .sales-workspace .panel-title {
+          font-size: clamp(1.5rem, 9vw, 2rem);
+          max-width: 100%;
+        }
+        .sales-workspace .hero-badges {
+          grid-template-columns: 1fr;
+        }
+        .sales-workspace .work-card {
+          min-height: 100px;
+        }
+        .sales-workspace .dropzone {
+          min-height: 176px;
+        }
+        .sales-workspace .left-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .sales-workspace .back-btn {
+          width: 100%;
+        }
+        .sales-workspace .submit-btn {
+          width: 100%;
+        }
+      }
+
+      /* Reference fidelity overrides */
+      .sales-shell {
+        grid-template-columns: 1fr !important;
+        width: min(100%, 1260px) !important;
+        margin-inline: auto;
+        padding: clamp(14px, 2.4vw, 26px) !important;
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        display: grid !important;
+        place-items: center;
+        align-content: center !important;
+        justify-content: center !important;
+        position: relative;
+      }
+      .sales-shell > .dynamic-island {
+        position: fixed;
+        top: clamp(14px, 2.4vh, 24px);
+        right: 0;
+        left: auto;
+        bottom: auto;
+        transform: translateX(calc(100% + 16px)) scale(0.96);
+        min-width: 250px;
+        max-width: min(calc(100% - 28px), 420px);
+        min-height: 50px;
+        border-radius: 16px 0 0 16px;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+        border-color: rgba(182, 215, 152, 0.34);
+        box-shadow: 0 14px 28px rgba(14, 20, 17, 0.36);
+        z-index: 120;
+      }
+      .sales-shell > .dynamic-island.show {
+        transform: translateX(0) scale(1);
+      }
+      .sales-shell > .dynamic-island .dynamic-island__bell {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        margin-left: 0;
+        margin-right: 4px;
+        font-size: 1.35rem;
+        line-height: 1;
+        color: #ffffff;
+        transform-origin: 50% 10%;
+        filter: drop-shadow(0 6px 8px rgba(10, 18, 14, 0.45));
+      }
+      .sales-shell > .dynamic-island .dynamic-island__body {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: grid;
+        gap: 2px;
+      }
+      .sales-shell > .dynamic-island .dynamic-island__title {
+        font-size: 0.66rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .sales-shell > .dynamic-island .dynamic-island__message {
+        font-size: 0.84rem;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #ffffff;
+        word-break: break-word;
+      }
+      .sales-shell > .dynamic-island.show .dynamic-island__bell {
+        animation: island-bell-swing 0.75s ease-in-out infinite;
+      }
+      @keyframes island-bell-swing {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        25% {
+          transform: rotate(-18deg);
+        }
+        75% {
+          transform: rotate(18deg);
+        }
+      }
+      .sales-shell .app-rail {
+        display: none !important;
+      }
+      .sales-workspace {
+        width: min(100%, 1220px);
+        margin-inline: auto;
+        justify-self: center;
+        align-self: center;
+        position: relative;
+        overflow: visible;
+        border: 1px solid #ddd7cb;
+        border-radius: 38px;
+        background: #f7f3ea;
+        padding: clamp(18px, 2.2vw, 28px);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(230px, 275px);
+        grid-template-areas:
+          "top right"
+          "left right";
+        grid-template-rows: auto 1fr;
+        align-items: stretch;
+        gap: clamp(16px, 1.8vw, 24px);
+      }
+      .sales-workspace .workspace-top {
+        grid-area: top;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "brand"
+          "flow";
+        gap: 10px;
+      }
+      .sales-workspace .layout {
+        display: contents;
+      }
+      .sales-workspace .workspace-kicker {
+        font-size: clamp(1.65rem, 2.2vw, 2rem);
+        font-weight: 700;
+        gap: 8px;
+      }
+      .sales-workspace .workspace-kicker::before {
+        content: none;
+      }
+      .sales-workspace .workspace-flow {
+        justify-content: flex-start;
+        gap: 8px;
+        margin-top: 2px;
+      }
+      .sales-workspace .flow-step {
+        width: 30px;
+        height: 6px;
+      }
+      .sales-workspace .left-panel {
+        grid-area: left;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(24px, 2.1vw, 34px);
+        padding-right: clamp(18px, 1.8vw, 28px);
+        min-height: 100%;
+        align-self: stretch;
+      }
+      .sales-workspace .header-block {
+        display: grid;
+        gap: clamp(24px, 2.5vw, 34px);
+        width: max-content;
+        max-width: 100%;
+        margin-top: 14px;
+      }
+      .sales-workspace .panel-title {
+        max-width: none;
+        font-size: clamp(1.9rem, 3vw, 2.85rem);
+        line-height: 0.95;
+        letter-spacing: -0.025em;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        font-weight: 500;
+        white-space: normal;
+        text-wrap: balance;
+        margin: 2px 0 0;
+      }
+      .sales-workspace .sales-word {
+        font-weight: 800;
+      }
+      .sales-workspace .lead {
+        display: block;
+        margin: 0;
+        max-width: 58ch;
+        color: #5a635e;
+        font-size: 0.92rem;
+        line-height: 1.45;
+        font-weight: 600;
+      }
+      .sales-workspace .hero-selector {
+        position: relative;
+        display: block;
+        width: 100%;
+        padding-right: 0;
+        margin-top: 8px;
+      }
+      .sales-workspace .hero-badges {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-radius: 28px;
+        background: #e7e7e7;
+        padding: 24px 22px;
+        gap: 16px;
+        min-height: clamp(250px, 33vh, 360px);
+        align-items: stretch;
+      }
+      .sales-workspace .hero-badges--actions {
+        align-content: stretch;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        min-height: clamp(330px, 43vh, 485px);
+      }
+      .sales-workspace .hero-badges--actions .work-card {
+        grid-column: span 1;
+        height: 100%;
+        min-height: 0;
+      }
+      .sales-workspace .work-card {
+        min-height: 0;
+        height: clamp(195px, 26vh, 265px);
+        aspect-ratio: auto;
+        border-radius: 20px;
+        border: 1px solid #dddddd;
+        background: #f3f3f3;
+        color: #1f2522;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        font-size: 0.82rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 12px;
+        gap: 14px;
+        width: 100%;
+        appearance: none;
+        cursor: pointer;
+      }
+      .sales-workspace .work-card i {
+        font-size: 2.35rem;
+        color: #d32f2f;
+        margin-top: 0;
+      }
+      .sales-workspace .work-card--upload i,
+      .sales-workspace .work-card--download i {
+        font-size: 3.2rem;
+        line-height: 1;
+      }
+      .sales-workspace .hero-badges .work-card > span,
+      .sales-workspace .hero-badges .work-card-label {
+        max-width: 130px;
+        margin-top: 0;
+        margin-bottom: 0;
+        line-height: 1.18;
+        font-size: 0.86rem;
+        font-weight: 800;
+        text-align: center;
+        border: none !important;
+        background: transparent !important;
+        color: inherit !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+      }
+      .sales-workspace .work-card.is-active {
+        background: linear-gradient(165deg, #3a0f14 0%, #6a1f2a 100%);
+        border-color: transparent;
+        color: #f8f8f8;
+        box-shadow: none;
+      }
+      .sales-workspace .work-card.is-disabled,
+      .sales-workspace .work-card[aria-disabled='true'] {
+        opacity: 1;
+        cursor: not-allowed;
+        filter: none;
+      }
+      .sales-workspace .work-card.is-locked {
+        background: #f3f3f3;
+        border-color: #dddddd;
+        color: #1f2522;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        cursor: not-allowed;
+      }
+      .sales-workspace .work-card-lock {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        background: #2a1616;
+        border: 1px solid #5a2a2a;
+        border-radius: 7px;
+        box-shadow: 0 3px 8px rgba(11, 20, 14, 0.2);
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .sales-workspace .work-card-lock i {
+        font-size: 1.05rem;
+        line-height: 1;
+        color: #ffffff;
+      }
+      .sales-workspace .hero-badges .work-card > span.work-card-lock {
+        max-width: none;
+        color: #ffffff !important;
+        background: #2a1616 !important;
+        border: 1px solid #5a2a2a !important;
+        border-radius: 7px !important;
+        padding: 0 !important;
+      }
+      .sales-workspace .work-card[aria-disabled='true'] .work-card-lock {
+        display: inline-flex;
+      }
+      .sales-workspace .work-card--upload .work-card-label {
+        max-width: 132px;
+      }
+      .sales-workspace .work-card.is-ready:not([aria-disabled='true']) {
+        box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      }
+      .sales-workspace .work-card.is-active.is-ready:not([aria-disabled='true']) {
+        box-shadow: none;
+      }
+      .sales-workspace .work-card.is-active i {
+        color: #fff0f0;
+      }
+      .sales-workspace .work-card.is-active::after {
+        content: none;
+        display: none;
+      }
+      .sales-workspace #upload-card,
+      .sales-workspace #download-card {
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .sales-workspace #upload-card > *,
+      .sales-workspace #download-card > * {
+        position: relative;
+        z-index: 1;
+      }
+      .sales-workspace #upload-card .work-card-lock,
+      .sales-workspace #download-card .work-card-lock {
+        position: absolute;
+        z-index: 3;
+      }
+      .sales-workspace #upload-card:focus-visible,
+      .sales-workspace #download-card:focus-visible {
+        outline: 2px solid #8ad145;
+        outline-offset: 2px;
+      }
+      .sales-workspace #upload-card:not([aria-disabled='true'])::after,
+      .sales-workspace #download-card:not([aria-disabled='true'])::after {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 0.82rem;
+        font-weight: 900;
+        line-height: 1;
+        color: #1d2e23;
+        background: #ffffff;
+        border: 1px solid #d8e0d6;
+        box-shadow: 0 3px 8px rgba(11, 20, 14, 0.2);
+        z-index: 2;
+      }
+      .sales-workspace #upload-card:not([aria-disabled='true'])::after {
+        content: "1";
+      }
+      .sales-workspace #download-card:not([aria-disabled='true'])::after {
+        content: "2";
+      }
+      .sales-workspace #upload-card:hover:not([aria-disabled='true']) i,
+      .sales-workspace #upload-card:focus-visible:not([aria-disabled='true']) i {
+        animation: upload-icon-lift 1.9s ease-in-out infinite;
+      }
+      .sales-workspace #upload-card:hover:not([aria-disabled='true'])::before,
+      .sales-workspace #upload-card:focus-visible:not([aria-disabled='true'])::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        width: 150%;
+        height: 150%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle at center, rgba(151, 216, 79, 0.42) 0%, rgba(151, 216, 79, 0) 68%);
+        z-index: 0;
+        pointer-events: none;
+        animation: upload-aura-rise 2.7s ease-in-out infinite;
+      }
+      .sales-workspace #download-card:hover:not([aria-disabled='true']) i,
+      .sales-workspace #download-card:focus-visible:not([aria-disabled='true']) i {
+        animation: upload-icon-lift 1.9s ease-in-out infinite;
+      }
+      .sales-workspace #download-card:hover:not([aria-disabled='true'])::before,
+      .sales-workspace #download-card:focus-visible:not([aria-disabled='true'])::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        width: 150%;
+        height: 150%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle at center, rgba(151, 216, 79, 0.42) 0%, rgba(151, 216, 79, 0) 68%);
+        z-index: 0;
+        pointer-events: none;
+        animation: upload-aura-rise 2.7s ease-in-out infinite;
+      }
+      @keyframes upload-icon-lift {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-4px) scale(1.04);
+        }
+      }
+      @keyframes upload-aura-rise {
+        0% {
+          opacity: 0.16;
+          transform: translate(-50%, -38%) scale(0.9);
+        }
+        50% {
+          opacity: 0.5;
+          transform: translate(-50%, -58%) scale(1.08);
+        }
+        100% {
+          opacity: 0.16;
+          transform: translate(-50%, -38%) scale(0.9);
+        }
+      }
+      @keyframes download-icon-drop {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        40% {
+          transform: translateY(4px) scale(1.04);
+        }
+        70% {
+          transform: translateY(1px) scale(1.01);
+        }
+      }
+      @keyframes download-flow-down {
+        0% {
+          transform: translateY(-78%);
+          opacity: 0;
+        }
+        22% {
+          opacity: 0.55;
+        }
+        78% {
+          opacity: 0.55;
+        }
+        100% {
+          transform: translateY(78%);
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .sales-workspace #upload-card:hover:not([aria-disabled='true']) i,
+        .sales-workspace #upload-card:hover:not([aria-disabled='true'])::before,
+        .sales-workspace #upload-card:focus-visible:not([aria-disabled='true']) i,
+        .sales-workspace #upload-card:focus-visible:not([aria-disabled='true'])::before,
+        .sales-workspace #download-card:hover:not([aria-disabled='true']) i,
+        .sales-workspace #download-card:hover:not([aria-disabled='true'])::before,
+        .sales-workspace #download-card:focus-visible:not([aria-disabled='true']) i,
+        .sales-workspace #download-card:focus-visible:not([aria-disabled='true'])::before {
+          animation: none;
+        }
+      }
+      .sales-workspace .hero-next {
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 999px;
+        border: none;
+        background: #1d2623;
+        color: #f7f7f7;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 8;
+      }
+      .sales-workspace .hero-next i {
+        font-size: 0.95rem;
+        line-height: 1;
+      }
+      .sales-workspace .wizard-dots {
+        justify-self: center;
+        margin-top: 8px;
+        margin-bottom: 6px;
+      }
+      .sales-workspace .wizard-dots span {
+        width: 8px;
+        height: 8px;
+      }
+      .sales-workspace .uploader {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        border: 0;
+        padding: 0;
+        clip: rect(0 0 0 0);
+        overflow: hidden;
+      }
+      .sales-workspace .left-actions {
+        margin-top: auto;
+        max-width: none;
+        padding-top: clamp(14px, 2vh, 24px);
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: nowrap;
+        width: auto;
+      }
+      .sales-workspace .back-btn {
+        width: auto;
+        min-width: 38px;
+        min-height: 38px;
+        border-color: #d9d9d9;
+        background: #f8f8f8;
+        padding: 0 11px 0 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      .sales-workspace .back-btn i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1em;
+        height: 1em;
+        font-size: 0.94rem;
+        line-height: 1;
+      }
+      .sales-workspace .back-btn span {
+        display: inline-flex;
+        align-items: center;
+        line-height: 1;
+      }
+      .sales-workspace .submit-btn {
+        width: 38px;
+        min-width: 38px;
+        min-height: 38px;
+        background: #e75a5a;
+        color: #fff7f7;
+        padding: 0 11px;
+        font-size: 0.82rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0;
+        border-radius: 999px;
+        overflow: hidden;
+        white-space: nowrap;
+        transition:
+          width 680ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          padding 680ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          gap 680ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          background 520ms ease;
+      }
+      .sales-workspace .submit-btn i {
+        font-size: 1rem;
+        line-height: 1;
+        flex: 0 0 auto;
+      }
+      .sales-workspace .submit-btn #submit-label {
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        transform: translateX(-4px);
+        transition:
+          max-width 680ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          opacity 520ms ease,
+          transform 680ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .sales-workspace .submit-btn:hover,
+      .sales-workspace .submit-btn:focus-visible {
+        width: 232px;
+        padding: 0 14px;
+        gap: 8px;
+        background: #c62828;
+      }
+      .sales-workspace .submit-btn:hover #submit-label,
+      .sales-workspace .submit-btn:focus-visible #submit-label {
+        max-width: 190px;
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .help-dialog[hidden] {
+        display: none !important;
+      }
+      .help-dialog {
+        position: fixed;
+        inset: 0;
+        z-index: 4000;
+        display: grid;
+        place-items: center;
+        gap: 12px;
+        padding: clamp(10px, 2.2vw, 20px);
+        background: rgba(21, 28, 25, 0.54);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+      .help-dialog__panel {
+        width: min(calc(100vw - 28px), 580px);
+        max-height: calc(100dvh - 28px);
+        overflow: auto;
+        border-radius: 22px;
+        border: 1px solid rgba(46, 68, 40, 0.2);
+        background: linear-gradient(180deg, #fbfdf8 0%, #f4f8ef 100%);
+        box-shadow: 0 24px 44px rgba(28, 42, 32, 0.34);
+        padding: clamp(16px, 2.2vw, 24px);
+        color: #223126;
+      }
+      .help-dialog__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      .help-dialog__title {
+        margin: 0;
+        font: 800 clamp(1.05rem, 2vw, 1.25rem) / 1.2 "Outfit", "Manrope", sans-serif;
+        color: #1e2d24;
+      }
+      .help-dialog__close {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: 1px solid #cdd8c6;
+        background: #f6faf1;
+        color: #2f4336;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .help-dialog__text {
+        margin: 0 0 12px;
+        color: #44574b;
+        font-size: 0.86rem;
+        line-height: 1.45;
+      }
+      .help-dialog__steps {
+        margin: 0;
+        padding-left: 1.1rem;
+        display: grid;
+        gap: 10px;
+        font-size: 0.86rem;
+        line-height: 1.45;
+        color: #233529;
+      }
+      .help-dialog__steps strong {
+        color: #1a2b20;
+      }
+      .help-dialog__footer {
+        margin-top: 26px;
+        display: flex;
+        justify-content: center;
+      }
+      .help-dialog__dismiss {
+        min-height: 36px;
+        border: none;
+        border-radius: 999px;
+        padding: 0 14px;
+        background: #e53935;
+        color: #fff7f7;
+        font: 700 0.82rem/1 "Manrope", sans-serif;
+        cursor: pointer;
+      }
+      .table-dialog__panel {
+        width: min(calc(100vw - 28px), 760px);
+      }
+      .table-dialog__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .table-dialog__btn {
+        min-height: 38px;
+        border: 1px solid #cdd8c6;
+        border-radius: 999px;
+        padding: 0 14px;
+        font: 800 0.82rem/1 "Manrope", sans-serif;
+        cursor: pointer;
+      }
+      .table-dialog__btn--ghost {
+        background: #f6faf1;
+        color: #2f4336;
+      }
+      .table-dialog__btn--primary {
+        border: none;
+        background: #e53935;
+        color: #fff7f7;
+      }
+      #send-dialog-copy-subject {
+        border-color: rgba(229, 57, 53, 0.28);
+        background: rgba(255, 107, 107, 0.16);
+        color: #7a1f1f;
+      }
+      .send-dialog__panel {
+        width: min(calc(100vw - 28px), 980px);
+      }
+      .send-dialog__content {
+        display: grid;
+        gap: 14px;
+      }
+      .send-dialog__content p {
+        margin: 0;
+        color: #223126;
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+      .send-dialog__table {
+        border: 1px solid rgba(46, 46, 46, 0.65);
+        border-radius: 14px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.7);
+        overflow: auto;
+      }
+      .sales-workspace .status {
+        display: none;
+      }
+      .sales-workspace .download-progress {
+        position: fixed;
+        top: clamp(14px, 2.4vh, 24px);
+        right: 0;
+        left: auto;
+        bottom: auto;
+        transform: translateX(calc(100% + 16px)) scale(0.98);
+        width: min(calc(100% - 28px), 360px);
+        padding: 10px 14px;
+        border-radius: 16px 0 0 16px;
+        border: 1px solid rgba(30, 47, 36, 0.18);
+        background: rgba(247, 252, 242, 0.96);
+        box-shadow: 0 14px 28px rgba(22, 34, 27, 0.24);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        display: grid;
+        gap: 8px;
+        pointer-events: none;
+        opacity: 0;
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease,
+          top 220ms ease;
+        z-index: 115;
+      }
+      .sales-workspace .download-progress.is-below-island {
+        top: clamp(84px, 10.5vh, 118px);
+      }
+      .sales-workspace .download-progress.is-visible {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+      .sales-workspace .download-progress.is-hiding {
+        opacity: 0;
+        transform: translate(-6px, -16px) scale(0.98);
+      }
+      .sales-workspace .download-progress__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .sales-workspace .download-progress__label {
+        font-size: 0.77rem;
+        font-weight: 700;
+        color: #2b4234;
+        line-height: 1.2;
+      }
+      .sales-workspace .download-progress__value {
+        flex: 0 0 auto;
+        min-width: 42px;
+        text-align: right;
+        font-size: 0.77rem;
+        font-weight: 800;
+        color: #1b3024;
+      }
+      .sales-workspace .download-progress__track {
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        background: #d9e8cc;
+        overflow: hidden;
+      }
+      .sales-workspace .download-progress__fill {
+        width: 0%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #78ba3f 0%, #9ddd57 100%);
+        transition: width 180ms linear;
+      }
+      .sales-workspace .right-panel {
+        grid-area: right;
+        background: transparent;
+        border: none;
+        border-radius: 26px;
+        padding: 0;
+        display: flex;
+        align-items: stretch;
+        min-height: 0;
+        align-self: stretch;
+        overflow: visible;
+        position: relative;
+      }
+      .sales-workspace .profile-art {
+        --profile-bg-top: clamp(20px, 4%, 42px);
+        width: 100%;
+        height: 100%;
+        flex: 1 1 auto;
+        min-height: clamp(470px, 68vh, 900px);
+        border-radius: 26px;
+        position: relative;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+        overflow: visible;
+        background: transparent;
+        display: block;
+      }
+      .sales-workspace .profile-art::after {
+        content: none;
+      }
+      .sales-workspace .profile-art .profile-art-bg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: var(--profile-bg-top);
+        bottom: 0;
+        border-radius: 28px;
+        background: linear-gradient(150deg, #ff6b6b 0%, #d32f2f 100%);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+        z-index: 1;
+      }
+      .sales-workspace .profile-art .profile-art-photo {
+        position: absolute;
+        left: calc(50% - clamp(16px, 2vw, 30px));
+        right: auto;
+        top: var(--profile-bg-top);
+        bottom: 0;
+        z-index: 2;
+        width: auto;
+        height: calc(100% - var(--profile-bg-top));
+        max-width: none;
+        max-height: none;
+        display: block;
+        object-fit: contain;
+        object-position: center bottom;
+        transform: translate(-50%, 9px);
+        margin: 0;
+        filter: none;
+        pointer-events: none;
+      }
+
+      @media (max-width: 1080px) {
+        .sales-shell {
+          place-items: start stretch;
+        }
+        .sales-workspace {
+          width: 100%;
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "top"
+            "left"
+            "right";
+          grid-template-rows: auto auto auto;
+          gap: 18px;
+        }
+        .sales-workspace .hero-selector {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+        .sales-workspace .hero-next {
+          position: static;
+          transform: none;
+          justify-self: end;
+        }
+        .sales-workspace .hero-badges {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          min-height: 270px;
+        }
+        .sales-workspace .hero-badges--actions {
+          width: 100%;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          min-height: 310px;
+        }
+        .sales-workspace .left-panel {
+          gap: 20px;
+          padding-right: 0;
+        }
+        .sales-workspace .download-progress {
+          width: min(calc(100% - 24px), 340px);
+        }
+        .sales-workspace .download-progress.is-below-island {
+          top: clamp(76px, 11.5vh, 108px);
+        }
+      }
+
+      @media (min-width: 1081px) and (max-width: 1320px) {
+        .sales-workspace {
+          grid-template-columns: minmax(0, 1fr) minmax(250px, 315px);
+        }
+        .sales-workspace .panel-title {
+          font-size: clamp(1.7rem, 2.3vw, 2.3rem);
+        }
+      }
+      @media (min-width: 1081px) and (max-width: 1700px) {
+        .sales-shell {
+          width: min(100%, 1160px) !important;
+          padding: clamp(12px, 1.8vw, 20px) !important;
+        }
+        .sales-workspace {
+          width: min(100%, 1100px);
+          grid-template-columns: minmax(0, 1fr) minmax(210px, 250px);
+          gap: clamp(14px, 1.5vw, 20px);
+        }
+        .sales-workspace .left-panel {
+          padding-right: clamp(10px, 1.1vw, 16px);
+        }
+      }
+
+      @media (min-width: 1081px) and (max-height: 900px) {
+        .sales-shell {
+          padding: clamp(12px, 1.6vw, 20px) !important;
+        }
+        .sales-workspace {
+          padding: clamp(18px, 2vw, 28px);
+          gap: 18px;
+        }
+        .sales-workspace .header-block {
+          gap: 18px;
+        }
+        .sales-workspace .panel-title {
+          font-size: clamp(1.55rem, 2.1vw, 2.2rem);
+        }
+        .sales-workspace .lead {
+          font-size: 0.84rem;
+          line-height: 1.35;
+          max-width: 52ch;
+        }
+        .sales-workspace .hero-badges--actions {
+          min-height: clamp(290px, 38vh, 390px);
+        }
+        .sales-workspace .work-card {
+          height: clamp(170px, 22vh, 225px);
+        }
+        .sales-workspace .left-actions {
+          padding-top: 8px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .sales-workspace {
+          padding: 18px;
+          gap: 14px;
+        }
+        .sales-workspace .workspace-top {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            "brand"
+            "flow";
+        }
+        .sales-workspace .panel-title {
+          max-width: 100%;
+          white-space: normal;
+          line-height: 1.05;
+        }
+        .sales-workspace .hero-badges {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          padding: 12px;
+          gap: 10px;
+          min-height: 240px;
+        }
+        .sales-workspace .hero-badges--actions {
+          width: 100%;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          min-height: 260px;
+        }
+        .sales-workspace .work-card {
+          height: 160px;
+          font-size: 0.74rem;
+        }
+        .sales-workspace .work-card i {
+          font-size: 1.95rem;
+          margin-top: 0;
+        }
+        .sales-workspace .download-progress {
+          width: min(calc(100% - 20px), 320px);
+          padding: 8px 11px;
+        }
+        .sales-workspace .download-progress.is-below-island {
+          top: clamp(72px, 12vh, 102px);
+        }
+        .sales-workspace .download-progress__label,
+        .sales-workspace .download-progress__value {
+          font-size: 0.72rem;
+        }
+      }
+
+      /* Account capsule style (reference layout) */
+      .sales-workspace .workspace-auth.workspace-auth--panel {
+        position: absolute;
+        top: -30px;
+        right: clamp(-102px, -6.6vw, -82px);
+        z-index: 18;
+        width: 56px;
+        min-height: 114px;
+        padding: 7px 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        border-radius: 999px;
+        border: 1px solid #ddd7cb;
+        background: #f7f3ea;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel.is-login-only {
+        justify-content: center;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-btn {
+        width: auto;
+        min-width: 0;
+        min-height: 0;
+        border-radius: 0;
+        border: none;
+        background: transparent;
+        color: #2a382d;
+        padding: 0;
+        justify-content: center;
+        gap: 0;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-btn:hover,
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-btn:focus-visible {
+        background: transparent;
+        padding: 0;
+        gap: 0;
+        transform: none;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-btn i {
+        font-size: 1.15rem;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-btn .workspace-auth-btn__label {
+        display: none;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .rail-avatar-wrap {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #d9e2ea;
+        border: 1px solid #d3d9de;
+        box-shadow: none;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .rail-avatar-wrap.is-open {
+        box-shadow: none;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .rail-avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn {
+        position: static;
+        margin-top: auto;
+        width: 36px;
+        min-height: 36px;
+        border: none;
+        background: transparent;
+        color: #111111;
+        padding: 0;
+        border-radius: 10px;
+        box-shadow: none;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn i {
+        font-size: 1.28rem;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn span {
+        display: none;
+      }
+      @media (max-width: 760px) {
+        .sales-workspace .workspace-auth.workspace-auth--panel {
+          right: 8px;
+          width: 52px;
+          min-height: 106px;
+          padding: 6px 3px;
+        }
+        .sales-workspace .workspace-auth.workspace-auth--panel .rail-avatar-wrap {
+          width: 38px;
+          height: 38px;
+        }
+        .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn {
+          width: 34px;
+          min-height: 34px;
+        }
+        .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn i {
+          font-size: 1.18rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="dashboard-shell sales-shell">
+      <div id="dynamic-island" class="dynamic-island" role="status" aria-live="polite" aria-atomic="true"></div>
+      <aside class="app-rail" aria-label="Navegacion">
+        <a class="rail-btn" href="/index.html" title="Pagina principal">
+          <i class="bi bi-house-door-fill"></i>
+        </a>
+        <a class="rail-btn is-current" href="/enviarvideosHACKY.html" title="Enviar Videos HACKY" aria-current="page">
+          <i class="bi bi-camera-video-fill"></i>
+        </a>
+        <a class="rail-btn" href="/InformesHACKY.html" aria-label="Informes HACKY" title="Informes HACKY">
+          <i class="bi bi-bar-chart-fill"></i>
+        </a>
+        <a class="rail-btn" href="/PlantillasPPTX.html" aria-label="Plantillas PPTX" title="Plantillas PPTX">
+          <i class="bi bi-easel3-fill"></i>
+        </a>
+        <button type="button" class="rail-btn" aria-label="Multimedia">
+          <i class="bi bi-image-fill"></i>
+        </button>
+      </aside>
+
+      <section class="workspace sales-workspace">
+        <header class="workspace-top">
+          <p class="workspace-kicker">
+            <a class="workspace-home-link" href="/index.html" aria-label="Ir al inicio" title="Inicio">
+              <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+            </a>
+            ProyecJO
+          </p>
+          <h1>Enviar Videos <span class="sales-word">HACKY</span></h1>
+          <div class="workspace-flow" aria-label="Flujo principal">
+            <span class="flow-step is-active"></span>
+            <span class="flow-step is-soft"></span>
+            <span class="flow-step"></span>
+            <span class="flow-step"></span>
+            <span class="flow-step"></span>
+            <span class="flow-step"></span>
+          </div>
+        </header>
+
+        <div class="layout">
+          <section class="left-panel">
+            <div class="header-block">
+              <h2 class="panel-title">Env&iacute;a los videos de <span class="sales-word">HACKY</span></h2>
+              <p class="lead">
+                Agrega la tabla, valida la informaci&oacute;n y luego usa "Envia video" para continuar.
+              </p>
+              <div class="hero-selector" aria-label="Opciones de trabajo">
+                <div class="hero-badges hero-badges--actions">
+                  <button id="upload-card" type="button" class="work-card work-card--upload is-active" aria-label="Agrega la tabla">
+                    <i class="bi bi-table" aria-hidden="true"></i>
+                    <span class="work-card-lock" aria-hidden="true"><i class="bi bi-lock-fill"></i></span>
+                    <span class="work-card-label">Agrega la tabla</span>
+                  </button>
+                  <button
+                    id="download-card"
+                    type="button"
+                    class="work-card work-card--download is-disabled"
+                    aria-label="Envia video"
+                    aria-disabled="true"
+                  >
+                    <i class="bi bi-envelope-paper-fill" aria-hidden="true"></i>
+                    <span class="work-card-lock" aria-hidden="true"><i class="bi bi-lock-fill"></i></span>
+                    <span class="work-card-label">Envia video</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <form id="resize-form" class="uploader">
+              <div class="load-block">
+                <div id="dropzone" class="dropzone" role="button" tabindex="0" aria-label="Abrir ventana para pegar la tabla">
+                  <input id="items" name="items" type="file" accept=".csv,.tsv,.txt" hidden />
+                  <strong class="drop-title">Haz click en "Agrega la tabla"</strong>
+                  <span class="drop-or">- o -</span>
+                  <span class="cta"><i class="bi bi-clipboard-check-fill"></i> Pega la tabla (Ctrl+V)</span>
+                  <small>Se abre una ventana emergente para pegar la tabla.</small>
+                </div>
+                <div class="summary-row">
+                  <span id="count-zip" class="summary-pill"><i class="bi bi-table"></i> Tabla: 0</span>
+                  <span id="count-images" class="summary-pill"><i class="bi bi-list-ol"></i> Filas: 0</span>
+                </div>
+              </div>
+            </form>
+            <div class="left-actions">
+              <button
+                id="back-btn"
+                type="button"
+                class="back-btn"
+                aria-label="Limpiar seleccion"
+              >
+                <i class="bi bi-trash3-fill" aria-hidden="true"></i>
+                <span>Borrar archivo</span>
+              </button>
+              <button id="submit-btn" type="button" class="submit-btn" data-action="help">
+                <i class="bi bi-question-circle-fill" aria-hidden="true"></i>
+                <span id="submit-label">&iquest;Como funciona la pagina?</span>
+              </button>
+            </div>
+            <p id="status" class="status"></p>
+          </section>
+
+          <section class="right-panel">
+            <div class="workspace-auth workspace-auth--panel" aria-label="Cuenta de usuario">
+              <button id="auth-login-btn" type="button" class="workspace-auth-btn" aria-label="Iniciar sesion con Google" hidden>
+                <i class="bi bi-google"></i>
+                <span class="workspace-auth-btn__label">Iniciar sesi&oacute;n</span>
+              </button>
+              <button id="auth-avatar-wrap" type="button" class="rail-avatar-wrap" aria-label="Abrir menu de cuenta" aria-expanded="false" hidden>
+                <img id="auth-avatar" class="rail-avatar" src="" alt="" />
+                <span id="auth-avatar-fallback" class="rail-avatar-fallback" hidden>U</span>
+              </button>
+              <button id="auth-logout-btn" type="button" class="workspace-auth-logout" aria-label="Cerrar sesion" hidden>
+                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                <span>Cerrar sesi&oacute;n</span>
+              </button>
+            </div>
+            <div class="viewer">
+              <div class="viewer-canvas" id="viewer-canvas">
+                <div id="selected-files" class="selected-files selected-files--overlay"></div>
+                <img id="preview-image" alt="Previsualizacion" />
+                <p id="empty-preview">Pega una tabla para verla aqui</p>
+                <div id="table-preview" class="table-preview" hidden aria-label="Vista previa de la tabla"></div>
+              </div>
+              <div id="preview-filmstrip" class="preview-filmstrip" aria-label="Miniaturas"></div>
+            </div>
+            <figure class="profile-art" aria-label="Imagen de perfil">
+              <div class="profile-art-bg" aria-hidden="true"></div>
+              <img class="profile-art-photo" src="/Imagenes/Yo%203.png" alt="Imagen de perfil" loading="lazy" />
+            </figure>
+          </section>
+
+          <aside class="presence-panel" aria-label="Usuarios activos">
+            <section class="friends-panel friends-panel--active">
+              <div class="friends-head">
+                <h3><i class="bi bi-people"></i> Usuarios</h3>
+                <span id="active-users-count" class="friends-count">0</span>
+              </div>
+              <div class="friends-tabs">
+                <button type="button" class="friends-tab is-active" data-filter="active">Activos</button>
+                <button type="button" class="friends-tab" data-filter="inactive">Inactivos</button>
+              </div>
+              <div id="active-users-list" class="friends-list">
+                <p class="friends-empty">Sin usuarios activos</p>
+              </div>
+            </section>
+            <section class="friends-panel friends-panel--history">
+              <div class="history-head">
+                <h4><i class="bi bi-clock-history"></i> Historial</h4>
+                <span id="history-total-badge" class="friends-count">0</span>
+              </div>
+              <div class="history-summary" aria-label="Resumen de historial">
+                <div class="history-metric">
+                  <span class="history-metric-label">Procesos</span>
+                  <strong id="history-total-processes" class="history-metric-value">0</strong>
+                </div>
+                <div class="history-metric">
+                  <span class="history-metric-label">Imagenes</span>
+                  <strong id="history-total-images" class="history-metric-value">0</strong>
+                </div>
+              </div>
+              <div class="history-tools">
+                <label class="history-filter-label" for="history-range">Periodo</label>
+                <select id="history-range" class="history-range" aria-label="Filtrar historial por periodo">
+                  <option value="all">Todo</option>
+                  <option value="7d">Ultimos 7 dias</option>
+                  <option value="30d">Ultimos 30 dias</option>
+                  <option value="today">Hoy</option>
+                </select>
+                <input
+                  id="history-search"
+                  class="history-search"
+                  type="search"
+                  placeholder="Buscar por nombre..."
+                  autocomplete="off"
+                  aria-label="Buscar en historial"
+                />
+              </div>
+              <div class="history-actions">
+                <div class="history-sort-wrap">
+                  <label class="history-sort-label" for="history-sort">Orden</label>
+                  <select id="history-sort" class="history-sort" aria-label="Ordenar historial">
+                    <option value="recent">Mas reciente</option>
+                    <option value="oldest">Mas antiguo</option>
+                    <option value="images_desc">Mas imagenes</option>
+                    <option value="files_desc">Mas archivos</option>
+                  </select>
+                </div>
+                <button id="history-export-btn" type="button" class="history-action-btn">
+                  <i class="bi bi-download"></i> Exportar CSV
+                </button>
+                <button id="history-clear-btn" type="button" class="history-action-btn danger">
+                  <i class="bi bi-trash3"></i> Limpiar
+                </button>
+              </div>
+              <p id="history-caption" class="history-caption">Mostrando 0 de 0 registros</p>
+              <div id="processed-history-list" class="history-list">
+                <p class="friends-empty">Sin procesos recientes</p>
+              </div>
+            </section>
+          </aside>
+        </div>
+        <div id="download-progress" class="download-progress" hidden aria-live="polite" aria-atomic="true">
+          <div class="download-progress__head">
+            <span id="download-progress-label" class="download-progress__label">Preparando descarga...</span>
+            <span id="download-progress-value" class="download-progress__value">0%</span>
+          </div>
+          <div class="download-progress__track" aria-hidden="true">
+            <div id="download-progress-fill" class="download-progress__fill"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="help-dialog" class="help-dialog" hidden aria-hidden="true">
+      <section class="help-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="help-dialog-title">
+        <header class="help-dialog__head">
+          <h2 id="help-dialog-title" class="help-dialog__title">&iquest;Como funciona la pagina?</h2>
+          <button id="help-dialog-close" type="button" class="help-dialog__close" aria-label="Cerrar instrucciones">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </header>
+        <p class="help-dialog__text">Este flujo toma tu tabla, prepara la seleccion y te deja enviar el video.</p>
+        <ol class="help-dialog__steps">
+          <li><strong>Agrega la tabla:</strong> usa la tarjeta de arriba para cargar la informacion base.</li>
+          <li><strong>Revisa el conteo:</strong> valida el total detectado antes de continuar.</li>
+          <li><strong>Envia video:</strong> cuando se habilite, haz clic para finalizar el envio.</li>
+          <li><strong>Limpia cuando quieras:</strong> usa "Borrar archivo" para reiniciar la seleccion actual.</li>
+        </ol>
+        <div class="help-dialog__footer">
+          <button id="help-dialog-dismiss" type="button" class="help-dialog__dismiss">Entendido</button>
+        </div>
+      </section>
+    </div>
+    <div id="table-dialog" class="help-dialog" hidden aria-hidden="true">
+      <section class="help-dialog__panel table-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="table-dialog-title">
+        <header class="help-dialog__head">
+          <h2 id="table-dialog-title" class="help-dialog__title">Pega aca la tabla</h2>
+          <button id="table-dialog-close" type="button" class="help-dialog__close" aria-label="Cerrar ventana">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </header>
+        <p class="help-dialog__text">
+          Copia las celdas desde Excel/Sheets y p&eacute;galas aqu&iacute; (Ctrl+V). La primera fila debe ser el encabezado.
+        </p>
+        <textarea
+          id="table-paste"
+          class="table-paste"
+          rows="10"
+          spellcheck="false"
+          placeholder="Pega aqu&iacute; (TSV/CSV)."
+        ></textarea>
+        <div class="table-dialog__actions">
+          <button id="table-dialog-cancel" type="button" class="table-dialog__btn table-dialog__btn--ghost">Cancelar</button>
+          <button id="table-dialog-save" type="button" class="table-dialog__btn table-dialog__btn--primary">Guardar tabla</button>
+        </div>
+      </section>
+    </div>
+    <div id="send-dialog" class="help-dialog" hidden aria-hidden="true">
+      <section class="help-dialog__panel send-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="send-dialog-title">
+        <header class="help-dialog__head">
+          <h2 id="send-dialog-title" class="help-dialog__title">Enviar video</h2>
+          <button id="send-dialog-close" type="button" class="help-dialog__close" aria-label="Cerrar ventana">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </header>
+        <div id="send-dialog-content" class="send-dialog__content" aria-label="Contenido del correo"></div>
+        <div class="table-dialog__actions">
+          <button id="send-dialog-cancel" type="button" class="table-dialog__btn table-dialog__btn--ghost">Cerrar</button>
+          <button id="send-dialog-copy-subject" type="button" class="table-dialog__btn table-dialog__btn--ghost">Copiar Asunto</button>
+          <button id="send-dialog-copy" type="button" class="table-dialog__btn table-dialog__btn--primary">Copiar para correo</button>
+         </div>
+       </section>
+     </div>
+
+    <script src="vendor/jszip.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging-compat.js"></script>
+    <script src="app.js"></script>
+    <script>
+      (function () {
+        const UPLOAD_LABEL = 'Agrega la tabla';
+        const UPLOAD_DONE_LABEL = 'Tabla agregada';
+        const DOWNLOAD_LABEL = 'Envia video';
+
+        function replaceWithClone(element) {
+          if (!element || !element.parentNode) return element;
+          const clone = element.cloneNode(true);
+          element.parentNode.replaceChild(clone, element);
+          return clone;
+        }
+
+        replaceWithClone(document.getElementById('resize-form'));
+        replaceWithClone(document.getElementById('upload-card'));
+        replaceWithClone(document.getElementById('download-card'));
+        replaceWithClone(document.getElementById('back-btn'));
+
+        const uploadCard = document.getElementById('upload-card');
+        const downloadCard = document.getElementById('download-card');
+        const dropzone = document.getElementById('dropzone');
+        const itemsInput = document.getElementById('items');
+        const tableDialog = document.getElementById('table-dialog');
+        const tableDialogCloseBtn = document.getElementById('table-dialog-close');
+        const tableDialogCancelBtn = document.getElementById('table-dialog-cancel');
+        const tableDialogSaveBtn = document.getElementById('table-dialog-save');
+        const sendDialog = document.getElementById('send-dialog');
+         const sendDialogCloseBtn = document.getElementById('send-dialog-close');
+         const sendDialogCancelBtn = document.getElementById('send-dialog-cancel');
+         const sendDialogCopySubjectBtn = document.getElementById('send-dialog-copy-subject');
+         const sendDialogCopyBtn = document.getElementById('send-dialog-copy');
+         const sendDialogContentEl = document.getElementById('send-dialog-content');
+        const tablePaste = document.getElementById('table-paste');
+        const tablePreview = document.getElementById('table-preview');
+        const previewImage = document.getElementById('preview-image');
+        const emptyPreview = document.getElementById('empty-preview');
+        const previewFilmstrip = document.getElementById('preview-filmstrip');
+        const countZip = document.getElementById('count-zip');
+        const countImages = document.getElementById('count-images');
+        const statusEl = document.getElementById('status');
+        const backBtn = document.getElementById('back-btn');
+        const dynamicIslandEl = document.getElementById('dynamic-island');
+        let dynamicIslandTimer = null;
+
+        if (previewFilmstrip) previewFilmstrip.hidden = true;
+        if (previewImage) previewImage.hidden = true;
+        if (emptyPreview) emptyPreview.hidden = true;
+
+        const state = {
+          headers: [],
+          rows: [],
+        };
+        let isApplyingLabels = false;
+
+        function applyLabels() {
+          if (isApplyingLabels) {
+            return;
+          }
+          isApplyingLabels = true;
+          const uploadLabelEl = uploadCard?.querySelector('.work-card-label') || null;
+          const downloadLabelEl = downloadCard?.querySelector('.work-card-label') || null;
+          const uploadText = state.rows.length > 0 ? UPLOAD_DONE_LABEL : UPLOAD_LABEL;
+          try {
+            if (uploadLabelEl && uploadLabelEl.textContent !== uploadText) {
+              uploadLabelEl.textContent = uploadText;
+            }
+            if (uploadCard && uploadCard.getAttribute('aria-label') !== uploadText) {
+              uploadCard.setAttribute('aria-label', uploadText);
+            }
+            if (downloadLabelEl && downloadLabelEl.textContent !== DOWNLOAD_LABEL) {
+              downloadLabelEl.textContent = DOWNLOAD_LABEL;
+            }
+            if (downloadCard && downloadCard.getAttribute('aria-label') !== DOWNLOAD_LABEL) {
+              downloadCard.setAttribute('aria-label', DOWNLOAD_LABEL);
+            }
+          } finally {
+            isApplyingLabels = false;
+          }
+        }
+
+        function setStatus(message, isError) {
+          if (!statusEl) return;
+          statusEl.textContent = message;
+          statusEl.classList.toggle('ok', !isError);
+          statusEl.classList.toggle('error', !!isError);
+        }
+
+        function showNotification(message, variant) {
+          if (!dynamicIslandEl) {
+            return;
+          }
+          window.clearTimeout(dynamicIslandTimer);
+          const safeMessage = escapeHtml(String(message || '').trim());
+          const title = variant === 'error' ? 'Error' : 'Notificacion';
+          const background =
+            variant === 'error'
+              ? 'linear-gradient(100deg, #9b2b2b 0%, #c73b3b 100%)'
+              : variant === 'ok'
+                ? 'linear-gradient(100deg, #b71c1c 0%, #ff6b6b 100%)'
+                : 'linear-gradient(100deg, #7a1f1f 0%, #ff4d6d 100%)';
+
+          dynamicIslandEl.style.background = background;
+          dynamicIslandEl.innerHTML = `
+            <span class="dynamic-island__bell" aria-hidden="true"><i class="bi bi-bell-fill"></i></span>
+            <div class="dynamic-island__body">
+              <div class="dynamic-island__title">${escapeHtml(title)}</div>
+              <div class="dynamic-island__message">${safeMessage}</div>
+            </div>
+          `;
+          dynamicIslandEl.classList.add('show');
+          dynamicIslandTimer = window.setTimeout(() => {
+            dynamicIslandEl.classList.remove('show');
+          }, 2600);
+        }
+
+        function setCardEnabled(card, enabled) {
+          if (!card) return;
+          card.classList.toggle('is-disabled', !enabled);
+          card.classList.toggle('is-locked', !enabled);
+          card.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+        }
+
+        function setCardActive(card, active) {
+          if (!card) return;
+          card.classList.toggle('is-active', !!active);
+        }
+
+        function setTableLocked(locked) {
+          if (!dropzone) return;
+          dropzone.classList.toggle('is-disabled', !!locked);
+          dropzone.setAttribute('aria-disabled', locked ? 'true' : 'false');
+          if (locked) {
+            dropzone.setAttribute('tabindex', '-1');
+          } else {
+            dropzone.setAttribute('tabindex', '0');
+          }
+        }
+
+        function openDialog(dialogEl) {
+          if (!dialogEl) return;
+          dialogEl.hidden = false;
+          dialogEl.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeDialog(dialogEl) {
+          if (!dialogEl) return;
+          dialogEl.hidden = true;
+          dialogEl.setAttribute('aria-hidden', 'true');
+        }
+
+        function openTableDialog() {
+          if (state.rows.length > 0) {
+            setStatus('Ya hay una tabla cargada. Usa "Borrar archivo" para reemplazarla.', true);
+            showNotification('Ya hay una tabla cargada. Usa "Borrar archivo" para reemplazarla.', 'error');
+            return;
+          }
+          openDialog(tableDialog);
+          window.setTimeout(() => tablePaste?.focus(), 0);
+        }
+
+        function closeTableDialog() {
+          closeDialog(tableDialog);
+        }
+
+        function extractFirstDate(text) {
+          const raw = String(text || '');
+          const match = raw.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+          if (!match) return null;
+          const day = Number(match[1]);
+          const month = Number(match[2]);
+          const year = Number(match[3].length === 2 ? `20${match[3]}` : match[3]);
+          if (!day || !month || !year) return null;
+          const utc = Date.UTC(year, month - 1, day, 12, 0, 0);
+          const date = new Date(utc);
+          if (Number.isNaN(date.getTime())) return null;
+          return date;
+        }
+
+        function formatSpanishLongDate(dateText) {
+          const date = extractFirstDate(dateText);
+          if (!date) return String(dateText || '').trim();
+          const formatted = new Intl.DateTimeFormat('es-CO', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+          }).format(date);
+          return formatted;
+        }
+
+        function normalizeCell(value) {
+          const raw = String(value ?? '').trim();
+          if (!raw) return '';
+          const lowered = raw.toLowerCase();
+          if (['✅', '☑', '✔', '✓'].includes(raw)) {
+            return 'SI';
+          }
+          if (['si', 'sí', 'true', '1', 'x', 'ok'].includes(lowered)) {
+            return 'SI';
+          }
+          return raw;
+        }
+
+        function parseDelimitedRecords(text, delimiter) {
+          const input = String(text || '').replace(/^\uFEFF/, '');
+          const records = [];
+          let record = [];
+          let field = '';
+          let inQuotes = false;
+
+          function pushField() {
+            record.push(field);
+            field = '';
+          }
+
+          function pushRecord() {
+            const normalized = record.map((cell) => normalizeCell(cell));
+            const isEmpty = normalized.every((cell) => !String(cell || '').trim());
+            if (!isEmpty) {
+              records.push(normalized);
+            }
+            record = [];
+          }
+
+          for (let i = 0; i < input.length; i += 1) {
+            const char = input[i];
+            if (char === '"') {
+              const next = input[i + 1] || '';
+              if (inQuotes && next === '"') {
+                field += '"';
+                i += 1;
+                continue;
+              }
+              inQuotes = !inQuotes;
+              continue;
+            }
+
+            if (!inQuotes && char === delimiter) {
+              pushField();
+              continue;
+            }
+
+            if (!inQuotes && (char === '\n' || char === '\r')) {
+              if (char === '\r' && input[i + 1] === '\n') {
+                i += 1;
+              }
+              pushField();
+              pushRecord();
+              continue;
+            }
+
+            field += char;
+          }
+
+          pushField();
+          pushRecord();
+          return records;
+        }
+
+        function pickDelimiter(text) {
+          const raw = String(text || '');
+          const tab = parseDelimitedRecords(raw, '\t');
+          const comma = parseDelimitedRecords(raw, ',');
+          const tabCols = tab[0]?.length || 0;
+          const commaCols = comma[0]?.length || 0;
+          if (tabCols > commaCols) return '\t';
+          if (commaCols > tabCols) return ',';
+          if (raw.includes('\t')) return '\t';
+          return ',';
+        }
+
+        function parseTable(text) {
+          const raw = String(text || '').trim();
+          if (!raw) return { headers: [], rows: [] };
+
+          const delimiter = pickDelimiter(raw);
+          const records = parseDelimitedRecords(raw, delimiter);
+          if (!records.length) return { headers: [], rows: [] };
+
+          if (records.length === 1) {
+            const headers = records[0].map((_cell, index) => `Columna ${index + 1}`);
+            const row = {};
+            for (let c = 0; c < headers.length; c += 1) {
+              row[headers[c]] = records[0][c] ?? '';
+            }
+            return { headers, rows: [row] };
+          }
+
+          const headers = records[0].map((h, index) => String(h || '').trim() || `Columna ${index + 1}`);
+          const rows = [];
+          for (let i = 1; i < records.length; i += 1) {
+            const cells = records[i];
+            const row = {};
+            for (let c = 0; c < headers.length; c += 1) {
+              row[headers[c]] = cells[c] ?? '';
+            }
+            rows.push(row);
+          }
+          return { headers, rows };
+        }
+
+        function updateSummary() {
+          if (countZip) countZip.innerHTML = `<i class="bi bi-table"></i> Tabla: ${state.rows.length ? 1 : 0}`;
+          if (countImages) countImages.innerHTML = `<i class="bi bi-list-ol"></i> Filas: ${state.rows.length}`;
+        }
+
+        function normalizeHeaderKey(value) {
+          return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '');
+        }
+
+        function escapeHtml(value) {
+          return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function toEmailCellHtml(value) {
+          const text = String(value ?? '').trim();
+          if (!text) return '';
+          return escapeHtml(text).replace(/\n+/g, '<br />');
+        }
+
+        function extractFirstUrl(value) {
+          const text = String(value ?? '');
+          const match = text.match(/https?:\/\/[^\s)]+/i);
+          return match ? match[0] : '';
+        }
+
+        function getRowValue(row, headers, desiredKeys, fallbackIndex = -1) {
+          const normalized = headers.map((h) => normalizeHeaderKey(h));
+          for (const desired of desiredKeys) {
+            const wanted = normalizeHeaderKey(desired);
+            const idx = normalized.findIndex((key) => key === wanted || key.includes(wanted));
+            if (idx >= 0) {
+              const header = headers[idx];
+              return row?.[header] ?? '';
+            }
+          }
+          if (fallbackIndex >= 0 && fallbackIndex < headers.length) {
+            return row?.[headers[fallbackIndex]] ?? '';
+          }
+          return '';
+        }
+
+        function buildEmailTableModel() {
+          const headers = state.headers || [];
+          const hasRealHeaders = headers.some((h) => !/^Columna\s+\d+$/i.test(String(h || '').trim()));
+
+          const titleKeys = ['Titulo en plataforma', 'Titulo', 'Título en plataforma'];
+          const dateKeys = ['Fecha envio en hacky', 'Fecha tentativa en hacky', 'Fecha en hacky', 'Fecha hacky'];
+          const estadoKeys = ['Estado'];
+          const copyKeys = ['Copy WhatsApp', 'Copy WhatsApp ', 'CopyWhatsapp', 'Copy'];
+          const evalKeys = ['Link evaluación', 'Link evaluacion', 'Evaluacion', 'Link evaluación ', 'Link evaluacion '];
+          const contentKeys = ['Link de contenido', 'Link contenido', 'Contenido', 'Link de contenido '];
+
+          const rows = (state.rows || []).slice(0, 1).map((row) => {
+            const fallback = hasRealHeaders
+              ? { title: -1, date: -1, estado: -1, copy: -1, eval: -1, content: -1 }
+              : { title: 1, date: 9, estado: 10, copy: 11, eval: 12, content: 13 };
+
+            const title = getRowValue(row, headers, titleKeys, fallback.title);
+            const date = getRowValue(row, headers, dateKeys, fallback.date);
+            const estado = getRowValue(row, headers, estadoKeys, fallback.estado);
+            const copy = getRowValue(row, headers, copyKeys, fallback.copy);
+            const linkEvalRaw = getRowValue(row, headers, evalKeys, fallback.eval);
+            const linkContentRaw = getRowValue(row, headers, contentKeys, fallback.content);
+
+            return {
+              title: String(title ?? ''),
+              date: String(date ?? ''),
+              estado: String(estado ?? ''),
+              copy: String(copy ?? ''),
+              linkEvaluacion: extractFirstUrl(linkEvalRaw) || extractFirstUrl(row?.['Link evaluación']) || '',
+              linkContenido: extractFirstUrl(linkContentRaw) || extractFirstUrl(row?.['Link de contenido']) || '',
+            };
+          });
+
+          return rows;
+        }
+
+        function buildEmailTableHtml() {
+          const models = buildEmailTableModel();
+          if (!models.length) return '';
+
+          const thStyle =
+            'border:1px solid #2e2e2e;background:#e9e9e9;padding:8px 10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;text-align:center;vertical-align:middle;';
+          const tdStyle =
+            'border:1px solid #2e2e2e;padding:10px 10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;vertical-align:middle;';
+          const tdCenterStyle = `${tdStyle}text-align:center;`;
+          const linkStyle = 'color:#1a0dab;text-decoration:underline;font-weight:700;';
+
+          const head = `
+            <tr>
+              <th style="${thStyle}">Titulo en plataforma</th>
+              <th style="${thStyle}">Fecha envio en hacky</th>
+              <th style="${thStyle}">Estado</th>
+              <th style="${thStyle}">Copy WhatsApp</th>
+              <th style="${thStyle}">Link evaluación</th>
+              <th style="${thStyle}">Link de contenido</th>
+            </tr>
+          `;
+
+          const body = models
+            .map((row) => {
+              const estadoText = String(row.estado || '').trim();
+              const estadoBg = /listo/i.test(estadoText) ? 'background:#cfe6bf;' : '';
+              const evalHref = row.linkEvaluacion ? escapeHtml(row.linkEvaluacion) : '';
+              const contentHref = row.linkContenido ? escapeHtml(row.linkContenido) : '';
+              const evalCell = evalHref ? `<a href="${evalHref}" style="${linkStyle}" target="_blank" rel="noreferrer">Ver evaluación</a>` : '';
+              const contentCell = contentHref
+                ? `<a href="${contentHref}" style="${linkStyle}" target="_blank" rel="noreferrer">Ver contenido</a>`
+                : '';
+
+              return `
+                <tr>
+                  <td style="${tdStyle}">${toEmailCellHtml(row.title)}</td>
+                  <td style="${tdCenterStyle}">${toEmailCellHtml(row.date)}</td>
+                  <td style="${tdCenterStyle}${estadoBg}"><strong>${escapeHtml(estadoText)}</strong></td>
+                  <td style="${tdStyle}">${toEmailCellHtml(row.copy)}</td>
+                  <td style="${tdCenterStyle}">${evalCell}</td>
+                  <td style="${tdCenterStyle}">${contentCell}</td>
+                </tr>
+              `;
+            })
+            .join('');
+
+          return `<table style="border-collapse:collapse;width:100%;max-width:980px;">${head}${body}</table>`;
+        }
+
+        function buildSendEmailHtml() {
+          const models = buildEmailTableModel();
+          if (!models.length) return '';
+          const dateText = models[0]?.date || '';
+          const prettyDate = formatSpanishLongDate(dateText);
+          const table = buildEmailTableHtml();
+          const intro = `
+            <p>Hola Pao, Espero te encuentres muy bien.</p>
+            <p>Me ayudas porfa cargando el siguiente contenido, para ser enviado el dia <strong>${escapeHtml(prettyDate)}</strong></p>
+          `;
+          const outro = `
+            <p>La evaluaci&oacute;n debe estar ligada al video.</p>
+            <p>Muchas gracias Pao, quedo atento.</p>
+          `;
+          return `<div>${intro}${table}${outro}</div>`;
+        }
+
+        async function copyEmailTableToClipboard() {
+          const html = buildEmailTableHtml();
+          if (!html) {
+            setStatus('No hay datos para copiar. Primero coloca la tabla.', true);
+            showNotification('No hay datos para copiar. Primero coloca la tabla.', 'error');
+            return false;
+          }
+
+          const plain = html
+            .replace(/<br\s*\/?>/gi, '\n')
+            .replace(/<\/?[^>]+>/g, '')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'");
+
+          try {
+            if (navigator.clipboard && window.ClipboardItem) {
+              const item = new ClipboardItem({
+                'text/html': new Blob([html], { type: 'text/html' }),
+                'text/plain': new Blob([plain], { type: 'text/plain' }),
+              });
+              await navigator.clipboard.write([item]);
+              return true;
+            }
+          } catch (error) {
+            // Fallthrough to execCommand.
+          }
+
+          const host = document.createElement('div');
+          host.style.position = 'fixed';
+          host.style.left = '-9999px';
+          host.style.top = '0';
+          host.innerHTML = html;
+          document.body.appendChild(host);
+          const range = document.createRange();
+          range.selectNodeContents(host);
+          const selection = window.getSelection();
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+          const ok = document.execCommand('copy');
+          selection?.removeAllRanges();
+          host.remove();
+          return ok;
+        }
+
+        async function copySendEmailToClipboard() {
+          const html = buildSendEmailHtml();
+          if (!html) {
+            setStatus('No hay datos para copiar. Primero coloca la tabla.', true);
+            showNotification('No hay datos para copiar. Primero coloca la tabla.', 'error');
+            return false;
+          }
+
+          const plain = html
+            .replace(/<br\s*\/?>/gi, '\n')
+            .replace(/<\/?[^>]+>/g, '')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'");
+
+          try {
+            if (navigator.clipboard && window.ClipboardItem) {
+              const item = new ClipboardItem({
+                'text/html': new Blob([html], { type: 'text/html' }),
+                'text/plain': new Blob([plain], { type: 'text/plain' }),
+              });
+              await navigator.clipboard.write([item]);
+              return true;
+            }
+          } catch (error) {
+            // Fallthrough to execCommand.
+          }
+
+          const host = document.createElement('div');
+          host.style.position = 'fixed';
+          host.style.left = '-9999px';
+          host.style.top = '0';
+          host.innerHTML = html;
+          document.body.appendChild(host);
+          const range = document.createRange();
+          range.selectNodeContents(host);
+          const selection = window.getSelection();
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+          const ok = document.execCommand('copy');
+          selection?.removeAllRanges();
+          host.remove();
+          return ok;
+        }
+
+        async function copyTextToClipboard(text) {
+          const value = String(text || '');
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(value);
+              return true;
+            }
+          } catch (_error) {
+            // Fallthrough to execCommand.
+          }
+          const textarea = document.createElement('textarea');
+          textarea.value = value;
+          textarea.setAttribute('readonly', 'true');
+          textarea.style.position = 'fixed';
+          textarea.style.left = '-9999px';
+          textarea.style.top = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          const ok = document.execCommand('copy');
+          textarea.remove();
+          return ok;
+        }
+
+        function renderSendDialog() {
+          if (!sendDialogContentEl) return;
+          const models = buildEmailTableModel();
+          if (!models.length) {
+            sendDialogContentEl.innerHTML = '<p>No hay datos. Primero coloca la tabla.</p>';
+            return;
+          }
+          const prettyDate = formatSpanishLongDate(models[0]?.date || '');
+          const tableHtml = buildEmailTableHtml();
+          sendDialogContentEl.innerHTML = `
+            <p>Hola Pao, Espero te encuentres muy bien.</p>
+            <p>Me ayudas porfa cargando el siguiente contenido, para ser enviado el dia <strong>${escapeHtml(prettyDate)}</strong></p>
+            <div class="send-dialog__table">${tableHtml}</div>
+            <p>La evaluaci&oacute;n debe estar ligada al video.</p>
+            <p>Muchas gracias Pao, quedo atento.</p>
+          `;
+        }
+
+        function renderPreview() {
+          if (!tablePreview) return;
+          tablePreview.hidden = state.rows.length === 0;
+          tablePreview.innerHTML = '';
+          if (!state.rows.length) return;
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'table-preview__wrap';
+
+          const meta = document.createElement('p');
+          meta.className = 'table-preview__meta';
+          meta.textContent = `Tabla lista: ${state.rows.length} fila(s). Se usa la primera fila para el correo.`;
+          wrapper.appendChild(meta);
+
+          const actions = document.createElement('div');
+          actions.className = 'table-dialog__actions';
+          actions.style.marginTop = '0';
+          actions.style.justifyContent = 'flex-start';
+
+          const copyBtn = document.createElement('button');
+          copyBtn.type = 'button';
+          copyBtn.className = 'table-dialog__btn table-dialog__btn--primary';
+          copyBtn.textContent = 'Copiar tabla para correo';
+          copyBtn.addEventListener('click', async () => {
+            const ok = await copyEmailTableToClipboard();
+            if (ok) {
+              setStatus('Tabla copiada. Pega en el correo (Ctrl+V).', false);
+              showNotification('Tabla copiada. Pega en el correo (Ctrl+V).', 'ok');
+            } else {
+              setStatus('No se pudo copiar automaticamente. Intenta de nuevo.', true);
+              showNotification('No se pudo copiar automaticamente. Intenta de nuevo.', 'error');
+            }
+          });
+          actions.appendChild(copyBtn);
+          wrapper.appendChild(actions);
+
+          const html = buildEmailTableHtml();
+          const previewHost = document.createElement('div');
+          previewHost.innerHTML = html;
+          wrapper.appendChild(previewHost);
+          tablePreview.appendChild(wrapper);
+        }
+
+        function applyTableFromText(text) {
+          const parsed = parseTable(text);
+          state.headers = parsed.headers;
+          state.rows = parsed.rows;
+
+          setCardEnabled(downloadCard, state.rows.length > 0);
+          setCardEnabled(uploadCard, state.rows.length === 0);
+          setTableLocked(state.rows.length > 0);
+          setCardActive(uploadCard, state.rows.length === 0);
+          setCardActive(downloadCard, state.rows.length > 0);
+          applyLabels();
+
+          updateSummary();
+          try {
+            renderPreview();
+          } catch (_error) {
+            // Avoid freezing the page if something unexpected comes from the paste payload.
+          }
+
+          if (state.rows.length) {
+            setStatus(`Tabla lista: ${state.rows.length} fila(s).`, false);
+            showNotification(`Tabla agregada (${state.rows.length} fila${state.rows.length === 1 ? '' : 's'}).`, 'ok');
+          } else {
+            setStatus('Pega una tabla desde Excel/Sheets (ideal: encabezados + filas) y luego "Guardar tabla".', false);
+          }
+        }
+
+        function clearTable() {
+          if (tablePaste) tablePaste.value = '';
+          state.headers = [];
+          state.rows = [];
+          updateSummary();
+          renderPreview();
+          setCardEnabled(downloadCard, false);
+          setCardEnabled(uploadCard, true);
+          setTableLocked(false);
+          setCardActive(uploadCard, true);
+          setCardActive(downloadCard, false);
+          applyLabels();
+          setStatus('Tabla limpia. Pega una nueva tabla para continuar.', false);
+        }
+
+        applyLabels();
+        setCardEnabled(downloadCard, false);
+        setCardEnabled(uploadCard, true);
+        setTableLocked(false);
+        setCardActive(uploadCard, true);
+        setCardActive(downloadCard, false);
+        updateSummary();
+        setStatus('Pega una tabla desde Excel/Sheets (ideal: encabezados + filas) y luego "Guardar tabla".', false);
+
+        const labelObserver = new MutationObserver(() => applyLabels());
+        if (uploadCard) labelObserver.observe(uploadCard, { childList: true, characterData: true, subtree: true });
+        if (downloadCard) labelObserver.observe(downloadCard, { childList: true, characterData: true, subtree: true });
+
+        uploadCard?.addEventListener('click', openTableDialog);
+        dropzone?.addEventListener('click', openTableDialog);
+        dropzone?.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openTableDialog();
+          }
+        });
+        backBtn?.addEventListener('click', clearTable);
+
+        downloadCard?.addEventListener('click', () => {
+          if (!state.rows.length) {
+            setStatus('Primero debes colocar la tabla.', true);
+            showNotification('Primero debes colocar la tabla.', 'error');
+            return;
+          }
+          renderSendDialog();
+          openDialog(sendDialog);
+          window.setTimeout(() => sendDialogCopyBtn?.focus(), 0);
+        });
+
+        sendDialogCloseBtn?.addEventListener('click', () => closeDialog(sendDialog));
+        sendDialogCancelBtn?.addEventListener('click', () => closeDialog(sendDialog));
+         sendDialogCopySubjectBtn?.addEventListener('click', () => {
+           copyTextToClipboard('Carga de contenidos Hacky - Portafolio Empresarial').then((ok) => {
+             if (ok) {
+               setStatus('Asunto copiado.', false);
+               showNotification('Asunto copiado.', 'ok');
+             } else {
+               setStatus('No se pudo copiar el asunto. Intenta de nuevo.', true);
+               showNotification('No se pudo copiar el asunto. Intenta de nuevo.', 'error');
+             }
+           });
+         });
+         sendDialogCopyBtn?.addEventListener('click', () => {
+           copySendEmailToClipboard().then((ok) => {
+             if (ok) {
+               setStatus('Correo copiado. Pega en el correo (Ctrl+V).', false);
+              showNotification('Correo copiado. Pega en el correo (Ctrl+V).', 'ok');
+              closeDialog(sendDialog);
+            } else {
+              setStatus('No se pudo copiar automaticamente. Intenta de nuevo.', true);
+              showNotification('No se pudo copiar automaticamente. Intenta de nuevo.', 'error');
+            }
+          });
+        });
+        sendDialog?.addEventListener('click', (event) => {
+          if (event.target === sendDialog) {
+            closeDialog(sendDialog);
+          }
+        });
+
+        tableDialogCloseBtn?.addEventListener('click', closeTableDialog);
+        tableDialogCancelBtn?.addEventListener('click', closeTableDialog);
+        tableDialogSaveBtn?.addEventListener('click', () => {
+          try {
+            applyTableFromText(tablePaste?.value || '');
+            closeTableDialog();
+          } catch (error) {
+            setStatus('Error procesando la tabla. Prueba pegando de nuevo.', true);
+            showNotification('Error procesando la tabla. Prueba pegando de nuevo.', 'error');
+          }
+        });
+        tableDialog?.addEventListener('click', (event) => {
+          if (event.target === tableDialog) {
+            closeTableDialog();
+          }
+        });
+        tablePaste?.addEventListener('keydown', (event) => {
+          if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+            event.preventDefault();
+            tableDialogSaveBtn?.click();
+          }
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && tableDialog && !tableDialog.hidden) {
+            closeTableDialog();
+          }
+          if (event.key === 'Escape' && sendDialog && !sendDialog.hidden) {
+            closeDialog(sendDialog);
+          }
+        });
+
+        itemsInput?.addEventListener('change', async () => {
+          if (state.rows.length > 0) {
+            itemsInput.value = '';
+            setStatus('Ya hay una tabla cargada. Usa "Borrar archivo" para reemplazarla.', true);
+            showNotification('Ya hay una tabla cargada. Usa "Borrar archivo" para reemplazarla.', 'error');
+            return;
+          }
+          const file = itemsInput.files && itemsInput.files[0];
+          if (!file) return;
+          const content = await file.text();
+          if (tablePaste) tablePaste.value = content;
+          applyTableFromText(content);
+          itemsInput.value = '';
+        });
+      })();
+    </script>
+  </body>
+</html>
+
+

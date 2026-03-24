@@ -1,0 +1,440 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pagina principal</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%238f6f00' d='M12 3 2 12h3v9a1 1 0 0 0 1 1h4v-7h4v7h4a1 1 0 0 0 1-1v-9h3L12 3z'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+      :root {
+        --page-bg: #d9d9d9;
+        --chrome-bg: #f4f4f4;
+        --panel: #ffffff;
+        --text: #0f1614;
+        --muted: #6a736f;
+        --green: #9bd65a;
+        --purple: #b5a3dc;
+        --red: #ff6b6b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        background: #f5eeb8;
+        color: var(--text);
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .window {
+        width: 100%;
+        min-height: 100dvh;
+        background: transparent;
+      }
+
+      .page {
+        padding: 12px;
+        min-height: 100dvh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow: hidden;
+      }
+
+      .top-nav {
+        min-height: 58px;
+        border-radius: 14px;
+        background: #fff;
+        width: 100%;
+        max-width: 1320px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 16px;
+        padding: 0 16px;
+      }
+
+      .brand {
+        text-decoration: none;
+        color: #101714;
+        font: 900 1.28rem/1 "Outfit", "Manrope", sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .brand i {
+        font-size: 1rem;
+      }
+
+      .links {
+        display: inline-flex;
+        justify-content: center;
+        gap: clamp(10px, 2vw, 28px);
+      }
+
+      .links a {
+        text-decoration: none;
+        color: #1d2421;
+        font: 800 0.9rem/1 "Manrope", sans-serif;
+        padding: 10px 12px;
+        border-radius: 999px;
+      }
+
+      .links a:hover {
+        background: rgba(16, 23, 20, 0.06);
+      }
+
+      .links a.link-home {
+        color: #8f6f00;
+      }
+
+      .links a.link-sales {
+        color: #2f6d00;
+      }
+
+      .links a.link-visor {
+        color: #e83e8c;
+      }
+
+      .links a.link-hacky {
+        color: #4b2f7f;
+      }
+
+      .links a.link-videos {
+        color: #a01616;
+      }
+
+      .links .betas {
+        position: relative;
+      }
+
+      .links .betas > a {
+        color: #0b6f7f;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .links .betas .submenu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        border-radius: 14px;
+        padding: 8px;
+        min-width: 210px;
+        z-index: 20;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .links .betas:hover .submenu,
+      .links .betas:focus-within .submenu {
+        display: flex;
+      }
+
+      .links .betas .submenu a {
+        display: block;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-weight: 800;
+        color: #0f1f29;
+        background: rgba(11, 111, 127, 0.06);
+      }
+
+      .links .betas .submenu a:hover {
+        background: rgba(11, 111, 127, 0.12);
+      }
+
+      .contact-btn {
+        text-decoration: none;
+        border-radius: 999px;
+        min-height: 40px;
+        padding: 0 16px;
+        background: #f5eeb8;
+        color: #0e150f;
+        font: 900 0.88rem/1 "Manrope", sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .hero {
+        margin-top: 0;
+        border-radius: 24px;
+        overflow: visible;
+        flex: 1;
+        min-height: 0;
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        justify-items: stretch;
+        width: 100%;
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: clamp(18px, 3vw, 30px) 16px;
+        background:
+          radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 44%),
+          transparent;
+      }
+
+      .hero-copy {
+        text-align: left;
+        color: #8f6f00;
+        max-width: 900px;
+        justify-self: start;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transform: translateY(-34px);
+      }
+
+      .hero-side-art {
+        align-self: end;
+        justify-self: end;
+        height: min(78vh, 720px);
+        display: block;
+        pointer-events: none;
+        user-select: none;
+        margin-right: clamp(-56px, -4vw, -8px);
+      }
+
+      .hero-side-art img {
+        height: 100%;
+        width: auto;
+        display: block;
+        object-fit: contain;
+        object-position: right bottom;
+        aspect-ratio: 2828 / 2704;
+      }
+
+      .hero-copy h1 {
+        margin: 0;
+        font: 800 clamp(2rem, 6vw, 5.2rem)/0.95 "Outfit", "Manrope", sans-serif;
+        letter-spacing: -0.03em;
+      }
+
+      .hero-copy p {
+        margin: 16px auto 0;
+        max-width: 78ch;
+        font-size: 0.92rem;
+        color: #a17d00;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .inspo {
+        width: 100%;
+        max-width: 1320px;
+        margin: 0 auto;
+        border-radius: 18px;
+        padding: 12px 16px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        min-height: 58px;
+        background:
+          radial-gradient(circle at 16% 30%, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.2) 55%, rgba(255, 255, 255, 0) 70%),
+          radial-gradient(circle at 78% 65%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.15) 55%, rgba(255, 255, 255, 0) 74%),
+          repeating-linear-gradient(0deg, rgba(143, 111, 0, 0.04) 0px, rgba(143, 111, 0, 0.04) 1px, rgba(255, 255, 255, 0) 10px, rgba(255, 255, 255, 0) 18px),
+          rgba(255, 255, 255, 0.62);
+        backdrop-filter: blur(9px);
+      }
+
+
+      .inspo__items {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      .inspo-word {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(29, 36, 33, 0.78);
+        user-select: none;
+        pointer-events: none;
+        white-space: nowrap;
+      }
+
+      .inspo-word--caps {
+        font: 800 0.9rem/1 "Outfit", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: rgba(29, 36, 33, 0.55);
+      }
+
+      .inspo-word--script {
+        font: 700 1.65rem/1 "Caveat", cursive;
+        color: rgba(17, 17, 17, 0.82);
+        letter-spacing: 0.01em;
+      }
+
+      .inspo-word--bold {
+        font: 900 1.15rem/1 "Manrope", sans-serif;
+        color: rgba(17, 17, 17, 0.72);
+      }
+
+      .inspo-word--soft {
+        font: 800 0.95rem/1 "Manrope", sans-serif;
+        color: rgba(29, 36, 33, 0.62);
+      }
+
+
+      @media (max-width: 960px) {
+        .top-nav {
+          grid-template-columns: 1fr;
+          justify-items: start;
+          gap: 10px;
+          padding: 10px 12px;
+        }
+
+        .links {
+          flex-wrap: wrap;
+          justify-content: flex-start;
+        }
+
+        .hero {
+          min-height: auto;
+          place-items: start;
+          grid-template-columns: 1fr;
+        }
+
+        .hero-side-art {
+          display: none;
+        }
+
+        .inspo {
+          max-width: 100%;
+        }
+
+        .hero-copy {
+          justify-content: flex-start;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .hero {
+          border-radius: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="window">
+      <section class="page">
+        <header class="top-nav" aria-label="Menu principal">
+          <a class="brand" href="/index.html">ProyecJO</a>
+          <nav class="links">
+            <a class="link-home" href="/index.html">Home</a>
+            <a class="link-sales" href="/AdaptadorSALES.html">Adaptador Sales</a>
+            <a class="link-visor" href="/AdaptadorVISOR.html">Adaptador Visor</a>
+            <a class="link-hacky" href="/InformesHACKY.html">Informes Hacky</a>
+            <a class="link-videos" href="/enviarvideosHACKY.html">Enviar videos Hacky</a>
+            <div class="betas">
+              <a href="#" onclick="return false;">Betas ▾</a>
+              <div class="submenu" role="menu">
+                <a href="/AutoActividad.html" role="menuitem">AutoActividad</a>
+                <a href="/PlantillasPPTX.html" role="menuitem">Plantillas PPTX</a>
+                <a href="/TablaVS.html" role="menuitem">Tabla V-S</a>
+              </div>
+            </div>
+          </nav>
+          <a
+            class="contact-btn"
+            href="https://wa.me/573195945882"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Contáctame por WhatsApp"
+            >Contáctame</a>
+        </header>
+
+        <section class="hero" aria-label="Portada principal">
+          <div class="hero-copy">
+            <h1>Esto es ProyecJO</h1>
+            <p>
+              Esta p&aacute;gina web fue creada con el objetivo de optimizar y facilitar los procesos en los que actualmente estoy
+              trabajando. La idea es apoyar el desarrollo de las tareas de una forma m&aacute;s &aacute;gil, organizada y precisa,
+              permitiendo simplificar algunos pasos y mejorar la gesti&oacute;n de la informaci&oacute;n. Con esta herramienta se busca
+              reducir el margen de error, ahorrar tiempo en la ejecuci&oacute;n de las actividades y hacer que los procesos se puedan
+              realizar de manera m&aacute;s clara y eficiente.
+            </p>
+          </div>
+          <picture class="hero-side-art" aria-hidden="true">
+            <source srcset="/Imagenes/Yo%201.webp?v=20260312-1718" type="image/webp" />
+            <img
+              src="/Imagenes/Yo%201.png?v=20260312-1718"
+              width="2828"
+              height="2704"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+
+        </section>
+
+        <footer class="inspo" aria-label="Frases inspiradoras">
+          <span class="sr-only">Inspirar, Innovar, Automatizar, Conectar, Crear, Aprender y Optimizar.</span>
+          <div class="inspo__items" aria-hidden="true">
+            <span class="inspo-word inspo-word--caps">INSPIRAR</span>
+            <span class="inspo-word inspo-word--script">crear</span>
+            <span class="inspo-word inspo-word--soft">optimizar</span>
+            <span class="inspo-word inspo-word--caps">INNOVAR</span>
+            <span class="inspo-word inspo-word--script">automatizar</span>
+            <span class="inspo-word inspo-word--bold">conectar</span>
+            <span class="inspo-word inspo-word--caps">APRENDER</span>
+            <span class="inspo-word inspo-word--script">vivir</span>
+            <span class="inspo-word inspo-word--soft">mejorar</span>
+            <span class="inspo-word inspo-word--caps">ENFOCAR</span>
+            <span class="inspo-word inspo-word--script">resolver</span>
+            <span class="inspo-word inspo-word--bold">avanzar</span>
+            <span class="inspo-word inspo-word--soft">simplificar</span>
+            <span class="inspo-word inspo-word--caps">CRECER</span>
+          </div>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,3706 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tabla Visor - SALES</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='3' width='18' height='18' rx='4' fill='%231f6ed0'/%3E%3Cpath fill='%23ffffff' d='M6 7h12v2H6zM6 11h12v2H6zM6 15h7v2H6z'/%3E%3Ccircle cx='18' cy='16' r='1.4' fill='%23ffffff'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Candado único: visible sólo si la tarjeta está bloqueada */
+      .hero-badges .work-card .work-card-lock,
+      .sales-workspace .work-card-lock {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        background: #1f2d28;
+        border: 1px solid #2f473e;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+        color: #ffffff;
+        padding: 0;
+        pointer-events: none;
+      }
+      .hero-badges .work-card .work-card-lock i,
+      .sales-workspace .work-card-lock i {
+        font-size: 0.82rem;
+        line-height: 1;
+        color: #ffffff;
+      }
+      .sales-workspace .work-card.is-locked .work-card-lock,
+      .sales-workspace .work-card[aria-disabled='true'] .work-card-lock {
+        display: inline-flex;
+      }
+      /* Ocultar candado en tarjetas activas/habilitadas y en el card de subida */
+      .sales-workspace .work-card.is-active .work-card-lock,
+      .sales-workspace .work-card[aria-disabled='false'] .work-card-lock,
+      #upload-card .work-card-lock {
+        display: none !important;
+      }
+      /* Mostrar candado en Subir Excel cuando se marca show-lock */
+      #upload-card.show-lock .work-card-lock {
+        display: inline-flex !important;
+      }
+    </style>
+    <style>
+      /* Tema azul para Tabla Visor - SALES */
+      .sales-shell .app-rail {
+        background: linear-gradient(180deg, #0f4c75 0%, #0b3b5c 100%);
+        border: 1px solid rgba(11, 59, 92, 0.35);
+        box-shadow: 0 14px 28px rgba(9, 42, 69, 0.3);
+      }
+      .sales-shell .rail-btn {
+        color: #e7f3ff;
+        background: rgba(255, 255, 255, 0.12);
+      }
+      .sales-shell .rail-btn.is-current {
+        background: rgba(255, 255, 255, 0.32);
+        color: #ffffff;
+      }
+      .sales-workspace {
+        background: linear-gradient(145deg, #f5f9ff 0%, #e8f0ff 100%);
+        border-color: #d5e3f5;
+      }
+      .workspace-top .workspace-chip,
+      .flow-step.is-active {
+        background: rgba(15, 110, 208, 0.12);
+        color: #0f6ed0;
+      }
+      .primary-btn,
+      button.primary,
+      .cta-btn {
+        background: linear-gradient(135deg, #0f6ed0 0%, #0b5bb0 100%) !important;
+        border-color: #0f6ed0 !important;
+        color: #f7fbff !important;
+      }
+      .primary-btn:hover,
+      button.primary:hover,
+      .cta-btn:hover {
+        filter: brightness(1.05);
+      }
+      .workspace-chip,
+      .badge,
+      .tag {
+        border-color: rgba(15, 110, 208, 0.18);
+        color: #0f3f66;
+      }
+      .info-card,
+      .panel,
+      .card {
+        border-color: #d5e3f5;
+      }
+      a {
+        color: #0f6ed0;
+      }
+          /* Candados: override final (forza tamaño y ocultar en activo) */
+      .hero-badges .work-card .work-card-lock,
+      .sales-workspace .work-card-lock {
+        position: absolute !important;
+        top: 8px !important;
+        right: 8px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 22px !important;
+        height: 22px !important;
+        border-radius: 7px !important;
+        background: #1f2d28 !important;
+        border: 1px solid #2f473e !important;
+        box-shadow: 0 3px 8px rgba(11, 20, 14, 0.2) !important;
+        color: #ffffff !important;
+        padding: 0 !important;
+        pointer-events: none !important;
+      }
+      .hero-badges .work-card .work-card-lock i,
+      .sales-workspace .work-card-lock i {
+        font-size: 0.85rem !important;
+        line-height: 1 !important;
+        color: #ffffff !important;
+      }
+      .sales-workspace .work-card.is-active .work-card-lock {
+        display: none !important;
+      }
+      #upload-card .work-card-lock { display: none !important; }
+    </style>
+    <style>
+      body {
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        background: linear-gradient(180deg, #e9f2ff 0%, #dfe9fb 100%);
+        min-height: 100dvh;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      .sales-shell {
+        background: transparent;
+        padding: clamp(8px, 1.4vw, 18px);
+        gap: clamp(10px, 1.5vw, 22px);
+        width: 100%;
+        min-height: 100dvh;
+        height: auto !important;
+        align-content: start;
+      }
+      .sales-shell .app-rail {
+        border-radius: 26px;
+        border: 1px solid rgba(10, 68, 121, 0.18);
+        background: linear-gradient(180deg, #0f4c75 0%, #0b3b5c 100%);
+        box-shadow: 0 14px 28px rgba(12, 54, 92, 0.25);
+      }
+      .sales-shell .rail-btn {
+        border-radius: 12px;
+        background: rgba(227, 240, 255, 0.16);
+      }
+      .sales-shell .rail-btn:hover,
+      .sales-shell .rail-btn.active {
+        background: rgba(227, 240, 255, 0.28);
+      }
+      .sales-shell .rail-btn.is-current {
+        background: rgba(15, 110, 208, 0.32);
+      }
+      .sales-shell .rail-auth,
+      .sales-shell .rail-btn-top {
+        border-color: rgba(15, 110, 208, 0.28);
+      }
+      .sales-workspace {
+        border-radius: 40px;
+        border: 1px solid #d2e2f5;
+        background: linear-gradient(145deg, #f5f9ff 0%, #e7f0ff 100%);
+        padding: clamp(18px, 2.2vw, 36px);
+        gap: clamp(18px, 2vw, 28px);
+        box-shadow: 0 22px 40px rgba(25, 62, 104, 0.12);
+        width: min(98vw, 2100px);
+        margin-inline: auto;
+      }
+      .sales-workspace .workspace-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "brand"
+          "flow";
+        gap: 10px 14px;
+        padding: 0;
+        align-items: center;
+      }
+      .sales-workspace .workspace-kicker {
+        grid-area: brand;
+        margin: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.9rem;
+        color: #0f1f2b;
+        letter-spacing: -0.02em;
+        font-family: "Outfit", "Manrope", sans-serif;
+      }
+      .sales-workspace .workspace-kicker .workspace-home-link {
+        color: #0f6ed0;
+        margin-right: 10px;
+        padding-right: 18px;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+      .sales-workspace .workspace-kicker .workspace-home-link::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 56%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 22px;
+        background: rgba(15, 62, 104, 0.22);
+      }
+      .sales-workspace .workspace-kicker::before {
+        content: none;
+      }
+      .sales-workspace .workspace-top h1 {
+        display: none;
+      }
+      .sales-workspace .workspace-flow {
+        grid-area: flow;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: nowrap;
+      }
+      .sales-workspace .workspace-auth {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+      }
+      .sales-workspace .workspace-auth--panel {
+        position: absolute;
+        top: clamp(36px, 5vh, 44px);
+        right: clamp(12px, 1.2vw, 16px);
+        z-index: 10;
+      }
+      .sales-workspace .workspace-auth-btn {
+        width: auto;
+        min-width: 36px;
+        min-height: 36px;
+        border-radius: 999px;
+        border: 1px solid #d7dfd0;
+        background: #f1f6ff;
+        color: #1f3a55;
+        padding: 0 10px;
+        font-size: 0.78rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        transition:
+          padding 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          gap 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          background 240ms ease,
+          transform 140ms ease;
+      }
+      .sales-workspace .workspace-auth-btn i {
+        font-size: 1.02rem;
+        line-height: 1;
+        flex: 0 0 auto;
+      }
+      .sales-workspace .workspace-auth-btn .workspace-auth-btn__label {
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        font: 800 0.82rem/1 "Outfit", "Manrope", sans-serif;
+        letter-spacing: 0.01em;
+        transform: translateX(-4px);
+        transition:
+          max-width 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          opacity 260ms ease,
+          transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .sales-workspace .workspace-auth-btn:hover,
+      .sales-workspace .workspace-auth-btn:focus-visible {
+        padding: 0 12px;
+        gap: 7px;
+        background: #e8f0ff;
+        transform: translateY(-1px);
+      }
+      .sales-workspace .workspace-auth-btn:hover .workspace-auth-btn__label,
+      .sales-workspace .workspace-auth-btn:focus-visible .workspace-auth-btn__label {
+        max-width: 110px;
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .sales-workspace .workspace-auth-btn:active {
+        transform: translateY(0);
+      }
+      .sales-workspace #auth-logout-btn {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        margin-top: 0;
+        min-height: 34px;
+        border-radius: 9999px;
+        border: 1px solid #d9d9d9;
+        background: #f8f8f8;
+        color: #1c3049;
+        padding: 0 11px 0 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        white-space: nowrap;
+        font: 800 0.85rem/1 "Manrope", sans-serif;
+        cursor: pointer;
+        overflow: hidden;
+        box-shadow: none;
+        transition: background 140ms ease;
+      }
+      .sales-workspace #auth-logout-btn:hover {
+        background: #eceee9;
+      }
+      .sales-workspace #auth-logout-btn i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1em;
+        height: 1em;
+        font-size: 0.94rem;
+        line-height: 1;
+      }
+      .sales-workspace #auth-logout-btn span {
+        display: inline-flex;
+        align-items: center;
+        line-height: 1;
+      }
+      .sales-workspace .workspace-auth .rail-avatar-wrap {
+        width: 36px;
+        height: 36px;
+        background: #dce9cd;
+        box-shadow: inset 0 0 0 1px rgba(25, 42, 32, 0.18);
+        border: none;
+        padding: 0;
+        cursor: pointer;
+      }
+      .sales-workspace .workspace-auth .rail-avatar-wrap.is-open {
+        box-shadow:
+          inset 0 0 0 1px rgba(25, 42, 32, 0.18),
+          0 0 0 2px rgba(129, 188, 69, 0.42);
+      }
+      .sales-workspace .workspace-auth .rail-avatar-fallback {
+        color: #1b3352;
+        font-size: 0.9rem;
+      }
+      .sales-workspace .workspace-auth-btn[hidden],
+      .sales-workspace .workspace-auth-logout[hidden] {
+        display: none !important;
+      }
+      .sales-workspace .flow-step {
+        width: 34px;
+        height: 6px;
+        border-radius: 999px;
+        padding: 0;
+        border: none;
+        font-size: 0;
+        background: #d8ddd8;
+      }
+      .sales-workspace .flow-step i {
+        display: none;
+      }
+      .sales-workspace .flow-step.is-active {
+        background: #0b4f9c;
+      }
+      .sales-workspace .flow-step.is-soft {
+        background: #2e8ff5;
+      }
+      .sales-workspace .layout {
+        grid-template-columns: minmax(900px, 1.7fr) minmax(500px, 1.1fr);
+        gap: clamp(28px, 3.5vw, 48px);
+        max-width: 2100px;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .sales-workspace .left-panel,
+      .sales-workspace .right-panel {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+      }
+      .sales-workspace .left-panel {
+        display: grid;
+        grid-template-rows: auto auto auto auto;
+        gap: 14px;
+      }
+      .sales-workspace .header-block {
+        display: grid;
+        gap: 14px;
+      }
+      .sales-workspace .panel-title {
+        margin: 0;
+        font-family: "Outfit", "Manrope", sans-serif;
+        font-size: clamp(3rem, 6vw, 4.6rem);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        color: #0f1f2b;
+        max-width: none;
+      }
+      .sales-workspace .lead {
+        margin: 0;
+        max-width: 82ch;
+        color: #1f2f3a;
+        font-size: 1.14rem;
+        line-height: 1.68;
+      }
+      .sales-workspace .hero-badges {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(230px, 1fr));
+        gap: 22px;
+      }
+      .sales-workspace .work-card {
+        border: 1px solid #d2e2f5;
+        border-radius: 22px;
+        min-height: 220px;
+        background: #eef4ff;
+        color: #0f1f2b;
+        display: grid;
+        place-items: center;
+        gap: 16px;
+        padding: 22px 16px;
+        text-align: center;
+        font: 800 1.08rem/1.35 "Manrope", sans-serif;
+      }
+      .sales-workspace .work-card i {
+        font-size: 2.4rem;
+        color: #0f6ed0;
+        line-height: 1;
+      }
+      .sales-workspace .work-card.is-active {
+        background: linear-gradient(165deg, #10335a 0%, #174d8c 100%);
+        border-color: transparent;
+        color: #f7fbff;
+        position: relative;
+      }
+      .sales-workspace .work-card.is-active i {
+        color: #a6d3ff;
+      }
+      .sales-workspace .work-card.is-active::after {
+        content: "\25CF";
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        position: absolute;
+        top: 9px;
+        right: 9px;
+        background: #2e8ff5;
+        color: #f7fbff;
+        font-size: 0.7rem;
+        font-weight: 900;
+      }
+      .sales-workspace .wizard-dots {
+        display: inline-flex;
+        align-items: center;
+        justify-self: center;
+        gap: 8px;
+      }
+      .sales-workspace .wizard-dots span {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: #b8c8af;
+      }
+      .sales-workspace .wizard-dots span.is-active {
+        background: #0f6e39;
+      }
+      .sales-workspace .load-block {
+        display: grid;
+        gap: 10px;
+      }
+      .sales-workspace .dropzone {
+        border: 1px dashed #b4c9ec;
+        border-radius: 22px;
+        background:
+          radial-gradient(620px 320px at 50% 0%, rgba(46, 143, 245, 0.18) 0%, rgba(46, 143, 245, 0) 60%),
+          #f6f9ff;
+        min-height: 230px;
+        gap: 12px;
+      }
+      .sales-workspace .dropzone.drag-over {
+        border-color: #2e8ff5;
+        background: #eaf2ff;
+      }
+      .sales-workspace .drop-title {
+        font-family: "Outfit", "Manrope", sans-serif;
+        font-size: 1.04rem;
+        color: #0f2f4f;
+      }
+      .sales-workspace .drop-or {
+        color: #68786d;
+        font-size: 0.83rem;
+      }
+      .sales-workspace .dropzone small {
+        color: #78847c;
+        font-size: 0.74rem;
+      }
+      .sales-workspace .cta {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-size: 0.84rem;
+        background: linear-gradient(100deg, #7fbe43 0%, #97d84f 100%);
+        color: #18301f;
+        box-shadow: none;
+      }
+      .sales-workspace .summary-row {
+        border: 1px solid #d7dfd0;
+        border-radius: 14px;
+        background: #f9fbf6;
+        padding: 8px;
+        gap: 8px;
+      }
+      .entrega-panel {
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        padding: 0;
+        display: grid;
+        gap: 18px;
+        box-shadow: none;
+      }
+      .entrega-panel[hidden],
+      #visual-modal[hidden],
+      #cambios-wrap[hidden] {
+        display: none !important;
+      }
+      .entrega-panel h3 {
+        margin: 0;
+        font: 800 1.2rem/1.2 "Outfit", "Manrope", sans-serif;
+        color: #0f1f2b;
+      }
+      .entrega-panel p.small {
+        margin: 2px 0 0;
+        color: #4b5b63;
+        font-size: 0.92rem;
+      }
+      .entrega-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 12px;
+        justify-content: center;
+        margin-top: 18px;
+      }
+      .entrega-grid--cards {
+        gap: 14px;
+      }
+      .entrega-card {
+        position: relative;
+        display: grid;
+        gap: 10px;
+        padding: 18px;
+        border-radius: 18px;
+        background: #ffffff;
+        border: 1px solid #e4e8f4;
+        box-shadow: 0 12px 30px rgba(24, 44, 82, 0.14);
+      }
+      .entrega-card__icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: #e7f2ff;
+        color: #0f6ed0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+      .entrega-card label {
+        margin: 0;
+        font: 800 0.95rem/1.2 "Manrope", "Segoe UI", sans-serif;
+        color: #0f1f2b;
+      }
+      .entrega-card input {
+        width: 100%;
+        border: 1px solid #d6deeb;
+        border-radius: 12px;
+        padding: 12px 14px;
+        font: 700 0.96rem/1.1 "Manrope", "Segoe UI", sans-serif;
+        background: #f9fbff;
+        color: #0f1f2b;
+        outline: none;
+        box-shadow: inset 0 1px 0 rgba(15, 110, 208, 0.04);
+      }
+      .entrega-card input:focus {
+        border-color: #6f4ff6;
+        box-shadow: 0 0 0 3px rgba(111, 79, 246, 0.2);
+      }
+      .input-with-action {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 8px;
+      }
+      .input-with-action .icon-btn {
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .entrega-card--full { grid-column: 1 / -1; }
+      .entrega-card--search { align-items: center; }
+      .search-input {
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 10px;
+        background: #ffffff;
+        border: 1px solid #d6deeb;
+        border-radius: 12px;
+        padding: 10px 14px;
+        box-shadow: none;
+        position: relative;
+      }
+      .search-input:focus-within {
+        border-color: #d6deeb;
+        box-shadow: none;
+      }
+      .search-input i {
+        color: #0f6ed0;
+        font-size: 1.1rem;
+      }
+      .search-input input[type="search"] {
+        width: 100%;
+        border: none;
+        outline: none;
+        padding: 6px 0;
+        font: 700 0.96rem/1.1 "Manrope", "Segoe UI", sans-serif;
+        background: transparent;
+        color: #0f1f2b;
+      }
+      .search-input input[type="search"]:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+      }
+      .ref-suggestions {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        max-height: 260px;
+        overflow-y: auto;
+        background: #ffffff;
+        border: 1px solid #d6deeb;
+        border-radius: 12px;
+        box-shadow: 0 12px 24px rgba(15, 47, 82, 0.18);
+        z-index: 20;
+      }
+      .ref-suggestions button {
+        width: 100%;
+        text-align: left;
+        padding: 10px 14px;
+        border: none;
+        background: transparent;
+        font: 700 0.95rem/1.2 "Manrope", "Segoe UI", sans-serif;
+        color: #0f1f2b;
+        cursor: pointer;
+      }
+      .ref-suggestions button:hover,
+      .ref-suggestions button:focus-visible {
+        background: #e7f2ff;
+        outline: none;
+      }
+      #toggle-cambios { gap: 8px; border-radius: 12px; padding: 10px 12px; font-weight: 800; }
+      .entrega-grid label {
+        display: grid;
+        gap: 6px;
+        font-weight: 800;
+        color: #16273d;
+        font-size: 0.9rem;
+      }
+      .entrega-grid input {
+        border: 1px solid #d6deeb;
+        border-radius: 14px;
+        padding: 12px 14px;
+        font: 700 0.96rem/1.1 "Manrope", "Segoe UI", sans-serif;
+        background: #f7f9ff;
+        color: #0f1f2b;
+        outline: none;
+        box-shadow: inset 0 1px 0 rgba(15, 110, 208, 0.04);
+      }
+      .entrega-grid input:focus {
+        border-color: #0f6ed0;
+        box-shadow: 0 0 0 3px rgba(15, 110, 208, 0.18);
+      }
+      .entrega-actions {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 20px;
+        align-items: center;
+        margin-top: 30px;
+      }
+      .primary-group {
+        grid-column: 2;
+        display: inline-flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+      }
+      /* Botón guardar: sin efectos, solo sombra al hover/click */
+      .entrega-panel .guardar-btn {
+        border: none;
+        border-radius: 14px;
+        background: #2e8ff5;
+        color: #ffffff;
+        font: 800 0.95rem/1 "Manrope", "Segoe UI", sans-serif;
+        padding: 12px 22px;
+        min-width: 180px;
+        min-height: 48px;
+        box-shadow: none;
+        transition: background-color 120ms ease, box-shadow 120ms ease, transform 80ms ease;
+        cursor: pointer;
+      }
+      .entrega-panel .guardar-btn:hover,
+      .entrega-panel .guardar-btn:focus-visible {
+        background: #1f7cdd;
+        box-shadow: 0 12px 22px rgba(31, 124, 221, 0.28);
+      }
+      .entrega-panel .guardar-btn:active {
+        background: #1568bd;
+        box-shadow: 0 6px 12px rgba(21, 104, 189, 0.3);
+        transform: translateY(1px);
+      }
+      .entrega-panel .secondary-action {
+        background: #1568bd;
+      }
+      .entrega-panel .secondary-action:hover,
+      .entrega-panel .secondary-action:focus-visible {
+        background: #0f4c9c;
+        box-shadow: 0 12px 22px rgba(15, 76, 156, 0.28);
+      }
+      .entrega-panel .secondary-action:active {
+        background: #0c3f82;
+        box-shadow: 0 6px 12px rgba(12, 63, 130, 0.3);
+      }
+      .entrega-actions .back-btn {
+        border-radius: 999px;
+        background: #f4f5f9;
+        border-color: #e1e6f0;
+        color: #1f2f46;
+      }
+      .entrega-actions .back-btn { width: 100%; }
+      .primary-action { }
+      .side-icons {
+        grid-column: 3;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      .icon-btn {
+        border: 1px solid #e1e6f0;
+        background: #ffffff;
+        color: #0f4c75;
+        border-radius: 12px;
+        padding: 10px 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: none;
+        cursor: pointer;
+      }
+      .icon-btn i { font-size: 1.15rem; }
+      .icon-btn:active {
+        box-shadow: 0 6px 12px rgba(31, 47, 70, 0.18);
+      }
+      .cambios-toggle { display: none; }
+  .cambios-list {
+    border: 1px dashed #c3d4e8;
+    border-radius: 14px;
+    background: #f8fbff;
+    padding: 12px;
+        display: grid;
+        gap: 8px;
+        max-height: 240px;
+        overflow: auto;
+      }
+      .cambios-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        background: #ffffff;
+      }
+      .cambios-table th,
+      .cambios-table td {
+        border: 1px solid #d6deeb;
+        padding: 8px 10px;
+        text-align: left;
+      }
+      .cambios-table thead th {
+        background: #e7f2ff;
+        font-weight: 800;
+        color: #0f2f4f;
+      }
+      .cambios-table tbody tr:nth-child(even) td {
+        background: #f6f9ff;
+      }
+  .cambio-dot {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .copy-toast {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: #0f6ed0;
+    color: #ffffff;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font: 800 0.9rem/1 "Manrope", "Segoe UI", sans-serif;
+    box-shadow: 0 12px 24px rgba(15, 110, 208, 0.25);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    z-index: 2000;
+    pointer-events: none;
+  }
+  .copy-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 31, 43, 0.55);
+        backdrop-filter: blur(3px);
+        display: none;
+        z-index: 990;
+      }
+      .modal-backdrop[aria-hidden="false"] {
+        display: block;
+      }
+      .entrega-panel.is-modal {
+        position: fixed;
+        z-index: 1000;
+        width: min(92vw, 980px);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        max-height: calc(100vh - 40px);
+        height: auto;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .entrega-panel .close-modal { display:none; }
+      .entrega-panel .modal-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .entrega-panel .eyebrow {
+        margin: 0 0 4px;
+        font: 800 0.78rem/1 "Manrope", sans-serif;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #3a4b5f;
+      }
+      .entrega-panel .small {
+        margin-top: 4px;
+      }
+      .entrega-panel .modal-close-btn {
+        border: 1px solid #e1e7f0;
+        background: #ffffff;
+        color: #24354a;
+        border-radius: 10px;
+        padding: 8px 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .entrega-panel .entrega-hints {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .entrega-panel .hint-pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #f1f5ff;
+        color: #0f3b66;
+        border: 1px solid #dce5f7;
+        font: 700 0.82rem/1 "Manrope", sans-serif;
+      }
+      .sales-workspace .summary-pill {
+        border: 1px solid #dbe2d4;
+        border-radius: 11px;
+        min-height: 40px;
+        background: #ffffff;
+        color: #2b3b32;
+        font-size: 0.8rem;
+        font-weight: 800;
+        box-shadow: none;
+      }
+      .sales-workspace .left-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: start;
+        gap: 12px;
+        width: 100%;
+      }
+      .sales-workspace .back-btn {
+        min-height: 46px;
+        min-width: 112px;
+        border-radius: 999px;
+        border: 1px solid #d4d9cf;
+        background: #f6f7f4;
+        color: #1c3049;
+        font: 800 0.85rem/1 "Manrope", sans-serif;
+        cursor: pointer;
+      }
+      .sales-workspace .back-btn:hover {
+        background: #eceee9;
+      }
+      .sales-workspace .submit-btn {
+        --progress: 0%;
+        flex: none;
+        width: 100%;
+        min-height: 48px;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #0f6ed0 var(--progress), #2b8de5 var(--progress));
+        color: #f7fbff;
+        font: 800 0.92rem/1 "Outfit", "Manrope", sans-serif;
+        letter-spacing: 0.01em;
+        box-shadow: none;
+      }
+      .sales-workspace .submit-btn:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(90deg, #0d5fb1 var(--progress), #257bcb var(--progress));
+      }
+      .sales-workspace .submit-btn i {
+        font-size: 1rem;
+      }
+      .sales-workspace .status {
+        display: block;
+        margin: 0;
+        min-height: 1.2em;
+        font-size: 0.76rem;
+      }
+      .sales-workspace .right-panel {
+        border-radius: 30px;
+        padding: 12px;
+        background: linear-gradient(180deg, #d4eeae 0%, #9fcd88 100%);
+        border: 1px solid #bddb99;
+        display: grid;
+        min-height: 0;
+        position: relative;
+      }
+      .sales-workspace .viewer {
+        min-height: 0;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        gap: 10px;
+      }
+      .sales-workspace .viewer-head {
+        display: none;
+      }
+      .sales-workspace .viewer-canvas {
+        border: 1px solid rgba(52, 79, 45, 0.24);
+        border-radius: 24px;
+        min-height: clamp(380px, 58vh, 620px);
+        background:
+          radial-gradient(120% 140% at 0% 0%, rgba(230, 248, 199, 0.95) 0%, rgba(205, 237, 156, 0.94) 42%, rgba(161, 210, 134, 0.96) 100%);
+      }
+      .sales-workspace #preview-image {
+        max-width: 96%;
+        max-height: 96%;
+        object-fit: contain;
+        filter: drop-shadow(0 10px 18px rgba(33, 61, 33, 0.34));
+      }
+      .sales-workspace #empty-preview {
+        margin: 0;
+        border: 1px dashed rgba(54, 79, 46, 0.3);
+        border-radius: 12px;
+        background: rgba(246, 252, 241, 0.78);
+        color: #294035;
+        font-size: 0.8rem;
+        font-weight: 800;
+        padding: 10px 12px;
+      }
+      .sales-workspace .selected-files--overlay {
+        top: auto;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        justify-content: flex-start;
+      }
+      .sales-workspace .file-tag {
+        border-color: rgba(34, 57, 40, 0.16);
+        background: rgba(255, 255, 255, 0.84);
+        color: #1f3328;
+        box-shadow: none;
+      }
+      .sales-workspace .preview-filmstrip {
+        border: 1px solid rgba(41, 70, 38, 0.24);
+        border-radius: 999px;
+        background: rgba(247, 252, 242, 0.8);
+        min-height: 56px;
+        padding: 7px;
+        gap: 6px;
+      }
+      .sales-workspace .preview-details {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #30453c;
+      }
+      .sales-workspace .film-thumb {
+        width: 44px;
+        height: 44px;
+        border-radius: 11px;
+        border: 1px solid rgba(58, 87, 53, 0.28);
+        background: #eef6e5;
+        overflow: visible;
+        position: relative;
+      }
+      .sales-workspace .film-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .sales-workspace .film-thumb-index {
+        position: absolute;
+        right: 2px;
+        bottom: 2px;
+        min-width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        padding: 0 3px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 800;
+        color: #ffffff;
+        background: rgba(27, 44, 26, 0.8);
+      }
+      .sales-workspace .film-thumb.is-active {
+        border-color: #0f6e39;
+        box-shadow: 0 0 0 2px rgba(15, 110, 57, 0.22);
+      }
+      .sales-workspace .presence-panel {
+        display: none;
+      }
+      .sales-workspace .viewer {
+        display: none;
+      }
+      .sales-workspace .profile-art {
+        margin: 0;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 715 / 1024;
+        border-radius: 24px;
+        overflow: hidden;
+        display: block;
+        border: 1px solid rgba(33, 51, 30, 0.18);
+        box-shadow: 0 18px 30px rgba(37, 61, 33, 0.2);
+      }
+      .sales-workspace .profile-art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+      @media (max-width: 1220px) {
+        .sales-workspace .hero-badges {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 1080px) {
+        .sales-shell {
+          grid-template-columns: 1fr;
+          padding: 10px;
+        }
+        .sales-shell .app-rail {
+          width: auto;
+          border-radius: 18px;
+          padding: 8px 10px;
+          gap: 6px;
+          flex-direction: row;
+          justify-content: flex-start;
+          overflow-x: auto;
+          overflow-y: hidden;
+        }
+        .sales-shell .rail-auth {
+          margin-top: 0;
+          margin-left: auto;
+          border-top: none;
+          padding-top: 0;
+          display: inline-flex;
+          align-items: center;
+        }
+        .sales-shell .rail-btn-top {
+          margin-bottom: 0;
+          padding-bottom: 0;
+          border-bottom: none;
+        }
+        .sales-workspace {
+          border-width: 9px;
+          border-radius: 28px;
+          padding: 12px;
+        }
+        .sales-workspace .layout {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+        .sales-workspace .viewer-canvas {
+          min-height: 360px;
+        }
+      }
+      @media (max-width: 760px) {
+        .sales-workspace .workspace-top {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            "brand"
+            "flow";
+        }
+        .sales-workspace .workspace-auth {
+          gap: 6px;
+        }
+        .sales-workspace .workspace-auth-btn,
+        .sales-workspace #auth-logout-btn,
+        .sales-workspace .workspace-auth .rail-avatar-wrap {
+          height: 34px;
+        }
+        .sales-workspace .workspace-auth-btn {
+          min-width: 34px;
+          padding: 0 9px;
+        }
+        .sales-workspace #auth-logout-btn,
+        .sales-workspace .workspace-auth .rail-avatar-wrap {
+          width: 34px;
+        }
+        .sales-workspace #auth-logout-btn {
+          width: auto;
+          min-height: 32px;
+          padding: 0 10px;
+          font-size: 0.74rem;
+        }
+        .sales-workspace .panel-title {
+          font-size: clamp(1.5rem, 9vw, 2rem);
+          max-width: 100%;
+        }
+        .sales-workspace .hero-badges {
+          grid-template-columns: 1fr;
+        }
+        .sales-workspace .work-card {
+          min-height: 100px;
+        }
+        .sales-workspace .dropzone {
+          min-height: 176px;
+        }
+        .sales-workspace .left-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .sales-workspace .back-btn {
+          width: 100%;
+        }
+        .sales-workspace .submit-btn {
+          width: 100%;
+        }
+      }
+
+      /* Reference fidelity overrides */
+      .sales-shell {
+        grid-template-columns: 1fr !important;
+        width: min(100%, 1260px) !important;
+        margin-inline: auto;
+        padding: clamp(14px, 2.4vw, 26px) !important;
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        display: grid !important;
+        place-items: center;
+        align-content: center !important;
+        justify-content: center !important;
+        position: relative;
+      }
+      .sales-shell > .dynamic-island {
+        position: fixed;
+        top: clamp(14px, 2.4vh, 24px);
+        right: 0;
+        left: auto;
+        bottom: auto;
+        transform: translateX(calc(100% + 16px)) scale(0.96);
+        min-width: 250px;
+        max-width: min(calc(100% - 28px), 420px);
+        min-height: 50px;
+        border-radius: 16px 0 0 16px;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+        border-color: rgba(182, 215, 152, 0.34);
+        box-shadow: 0 14px 28px rgba(14, 20, 17, 0.36);
+        z-index: 120;
+      }
+      .sales-shell > .dynamic-island.show {
+        transform: translateX(0) scale(1);
+      }
+      .sales-shell > .dynamic-island .dynamic-island__bell {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        margin-left: 0;
+        margin-right: 4px;
+        font-size: 1.35rem;
+        line-height: 1;
+        color: #ffffff;
+        transform-origin: 50% 10%;
+        filter: drop-shadow(0 6px 8px rgba(10, 18, 14, 0.45));
+      }
+      .sales-shell > .dynamic-island .dynamic-island__body {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: grid;
+        gap: 2px;
+      }
+      .sales-shell > .dynamic-island .dynamic-island__title {
+        font-size: 0.66rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .sales-shell > .dynamic-island .dynamic-island__message {
+        font-size: 0.84rem;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #ffffff;
+        word-break: break-word;
+      }
+      .sales-shell > .dynamic-island.show .dynamic-island__bell {
+        animation: island-bell-swing 0.75s ease-in-out infinite;
+      }
+      @keyframes island-bell-swing {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        25% {
+          transform: rotate(-18deg);
+        }
+        75% {
+          transform: rotate(18deg);
+        }
+      }
+      .sales-shell .app-rail {
+        display: none !important;
+      }
+      .sales-workspace {
+        width: min(100%, 1220px);
+        margin-inline: auto;
+        justify-self: center;
+        align-self: center;
+        position: relative;
+        overflow: visible;
+        border: 1px solid #d2e2f5;
+        border-radius: 38px;
+        background: #ffffff;
+        padding: clamp(18px, 2.2vw, 28px);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(230px, 275px);
+        grid-template-areas:
+          "top right"
+          "left right";
+        grid-template-rows: auto 1fr;
+        align-items: stretch;
+        gap: clamp(16px, 1.8vw, 24px);
+      }
+      .sales-workspace .workspace-top {
+        grid-area: top;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "brand"
+          "flow";
+        gap: 10px;
+      }
+      .sales-workspace .layout {
+        display: contents;
+      }
+      .sales-workspace .workspace-kicker {
+        font-size: clamp(1.65rem, 2.2vw, 2rem);
+        font-weight: 700;
+        gap: 8px;
+      }
+      .sales-workspace .workspace-kicker::before {
+        content: none;
+      }
+      .sales-workspace .workspace-flow {
+        justify-content: flex-start;
+        gap: 8px;
+        margin-top: 2px;
+      }
+      .sales-workspace .flow-step {
+        width: 30px;
+        height: 6px;
+      }
+      .sales-workspace .left-panel {
+        grid-area: left;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(24px, 2.1vw, 34px);
+        padding-right: clamp(18px, 1.8vw, 28px);
+        min-height: 100%;
+        align-self: stretch;
+      }
+      .sales-workspace .header-block {
+        display: grid;
+        gap: clamp(24px, 2.5vw, 34px);
+        width: max-content;
+        max-width: 100%;
+        margin-top: 14px;
+      }
+      .sales-workspace .panel-title {
+        max-width: none;
+        font-size: clamp(1.9rem, 3vw, 2.85rem);
+        line-height: 0.95;
+        letter-spacing: -0.025em;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        font-weight: 500;
+        white-space: normal;
+        text-wrap: balance;
+        margin: 2px 0 0;
+      }
+      .sales-workspace .sales-word {
+        font-weight: 800;
+      }
+      .sales-workspace .lead {
+        display: block;
+        margin: 0;
+        max-width: 58ch;
+        color: #5a635e;
+        font-size: 0.92rem;
+        line-height: 1.45;
+        font-weight: 600;
+      }
+      .sales-workspace .hero-selector {
+        position: relative;
+        display: block;
+        width: 100%;
+        padding-right: 0;
+        margin-top: 8px;
+      }
+      .sales-workspace .hero-badges {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-radius: 28px;
+        background: #e6eefc;
+        padding: 24px 22px;
+        gap: 16px;
+        min-height: clamp(250px, 33vh, 360px);
+        align-items: stretch;
+      }
+      .sales-workspace .hero-badges--actions {
+        align-content: stretch;
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+        width: 100%;
+        min-height: clamp(210px, 32vh, 360px);
+        gap: 18px;
+      }
+      .sales-workspace .hero-badges--actions .work-card {
+        grid-column: span 1;
+        height: 100%;
+        min-height: 0;
+        position: relative;
+      }
+      .sales-workspace .work-card {
+        min-height: 0;
+        height: clamp(190px, 24vh, 260px);
+        aspect-ratio: auto;
+        border-radius: 20px;
+        border: 1px solid #d2e2f5;
+        background: #eef4ff;
+        color: #0f1f2b;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        font-size: 0.82rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 12px;
+        gap: 14px;
+        width: 100%;
+        appearance: none;
+        cursor: pointer;
+      }
+      .sales-workspace .work-card i {
+        font-size: 2.35rem;
+        color: #2e8ff5;
+        margin-top: 0;
+      }
+      .sales-workspace .work-card--upload i,
+      .sales-workspace .work-card--download i {
+        font-size: 3.2rem;
+        line-height: 1;
+      }
+      .sales-workspace .hero-badges .work-card > span,
+      .sales-workspace .hero-badges .work-card-label {
+        max-width: 130px;
+        margin-top: 0;
+        margin-bottom: 0;
+        line-height: 1.18;
+        font-size: 0.86rem;
+        font-weight: 800;
+        text-align: center;
+        border: none !important;
+        background: transparent !important;
+        color: inherit !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+      }
+      /* Rehabilitar fondo del badge numerado (anula el transparente anterior solo para step-badge) */
+      .sales-workspace .hero-badges .work-card > span.step-badge {
+        background: #ffffff !important;
+        color: #0f4c75 !important;
+        border: 1px solid rgba(15, 76, 117, 0.28) !important;
+        box-shadow: 0 8px 18px rgba(15, 76, 117, 0.18) !important;
+        min-width: 34px !important;
+        width: 34px !important;
+        height: 34px !important;
+        padding: 0 !important;
+        border-radius: 10px !important; /* esquinas redondeadas sin ser círculo */
+      }
+      /* Recolocar badge numerado encima (no lo aplana la regla anterior) */
+      .hero-badges .work-card .step-badge {
+        position: absolute !important;
+        top: 8px !important;
+        right: 10px !important;
+        min-width: 34px;
+        width: 34px;
+        height: 34px;
+        padding: 0 !important;
+        border-radius: 10px !important; /* esquinas redondeadas */
+        background: #ffffff !important;
+        color: #0f4c75 !important; /* mismo azul del contenedor activo */
+        opacity: 1 !important;
+        mix-blend-mode: normal !important;
+        background-clip: padding-box !important;
+        border: 1px solid rgba(15, 76, 117, 0.28) !important;
+        box-shadow: 0 8px 18px rgba(15, 76, 117, 0.18) !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.85rem;
+        z-index: 3;
+      }
+      .sales-workspace .work-card.is-active {
+        background: linear-gradient(165deg, #10335a 0%, #174d8c 100%);
+        border-color: transparent;
+        color: #f7fbff;
+        box-shadow: none;
+      }
+      .sales-workspace .work-card.is-disabled,
+      .sales-workspace .work-card[aria-disabled='true'] {
+        opacity: 1;
+        cursor: not-allowed;
+        filter: none;
+        pointer-events: none;
+      }
+      /* Badges numerados */
+  .step-badge {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    min-width: 34px;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #0b3b5c;
+        opacity: 1;
+        mix-blend-mode: normal;
+        background-clip: padding-box;
+        font-weight: 800;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(11, 59, 92, 0.2);
+    box-shadow: 0 6px 16px rgba(11, 59, 92, 0.18);
+    z-index: 3;
+  }
+  /* Ocultar número cuando está bloqueado */
+  .work-card.is-locked .step-badge,
+  .work-card[aria-disabled='true'] .step-badge {
+    display: none !important;
+  }
+  /* Tonos por etapa */
+  .card-tone-light {
+    background: #eaf3ff !important;
+    border-color: #d6e7ff !important;
+    color: #0f1f2b !important;
+    box-shadow: 0 6px 14px rgba(15, 76, 117, 0.14) !important;
+  }
+  .card-tone-mid {
+    background: linear-gradient(165deg, #c9d9ff 0%, #b1cafe 100%) !important;
+    border-color: #9fbcf6 !important;
+    color: #0f1f2b !important;
+    box-shadow: 0 10px 18px rgba(15, 63, 120, 0.16) !important;
+  }
+  .card-tone-dark {
+    background: linear-gradient(165deg, #0f3a6b 0%, #0b2d52 100%) !important;
+    border-color: transparent !important;
+    color: #f7fbff !important;
+    box-shadow: 0 12px 24px rgba(6, 26, 54, 0.28) !important;
+  }
+  /* Ajustar color de icono y label según el tono */
+  .card-tone-light i,
+  .card-tone-light .work-card-label {
+    color: #0f3b66 !important;
+  }
+  .card-tone-mid i,
+  .card-tone-mid .work-card-label {
+    color: #0f2745 !important;
+  }
+  .card-tone-dark i,
+  .card-tone-dark .work-card-label {
+    color: #e7f2ff !important;
+  }
+      .sales-workspace .work-card.is-locked {
+        background: #f1f6ff;
+        border-color: #d2e2f5;
+        color: #0f1f2b;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .sales-workspace .work-card-lock {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        color: #12355a;
+        background: #ffffff;
+        border: 1px solid #d6deeb;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+        padding: 0;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .sales-workspace .work-card-lock i {
+        font-size: 0.75rem;
+        line-height: 1;
+        color: #12355a;
+      }
+      .sales-workspace .hero-badges .work-card > span.work-card-lock {
+        max-width: none;
+        color: #12355a !important;
+        background: #ffffff !important;
+        border: 1px solid #d6deeb !important;
+        border-radius: 6px !important;
+        padding: 0 !important;
+        width: 22px !important;
+        height: 22px !important;
+      }
+      .sales-workspace .work-card[aria-disabled='true'] .work-card-lock,
+      .sales-workspace .work-card.is-locked .work-card-lock {
+        display: inline-flex;
+      }
+      .sales-workspace .work-card-lock i {
+        font-size: 0.82rem;
+        line-height: 1;
+        color: #ffffff;
+      }
+      .sales-workspace .hero-badges .work-card > span.work-card-lock {
+        max-width: none;
+        color: #ffffff !important;
+        background: #12355a !important;
+        border: 1px solid #0f2f48 !important;
+        padding: 0 !important;
+      }
+      .work-card.show-lock .work-card-lock {
+        display: inline-flex !important;
+      }
+      .sales-workspace .work-card[aria-disabled='true'] .work-card-lock {
+        display: inline-flex;
+      }
+      .sales-workspace .work-card.is-locked .work-card-lock,
+      .sales-workspace .work-card[aria-disabled='true'] .work-card-lock {
+        display: inline-flex;
+      }
+      .sales-workspace .work-card--upload .work-card-label {
+        max-width: 132px;
+      }
+      .sales-workspace .work-card.is-ready:not([aria-disabled='true']) {
+        box-shadow: 0 0 0 2px rgba(142, 199, 69, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      }
+      .sales-workspace .work-card.is-active.is-ready:not([aria-disabled='true']) {
+        box-shadow: none;
+      }
+      .sales-workspace .work-card.is-active i {
+        color: #e9f3ed;
+      }
+      .sales-workspace .work-card.is-active::after {
+        content: none;
+        display: none;
+      }
+      /* Alineación uniforme de tarjetas */
+      .hero-badges .work-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 22px 12px;
+      }
+      .hero-badges .work-card i {
+        font-size: 2.9rem;
+        line-height: 1;
+        margin: 0;
+      }
+      .hero-badges .work-card .work-card-label {
+        margin: 0;
+        font-size: 1rem;
+      }
+      /* Revertir tamaño lock a su estilo original */
+      .hero-badges .work-card .work-card-lock {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: auto;
+        height: auto;
+        font-size: inherit;
+        background: transparent;
+      }
+      .sales-workspace #upload-card,
+      .sales-workspace #download-card {
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .sales-workspace #upload-card > *,
+      .sales-workspace #download-card > * {
+        position: relative;
+        z-index: 1;
+      }
+      .sales-workspace #upload-card .work-card-lock,
+      .sales-workspace #download-card .work-card-lock {
+        position: absolute;
+        z-index: 3;
+      }
+      .sales-workspace #upload-card:focus-visible,
+      .sales-workspace #download-card:focus-visible {
+        outline: 2px solid #8ad145;
+        outline-offset: 2px;
+      }
+      .sales-workspace #upload-card:not([aria-disabled='true'])::after,
+      .sales-workspace #download-card:not([aria-disabled='true'])::after {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 0.82rem;
+        font-weight: 900;
+        line-height: 1;
+        color: #1d2e23;
+        background: #ffffff;
+        border: 1px solid #d8e0d6;
+        box-shadow: 0 3px 8px rgba(11, 20, 14, 0.2);
+        z-index: 2;
+      }
+      .sales-workspace #upload-card:not([aria-disabled='true'])::after {
+        content: "1";
+      }
+      .sales-workspace #download-card:not([aria-disabled='true'])::after {
+        content: "2";
+      }
+      /* Desactivar pseudo-números para usar solo las step-badge reales */
+      #upload-card::after,
+      #download-card::after {
+        content: none !important;
+      }
+      .sales-workspace #upload-card:hover:not([aria-disabled='true']) i,
+      .sales-workspace #upload-card:focus-visible:not([aria-disabled='true']) i {
+        animation: upload-icon-lift 1.9s ease-in-out infinite;
+      }
+      .sales-workspace #upload-card:hover:not([aria-disabled='true'])::before,
+      .sales-workspace #upload-card:focus-visible:not([aria-disabled='true'])::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        width: 150%;
+        height: 150%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle at center, rgba(151, 216, 79, 0.42) 0%, rgba(151, 216, 79, 0) 68%);
+        z-index: 0;
+        pointer-events: none;
+        animation: upload-aura-rise 2.7s ease-in-out infinite;
+      }
+      .sales-workspace #download-card:hover:not([aria-disabled='true']) i,
+      .sales-workspace #download-card:focus-visible:not([aria-disabled='true']) i {
+        animation: upload-icon-lift 1.9s ease-in-out infinite;
+      }
+      .sales-workspace #download-card:hover:not([aria-disabled='true'])::before,
+      .sales-workspace #download-card:focus-visible:not([aria-disabled='true'])::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        width: 150%;
+        height: 150%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle at center, rgba(151, 216, 79, 0.42) 0%, rgba(151, 216, 79, 0) 68%);
+        z-index: 0;
+        pointer-events: none;
+        animation: upload-aura-rise 2.7s ease-in-out infinite;
+      }
+      @keyframes upload-icon-lift {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-4px) scale(1.04);
+        }
+      }
+      @keyframes upload-aura-rise {
+        0% {
+          opacity: 0.16;
+          transform: translate(-50%, -38%) scale(0.9);
+        }
+        50% {
+          opacity: 0.5;
+          transform: translate(-50%, -58%) scale(1.08);
+        }
+        100% {
+          opacity: 0.16;
+          transform: translate(-50%, -38%) scale(0.9);
+        }
+      }
+      @keyframes download-icon-drop {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        40% {
+          transform: translateY(4px) scale(1.04);
+        }
+        70% {
+          transform: translateY(1px) scale(1.01);
+        }
+      }
+      @keyframes download-flow-down {
+        0% {
+          transform: translateY(-78%);
+          opacity: 0;
+        }
+        22% {
+          opacity: 0.55;
+        }
+        78% {
+          opacity: 0.55;
+        }
+        100% {
+          transform: translateY(78%);
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .sales-workspace #upload-card:hover:not([aria-disabled='true']) i,
+        .sales-workspace #upload-card:hover:not([aria-disabled='true'])::before,
+        .sales-workspace #upload-card:focus-visible:not([aria-disabled='true']) i,
+        .sales-workspace #upload-card:focus-visible:not([aria-disabled='true'])::before,
+        .sales-workspace #download-card:hover:not([aria-disabled='true']) i,
+        .sales-workspace #download-card:hover:not([aria-disabled='true'])::before,
+        .sales-workspace #download-card:focus-visible:not([aria-disabled='true']) i,
+        .sales-workspace #download-card:focus-visible:not([aria-disabled='true'])::before {
+          animation: none;
+        }
+      }
+      .sales-workspace .hero-next {
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 999px;
+        border: none;
+        background: #1d2623;
+        color: #f7f7f7;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 8;
+      }
+      .sales-workspace .hero-next i {
+        font-size: 0.95rem;
+        line-height: 1;
+      }
+      .sales-workspace .wizard-dots {
+        justify-self: center;
+        margin-top: 8px;
+        margin-bottom: 6px;
+      }
+      .sales-workspace .wizard-dots span {
+        width: 8px;
+        height: 8px;
+      }
+      .sales-workspace .uploader {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        border: 0;
+        padding: 0;
+        clip: rect(0 0 0 0);
+        overflow: hidden;
+      }
+      .sales-workspace .left-actions {
+        margin-top: auto;
+        max-width: none;
+        padding-top: clamp(14px, 2vh, 24px);
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: nowrap;
+        width: auto;
+      }
+      .sales-workspace .back-btn {
+        width: auto;
+        min-width: 38px;
+        min-height: 38px;
+        border-color: #d9d9d9;
+        background: #f8f8f8;
+        padding: 0 11px 0 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      .sales-workspace .back-btn i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1em;
+        height: 1em;
+        font-size: 0.94rem;
+        line-height: 1;
+      }
+      .sales-workspace .back-btn span {
+        display: inline-flex;
+        align-items: center;
+        line-height: 1;
+      }
+      .sales-workspace .submit-btn {
+        width: 38px;
+        min-width: 38px;
+        min-height: 38px;
+        background: linear-gradient(135deg, #0f6ed0 0%, #2b8de5 100%);
+        color: #f7fbff;
+        padding: 0 11px;
+        font-size: 0.82rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0;
+        border-radius: 999px;
+        overflow: hidden;
+        white-space: nowrap;
+        transition:
+          width 680ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          padding 680ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          gap 680ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          background 520ms ease;
+      }
+      .sales-workspace .submit-btn i {
+        font-size: 1rem;
+        line-height: 1;
+        flex: 0 0 auto;
+      }
+      .sales-workspace .submit-btn #submit-label {
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        transform: translateX(-4px);
+        transition:
+          max-width 680ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          opacity 520ms ease,
+          transform 680ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .sales-workspace .submit-btn:hover,
+      .sales-workspace .submit-btn:focus-visible {
+        width: 232px;
+        padding: 0 14px;
+        gap: 8px;
+        background: linear-gradient(135deg, #0d5fb1 0%, #257bcb 100%);
+      }
+
+      /* TablaVS: ocultar visor de imágenes y miniaturas (no se usa) */
+      .tabla-vs-page .viewer,
+      .tabla-vs-page #preview-filmstrip,
+      .tabla-vs-page #empty-preview,
+      .tabla-vs-page #preview-image,
+      .tabla-vs-page #selected-files {
+        display: none !important;
+      }
+      .tabla-vs-page .profile-art {
+        display: none;
+      }
+
+      /* Tabla de visualización responsive */
+      .visual-table {
+        width: 100%;
+        max-width: 100%;
+        table-layout: auto;
+        border-collapse: collapse;
+        font-size: 10px;
+      }
+      .visual-table th,
+      .visual-table td {
+        border: 1px solid #d0d7e2;
+        padding: 4px 6px;
+        word-break: break-word;
+        white-space: normal;
+      }
+      .visual-table th {
+        background: #f5f7fb;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        font-size: 10.5px;
+        white-space: normal;
+      }
+      .sales-workspace .submit-btn:hover #submit-label,
+      .sales-workspace .submit-btn:focus-visible #submit-label {
+        max-width: 190px;
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .help-dialog[hidden] {
+        display: none !important;
+      }
+      .help-dialog {
+        position: fixed;
+        inset: 0;
+        z-index: 4000;
+        display: grid;
+        place-items: center;
+        gap: 12px;
+        padding: clamp(10px, 2.2vw, 20px);
+        background: rgba(21, 28, 25, 0.54);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+      .help-dialog__panel {
+        width: min(calc(100vw - 28px), 580px);
+        max-height: calc(100dvh - 28px);
+        overflow: auto;
+        border-radius: 22px;
+        border: 1px solid rgba(46, 68, 40, 0.2);
+        background: linear-gradient(180deg, #fbfdf8 0%, #f4f8ef 100%);
+        box-shadow: 0 24px 44px rgba(28, 42, 32, 0.34);
+        padding: clamp(16px, 2.2vw, 24px);
+        color: #223126;
+      }
+      .help-dialog__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      .help-dialog__title {
+        margin: 0;
+        font: 800 clamp(1.05rem, 2vw, 1.25rem) / 1.2 "Outfit", "Manrope", sans-serif;
+        color: #1e2d24;
+      }
+      .help-dialog__close {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: 1px solid #cdd8c6;
+        background: #f6faf1;
+        color: #2f4336;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .help-dialog__text {
+        margin: 0 0 12px;
+        color: #44574b;
+        font-size: 0.86rem;
+        line-height: 1.45;
+      }
+      .help-dialog__steps {
+        margin: 0;
+        padding-left: 1.1rem;
+        display: grid;
+        gap: 10px;
+        font-size: 0.86rem;
+        line-height: 1.45;
+        color: #233529;
+      }
+      .help-dialog__steps strong {
+        color: #1a2b20;
+      }
+      .help-dialog__footer {
+        margin-top: 26px;
+        display: flex;
+        justify-content: center;
+      }
+      .help-dialog__dismiss {
+        min-height: 36px;
+        border: none;
+        border-radius: 999px;
+        padding: 0 14px;
+        background: linear-gradient(135deg, #0f6ed0 0%, #2b8de5 100%);
+        color: #f7fbff;
+        font: 700 0.82rem/1 "Manrope", sans-serif;
+        cursor: pointer;
+      }
+      .sales-workspace .status {
+        display: none;
+      }
+      .sales-workspace .download-progress {
+        position: fixed;
+        top: clamp(14px, 2.4vh, 24px);
+        right: 0;
+        left: auto;
+        bottom: auto;
+        transform: translateX(calc(100% + 16px)) scale(0.98);
+        width: min(calc(100% - 28px), 360px);
+        padding: 10px 14px;
+        border-radius: 16px 0 0 16px;
+        border: 1px solid rgba(30, 47, 36, 0.18);
+        background: rgba(247, 252, 242, 0.96);
+        box-shadow: 0 14px 28px rgba(22, 34, 27, 0.24);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        display: grid;
+        gap: 8px;
+        pointer-events: none;
+        opacity: 0;
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease,
+          top 220ms ease;
+        z-index: 115;
+      }
+      .sales-workspace .download-progress.is-below-island {
+        top: clamp(84px, 10.5vh, 118px);
+      }
+      .sales-workspace .download-progress.is-visible {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+      .sales-workspace .download-progress.is-hiding {
+        opacity: 0;
+        transform: translate(-6px, -16px) scale(0.98);
+      }
+      .sales-workspace .download-progress__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .sales-workspace .download-progress__label {
+        font-size: 0.77rem;
+        font-weight: 700;
+        color: #2b4234;
+        line-height: 1.2;
+      }
+      .sales-workspace .download-progress__value {
+        flex: 0 0 auto;
+        min-width: 42px;
+        text-align: right;
+        font-size: 0.77rem;
+        font-weight: 800;
+        color: #1b3024;
+      }
+      .sales-workspace .download-progress__track {
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        background: #d9e8cc;
+        overflow: hidden;
+      }
+      .sales-workspace .download-progress__fill {
+        width: 0%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #78ba3f 0%, #9ddd57 100%);
+        transition: width 180ms linear;
+      }
+      .sales-workspace .right-panel {
+        grid-area: right;
+        background: transparent;
+        border: none;
+        border-radius: 26px;
+        padding: 0;
+        display: flex;
+        align-items: stretch;
+        min-height: 0;
+        align-self: stretch;
+        overflow: visible;
+        position: relative;
+      }
+      .sales-workspace .profile-art {
+        --profile-bg-top: clamp(0px, 1%, 10px);
+        width: 100%;
+        height: 100%;
+        flex: 1 1 auto;
+        min-height: clamp(470px, 68vh, 900px);
+        border-radius: 26px;
+        position: relative;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+        overflow: visible;
+        background: transparent;
+        display: block;
+      }
+      .sales-workspace .profile-art::after {
+        content: none;
+      }
+      .sales-workspace .profile-art .profile-art-bg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: var(--profile-bg-top);
+        bottom: 0;
+        border-radius: 28px;
+        background: linear-gradient(150deg, #b7d7ff 0%, #d5e7ff 100%);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+        z-index: 1;
+      }
+      .sales-workspace .profile-art .profile-art-photo {
+        position: absolute;
+        left: 50%;
+        right: auto;
+        top: var(--profile-bg-top);
+        bottom: 0;
+        z-index: 2;
+        width: auto;
+        height: calc(100% - var(--profile-bg-top));
+        max-width: none;
+        max-height: none;
+        display: block;
+        object-fit: contain;
+        object-position: center bottom;
+        transform: translate(-54%, 0);
+        margin: 0;
+        filter: none;
+        pointer-events: none;
+      }
+
+      @media (max-width: 1080px) {
+        .sales-shell {
+          place-items: start stretch;
+        }
+        .sales-workspace {
+          width: 100%;
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "top"
+            "left"
+            "right";
+          grid-template-rows: auto auto auto;
+          gap: 18px;
+        }
+        .sales-workspace .hero-selector {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+        .sales-workspace .hero-next {
+          position: static;
+          transform: none;
+          justify-self: end;
+        }
+        .sales-workspace .hero-badges {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          min-height: 270px;
+        }
+        .sales-workspace .hero-badges--actions {
+          width: 100%;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          min-height: 310px;
+        }
+        .sales-workspace .left-panel {
+          gap: 20px;
+          padding-right: 0;
+        }
+        .sales-workspace .download-progress {
+          width: min(calc(100% - 24px), 340px);
+        }
+        .sales-workspace .download-progress.is-below-island {
+          top: clamp(76px, 11.5vh, 108px);
+        }
+      }
+
+      @media (min-width: 1081px) and (max-width: 1320px) {
+        .sales-workspace {
+          grid-template-columns: minmax(0, 1fr) minmax(250px, 315px);
+        }
+        .sales-workspace .panel-title {
+          font-size: clamp(1.7rem, 2.3vw, 2.3rem);
+        }
+      }
+      @media (min-width: 1081px) and (max-width: 1700px) {
+        .sales-shell {
+          width: min(100%, 1160px) !important;
+          padding: clamp(12px, 1.8vw, 20px) !important;
+        }
+        .sales-workspace {
+          width: min(100%, 1100px);
+          grid-template-columns: minmax(0, 1fr) minmax(210px, 250px);
+          gap: clamp(14px, 1.5vw, 20px);
+        }
+        .sales-workspace .left-panel {
+          padding-right: clamp(10px, 1.1vw, 16px);
+        }
+      }
+
+      @media (min-width: 1081px) and (max-height: 900px) {
+        .sales-shell {
+          padding: clamp(12px, 1.6vw, 20px) !important;
+        }
+        .sales-workspace {
+          padding: clamp(18px, 2vw, 28px);
+          gap: 18px;
+        }
+        .sales-workspace .header-block {
+          gap: 18px;
+        }
+        .sales-workspace .panel-title {
+          font-size: clamp(1.55rem, 2.1vw, 2.2rem);
+        }
+        .sales-workspace .lead {
+          font-size: 0.84rem;
+          line-height: 1.35;
+          max-width: 52ch;
+        }
+        .sales-workspace .hero-badges--actions {
+          min-height: clamp(290px, 38vh, 390px);
+        }
+        .sales-workspace .work-card {
+          height: clamp(170px, 22vh, 225px);
+        }
+        .sales-workspace .left-actions {
+          padding-top: 8px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .sales-workspace {
+          padding: 18px;
+          gap: 14px;
+        }
+        .sales-workspace .workspace-top {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            "brand"
+            "flow";
+        }
+        .sales-workspace .panel-title {
+          max-width: 100%;
+          white-space: normal;
+          line-height: 1.05;
+        }
+        .sales-workspace .hero-badges {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          padding: 12px;
+          gap: 10px;
+          min-height: 240px;
+        }
+        .sales-workspace .hero-badges--actions {
+          width: 100%;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          min-height: 260px;
+        }
+        .sales-workspace .work-card {
+          height: 160px;
+          font-size: 0.74rem;
+        }
+        .sales-workspace .work-card i {
+          font-size: 1.95rem;
+          margin-top: 0;
+        }
+        .sales-workspace .download-progress {
+          width: min(calc(100% - 20px), 320px);
+          padding: 8px 11px;
+        }
+        .sales-workspace .download-progress.is-below-island {
+          top: clamp(72px, 12vh, 102px);
+        }
+        .sales-workspace .download-progress__label,
+        .sales-workspace .download-progress__value {
+          font-size: 0.72rem;
+        }
+      }
+
+      /* Account capsule style (reference layout) */
+      .sales-workspace .workspace-auth.workspace-auth--panel {
+        position: absolute;
+        top: -30px;
+        right: clamp(-102px, -6.6vw, -82px);
+        z-index: 18;
+        width: 56px;
+        min-height: 114px;
+        padding: 7px 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        border-radius: 999px;
+        border: 1px solid #d2e2f5;
+        background: #ffffff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel.is-login-only {
+        justify-content: center;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-btn {
+        width: auto;
+        min-width: 0;
+        min-height: 0;
+        border-radius: 0;
+        border: none;
+        background: transparent;
+        color: #2a382d;
+        padding: 0;
+        justify-content: center;
+        gap: 0;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .rail-avatar-wrap {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #d9e2ea;
+        border: 1px solid #d3d9de;
+        box-shadow: none;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-logout {
+        position: static;
+        margin-top: auto;
+        width: 36px;
+        min-height: 36px;
+        border: none;
+        background: transparent;
+        color: #111111;
+        padding: 0;
+        border-radius: 10px;
+        box-shadow: none;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-logout i {
+        font-size: 1.28rem;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel .workspace-auth-logout span {
+        display: none;
+      }
+      /* Oculta logout mientras el avatar siga oculto (estado sin sesión) */
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn {
+        position: static;
+        margin-top: auto;
+        width: 36px;
+        min-height: 36px;
+        border: none;
+        background: transparent;
+        color: #111111;
+        padding: 0;
+        border-radius: 10px;
+        box-shadow: none;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn i {
+        font-size: 1.28rem;
+      }
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn span {
+        display: none;
+      }
+      @media (max-width: 760px) {
+        .sales-workspace .workspace-auth.workspace-auth--panel {
+          right: 8px;
+          width: 52px;
+          min-height: 106px;
+          padding: 6px 3px;
+        }
+        .sales-workspace .workspace-auth.workspace-auth--panel .rail-avatar-wrap {
+          width: 38px;
+          height: 38px;
+        }
+        .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn {
+          width: 34px;
+          min-height: 34px;
+        }
+        .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn i {
+          font-size: 1.18rem;
+        }
+      }
+          /* Candados: override final (forza tamaño y ocultar en activo) */
+      .hero-badges .work-card .work-card-lock,
+      .sales-workspace .work-card-lock {
+        position: absolute !important;
+        top: 8px !important;
+        right: 8px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 22px !important;
+        height: 22px !important;
+        border-radius: 7px !important;
+        background: #1f2d28 !important;
+        border: 1px solid #2f473e !important;
+        box-shadow: 0 3px 8px rgba(11, 20, 14, 0.2) !important;
+        color: #ffffff !important;
+        padding: 0 !important;
+        pointer-events: none !important;
+      }
+      .hero-badges .work-card .work-card-lock i,
+      .sales-workspace .work-card-lock i {
+        font-size: 0.85rem !important;
+        line-height: 1 !important;
+        color: #ffffff !important;
+      }
+      .sales-workspace .work-card.is-active .work-card-lock {
+        display: none !important;
+      }
+      #upload-card .work-card-lock { display: none !important; }
+    </style>
+  
+  <body class="tabla-vs-page">
+    <main class="dashboard-shell sales-shell">
+      <div id="dynamic-island" class="dynamic-island" role="status" aria-live="polite" aria-atomic="true"></div>
+      <aside class="app-rail" aria-label="Navegacion">
+        <a class="rail-btn" href="/index.html" title="Pagina principal">
+          <i class="bi bi-house-door-fill"></i>
+        </a>
+        <a class="rail-btn is-current" href="/TablaVS.html" title="Tabla Visor - SALES" aria-current="page">
+          <i class="bi bi-file-earmark-bar-graph-fill"></i>
+        </a>
+        <a class="rail-btn" href="/InformesHACKY.html" aria-label="Informes HACKY" title="Informes HACKY">
+          <i class="bi bi-bar-chart-fill"></i>
+        </a>
+        <a class="rail-btn" href="/PlantillasPPTX.html" aria-label="Plantillas PPTX" title="Plantillas PPTX">
+          <i class="bi bi-easel3-fill"></i>
+        </a>
+        <button type="button" class="rail-btn" aria-label="Multimedia">
+          <i class="bi bi-image-fill"></i>
+        </button>
+      </aside>
+
+      <section class="workspace sales-workspace">
+        <header class="workspace-top">
+          <p class="workspace-kicker">
+            <a class="workspace-home-link" href="/index.html" aria-label="Ir al inicio" title="Inicio">
+              <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+            </a>
+            ProyecJO
+          </p>
+          <h1>Tabla <span class="sales-word">Visor - SALES</span></h1>
+          <div class="workspace-flow" aria-label="Flujo principal">
+            <span class="flow-step is-active"></span>
+            <span class="flow-step is-soft"></span>
+            <span class="flow-step"></span>
+            <span class="flow-step"></span>
+            <span class="flow-step"></span>
+            <span class="flow-step"></span>
+          </div>
+        </header>
+
+        <div class="layout">
+          <section class="left-panel">
+            <div class="header-block">
+          <h2 class="panel-title"><span>Tabla BD</span><span class="sales-word"> Visor</span> y <span class="sales-word">SALES</span></h2>
+              <p class="lead">
+                Sube la tabla, marca los productos con imágenes ya entregadas y descarga el archivo actualizado con todo seleccionado.
+              </p>
+              <div class="hero-selector" aria-label="Opciones de trabajo">
+                <div class="hero-badges hero-badges--actions">
+                  <button id="upload-card" type="button" class="work-card work-card--upload is-active" aria-label="Click para subir el archivo">
+                    <span class="step-badge">1</span>
+                    <i class="bi bi-cloud-upload" aria-hidden="true"></i>
+                    <span class="work-card-lock" aria-hidden="true"><i class="bi bi-lock-fill"></i></span>
+                    <span class="work-card-label">Subir Excel</span>
+                  </button>
+                  <button
+                    id="download-card"
+                    type="button"
+                    class="work-card work-card--download is-disabled"
+                    aria-label="Descargar ZIP"
+                    aria-disabled="true"
+                  >
+                    <span class="step-badge">2</span>
+                    <i class="bi bi-plus-square" aria-hidden="true"></i>
+                    <span class="work-card-lock" aria-hidden="true"><i class="bi bi-lock-fill"></i></span>
+                    <span class="work-card-label">Datos adicionales</span>
+                  </button>
+                  <button type="button" class="work-card is-locked" aria-disabled="true" aria-label="Visualizar tabla">
+                    <span class="step-badge">3</span>
+                    <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
+                    <span class="work-card-lock" aria-hidden="true"><i class="bi bi-lock-fill"></i></span>
+                    <span class="work-card-label">Visualizar tabla</span>
+                  </button>
+                  <button type="button" class="work-card is-locked" aria-disabled="true" aria-label="Descargar tabla">
+                    <span class="step-badge">4</span>
+                    <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
+                    <span class="work-card-lock" aria-hidden="true"><i class="bi bi-lock-fill"></i></span>
+                    <span class="work-card-label">Descargar tabla</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <form id="resize-form" class="uploader">
+              <div class="load-block">
+                <label id="dropzone" class="dropzone" for="items">
+                  <input id="items" name="items" type="file" multiple accept=".xlsx,.xls,.csv,.zip,image/*" required />
+                  <strong class="drop-title">Arrastra y suelta archivos aqui</strong>
+                  <span class="drop-or">- o -</span>
+                  <span class="cta"><i class="bi bi-cloud-upload-fill"></i> Cargar archivos</span>
+                  <small>Recomendado: ZIP semanal de Mercadeo</small>
+                </label>
+                <div class="summary-row">
+                  <span id="count-zip" class="summary-pill"><i class="bi bi-file-earmark-zip-fill"></i> ZIP: 0</span>
+                  <span id="count-images" class="summary-pill"><i class="bi bi-image-fill"></i> Imagenes: 0</span>
+                </div>
+              </div>
+            </form>
+
+            <section id="entrega-panel" class="entrega-panel is-modal" hidden aria-label="Actualizar entrega">
+              <form id="entrega-form" class="entrega-form">
+                <div class="entrega-card entrega-card--full entrega-card--search">
+                  <div class="search-input">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input
+                      id="ref-search"
+                      name="ref-search"
+                      type="search"
+                      placeholder="Buscar referencia..."
+                      autocomplete="off"
+                    />
+                    <div id="ref-suggestions" class="ref-suggestions" hidden></div>
+                  </div>
+                </div>
+                <div class="entrega-grid entrega-grid--cards">
+                  <div class="entrega-card">
+                    <span class="entrega-card__icon"><i class="bi bi-upc-scan"></i></span>
+                    <label for="codigo-sales">C&oacute;digos SALES</label>
+                    <div class="input-with-action">
+                      <input
+                        id="codigo-sales"
+                        name="codigo-sales"
+                        type="text"
+                        placeholder="Ej: 12345, 67890 o uno por línea"
+                        autocomplete="off"
+                        required
+                      />
+                      <button id="copy-codigo" type="button" class="icon-btn" aria-label="Copiar código" title="Copiar código">
+                        <i class="bi bi-clipboard"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="entrega-card">
+                    <span class="entrega-card__icon"><i class="bi bi-list-ol"></i></span>
+                    <label for="numero-entrega">N&deg; entrega</label>
+                    <input id="numero-entrega" name="numero-entrega" type="number" min="1" step="1" placeholder="1" required />
+                  </div>
+                  <div class="entrega-card">
+                    <span class="entrega-card__icon"><i class="bi bi-calendar-event"></i></span>
+                    <label for="fecha-entrega">Fecha de entrega</label>
+                    <input id="fecha-entrega" name="fecha-entrega" type="date" required />
+                  </div>
+                </div>
+                <div class="entrega-actions">
+                  <div class="actions-spacer"></div>
+                  <div class="primary-group">
+                    <button type="submit" class="guardar-btn primary-action" data-action="aplicar">Guardar datos</button>
+                    <button id="salir-vista" type="button" class="guardar-btn secondary-action" aria-label="Salir de vista">Salir de vista</button>
+                  </div>
+                  <div class="side-icons">
+                    <button id="limpiar-entrega" type="button" class="icon-btn" aria-label="Limpiar formulario">
+                      <i class="bi bi-eraser-fill" aria-hidden="true"></i>
+                    </button>
+                    <button id="toggle-cambios" type="button" class="icon-btn" aria-expanded="false" aria-label="Ver entregas marcadas">
+                      <i class="bi bi-eye-fill" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+              <div id="cambios-wrap" hidden>
+                <div id="cambios-list" class="cambios-list" aria-live="polite">
+                  <p style="margin:0; color:#5a6a74;">Sin entregas aplicadas.</p>
+                </div>
+              </div>
+            </section>
+
+            <section id="visual-modal" class="entrega-panel is-modal" hidden aria-label="Visualizar tabla">
+              <div class="modal-head">
+                <h3>Visualizaci&oacute;n de entregas</h3>
+                <p class="small">Previsualiza los cambios aplicados antes de descargar.</p>
+              </div>
+              <div
+                id="visual-body"
+                class="cambios-list"
+                style="margin:0; flex:1; min-height:0; overflow:auto; max-height:calc(100vh - 180px);"
+              >
+                <p style="margin:0; color:#5a6a74;">Sin cambios aplicados.</p>
+              </div>
+            </section>
+            <div class="left-actions">
+              <button
+                id="back-btn"
+                type="button"
+                class="back-btn"
+                aria-label="Limpiar seleccion"
+              >
+                <i class="bi bi-trash3-fill" aria-hidden="true"></i>
+                <span>Borrar archivo</span>
+              </button>
+              <button id="submit-btn" type="button" class="submit-btn" data-action="help">
+                <i class="bi bi-question-circle-fill" aria-hidden="true"></i>
+                <span id="submit-label">&iquest;Como funciona la pagina?</span>
+              </button>
+            </div>
+            <p id="status" class="status"></p>
+          </section>
+
+          <section class="right-panel">
+            <div class="workspace-auth workspace-auth--panel is-login-only" aria-label="Cuenta de usuario">
+              <button id="auth-login-btn" type="button" class="workspace-auth-btn" aria-label="Iniciar sesion con Google" hidden>
+                <i class="bi bi-google"></i>
+                <span class="workspace-auth-btn__label">Iniciar sesi&oacute;n</span>
+              </button>
+              <button id="auth-avatar-wrap" type="button" class="rail-avatar-wrap" aria-label="Menu de cuenta" aria-expanded="false">
+                <img id="auth-avatar" class="rail-avatar" src="/Imagenes/Yo 4.png" alt="Foto de perfil" />
+                <span id="auth-avatar-fallback" class="rail-avatar-fallback" hidden>J</span>
+              </button>
+              <button
+                id="auth-logout-btn"
+                type="button"
+                class="workspace-auth-logout"
+                aria-label="Cerrar sesion"
+                style="display:inline-flex !important; position:static; margin-top:6px; visibility:visible; opacity:1;"
+              >
+                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                <span>Cerrar sesi&oacute;n</span>
+              </button>
+            </div>
+            <div class="viewer">
+              <div class="viewer-canvas" id="viewer-canvas">
+                <div id="selected-files" class="selected-files selected-files--overlay"></div>
+                <img id="preview-image" alt="Previsualizacion" />
+                <p id="empty-preview">Sube una imagen para verla aqui</p>
+              </div>
+              <div id="preview-filmstrip" class="preview-filmstrip" aria-label="Miniaturas"></div>
+            </div>
+            <figure class="profile-art" aria-label="Imagen de perfil">
+              <div class="profile-art-bg" aria-hidden="true"></div>
+              <img class="profile-art-photo" src="/Imagenes/Yo 4.png" alt="Imagen de perfil" loading="lazy" />
+            </figure>
+          </section>
+
+          <aside class="presence-panel" aria-label="Usuarios activos">
+            <section class="friends-panel friends-panel--active">
+              <div class="friends-head">
+                <h3><i class="bi bi-people"></i> Usuarios</h3>
+                <span id="active-users-count" class="friends-count">0</span>
+              </div>
+              <div class="friends-tabs">
+                <button type="button" class="friends-tab is-active" data-filter="active">Activos</button>
+                <button type="button" class="friends-tab" data-filter="inactive">Inactivos</button>
+              </div>
+              <div id="active-users-list" class="friends-list">
+                <p class="friends-empty">Sin usuarios activos</p>
+              </div>
+            </section>
+            <section class="friends-panel friends-panel--history">
+              <div class="history-head">
+                <h4><i class="bi bi-clock-history"></i> Historial</h4>
+                <span id="history-total-badge" class="friends-count">0</span>
+              </div>
+              <div class="history-summary" aria-label="Resumen de historial">
+                <div class="history-metric">
+                  <span class="history-metric-label">Procesos</span>
+                  <strong id="history-total-processes" class="history-metric-value">0</strong>
+                </div>
+                <div class="history-metric">
+                  <span class="history-metric-label">Imagenes</span>
+                  <strong id="history-total-images" class="history-metric-value">0</strong>
+                </div>
+              </div>
+              <div class="history-tools">
+                <label class="history-filter-label" for="history-range">Periodo</label>
+                <select id="history-range" class="history-range" aria-label="Filtrar historial por periodo">
+                  <option value="all">Todo</option>
+                  <option value="7d">Ultimos 7 dias</option>
+                  <option value="30d">Ultimos 30 dias</option>
+                  <option value="today">Hoy</option>
+                </select>
+                <input
+                  id="history-search"
+                  class="history-search"
+                  type="search"
+                  placeholder="Buscar por nombre..."
+                  autocomplete="off"
+                  aria-label="Buscar en historial"
+                />
+              </div>
+              <div class="history-actions">
+                <div class="history-sort-wrap">
+                  <label class="history-sort-label" for="history-sort">Orden</label>
+                  <select id="history-sort" class="history-sort" aria-label="Ordenar historial">
+                    <option value="recent">Mas reciente</option>
+                    <option value="oldest">Mas antiguo</option>
+                    <option value="images_desc">Mas imagenes</option>
+                    <option value="files_desc">Mas archivos</option>
+                  </select>
+                </div>
+                <button id="history-export-btn" type="button" class="history-action-btn">
+                  <i class="bi bi-download"></i> Exportar CSV
+                </button>
+                <button id="history-clear-btn" type="button" class="history-action-btn danger">
+                  <i class="bi bi-trash3"></i> Limpiar
+                </button>
+              </div>
+              <p id="history-caption" class="history-caption">Mostrando 0 de 0 registros</p>
+              <div id="processed-history-list" class="history-list">
+                <p class="friends-empty">Sin procesos recientes</p>
+              </div>
+            </section>
+          </aside>
+        </div>
+        <div id="download-progress" class="download-progress" hidden aria-live="polite" aria-atomic="true">
+          <div class="download-progress__head">
+            <span id="download-progress-label" class="download-progress__label">Preparando descarga...</span>
+            <span id="download-progress-value" class="download-progress__value">0%</span>
+          </div>
+          <div class="download-progress__track" aria-hidden="true">
+            <div id="download-progress-fill" class="download-progress__fill"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="visual-backdrop" class="modal-backdrop" aria-hidden="true"></div>
+    <div id="entrega-backdrop" class="modal-backdrop" aria-hidden="true"></div>
+    <div id="copy-toast" class="copy-toast" aria-live="polite" aria-atomic="true" hidden>Copiado</div>
+    <div id="help-dialog" class="help-dialog" hidden aria-hidden="true">
+      <section class="help-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="help-dialog-title">
+        <header class="help-dialog__head">
+          <h2 id="help-dialog-title" class="help-dialog__title">&iquest;Como funciona la pagina?</h2>
+          <button id="help-dialog-close" type="button" class="help-dialog__close" aria-label="Cerrar instrucciones">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </header>
+        <p class="help-dialog__text">Marca entregas directamente en tu Excel de SALES y descarga el archivo actualizado.</p>
+        <ol class="help-dialog__steps">
+          <li><strong>Sube el Excel:</strong> carga un .xlsx/.xls con las columnas C&oacute;digo SALES, N&deg; Entrega y Fecha de entrega.</li>
+          <li><strong>Datos adicionales:</strong> abre la tarjeta, escribe C&oacute;digo SALES, N&deg; Entrega y Fecha; el sistema encuentra la fila y colorea la entrega.</li>
+          <li><strong>Visualiza tabla:</strong> revisa la vista previa ordenada por N&deg; Entrega; las filas editadas se sombrean con su color.</li>
+          <li><strong>Descarga tabla:</strong> exporta el Excel con las entregas y colores aplicados a las filas.</li>
+        </ol>
+        <div class="help-dialog__footer">
+          <button id="help-dialog-dismiss" type="button" class="help-dialog__dismiss">Entendido</button>
+        </div>
+      </section>
+    </div>
+
+    <script src="vendor/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging-compat.js"></script>
+    <script src="app.js"></script>
+        <script>
+      // Flujo: subir Excel -> buscar codigo SALES -> rellenar N entrega y fecha -> descargar Excel actualizado
+      (() => {
+        const uploadBtn = document.getElementById("upload-card");
+        const extrasBtn = document.getElementById("download-card");
+        const viewBtn = document.querySelector('.work-card[aria-label="Visualizar tabla"]');
+        const dlBtn = document.querySelector('.work-card[aria-label="Descargar tabla"]');
+
+        const status = document.getElementById("status");
+        const fileInput = document.getElementById("items");
+        const badges = {
+          upload: uploadBtn?.querySelector(".step-badge"),
+          extras: extrasBtn?.querySelector(".step-badge"),
+          view: viewBtn?.querySelector(".step-badge"),
+          dl: dlBtn?.querySelector(".step-badge"),
+        };
+
+        const entregaPanel = document.getElementById("entrega-panel");
+        const entregaForm = document.getElementById("entrega-form");
+        const codigoInput = document.getElementById("codigo-sales");
+        const numeroInput = document.getElementById("numero-entrega");
+        const fechaInput = document.getElementById("fecha-entrega");
+        const limpiarEntregaBtn = document.getElementById("limpiar-entrega");
+        const cambiosList = document.getElementById("cambios-list");
+        const modalBackdrop = document.getElementById("entrega-backdrop");
+        const cerrarModalBtn = document.getElementById("cerrar-modal-entrega");
+        const visualModal = document.getElementById("visual-modal");
+        const visualBody = document.getElementById("visual-body");
+        const cerrarVisualBtn = document.getElementById("cerrar-visual-modal");
+        const visualBackdrop = document.getElementById("visual-backdrop");
+        const toggleCambiosBtn = document.getElementById("toggle-cambios");
+        const cambiosWrap = document.getElementById("cambios-wrap");
+        const salirVistaBtn = document.getElementById("salir-vista");
+        const backBtn = document.getElementById("back-btn");
+        const refSearchInput = document.getElementById("ref-search");
+        const refSuggestions = document.getElementById("ref-suggestions");
+        const copyCodigoBtn = document.getElementById("copy-codigo");
+        const copyToast = document.getElementById("copy-toast");
+
+        let workbook = null;
+        let sourceFileName = "tabla.xlsx";
+        let activeSheetName = "";
+        const cambios = [];
+        const colorPalette = ["FFE69A", "FFD3B4", "CDE5FF", "D1C4E9", "C8E6C9", "FFC1E3", "B2EBF2", "FFF3BF"];
+        const entregaColorMap = new Map(); // color por entrega
+        let templatePromise = null;
+        let refIndex = [];
+        let copyToastTimer = null;
+
+        function updateReferenceIndex() {
+          try {
+            const { data } = getSheetAndData();
+            if (!data.length) return;
+            const headers = data[0] || [];
+            const codigoCol = findColumn(headers, ["codigo sales", "codigo", "codigo_sales", "codigo sales id", "codigo cliente"]);
+            const refCol = findColumn(headers, ["referencia", "descripcion", "descripción", "nombre", "producto", "plan"]);
+            if (codigoCol === -1 || refCol === -1) {
+              refIndex = [];
+              return;
+            }
+            const seen = new Set();
+            refIndex = data
+              .slice(1)
+              .map((row) => {
+                const codeRaw = row?.[codigoCol];
+                const codeNorm = normalize(codeRaw);
+                const refVal = String(row?.[refCol] ?? "").trim();
+                return codeNorm && refVal ? { codigoRaw: codeRaw, codigo: codeNorm, referencia: refVal } : null;
+              })
+              .filter((x) => {
+                if (!x || seen.has(x.codigo)) return false;
+                seen.add(x.codigo);
+                return true;
+              });
+          } catch (_e) {
+            refIndex = [];
+          }
+        }
+
+        function renderRefSuggestions(list) {
+          if (!refSuggestions) return;
+          if (!list.length) {
+            refSuggestions.hidden = true;
+            refSuggestions.innerHTML = "";
+            return;
+          }
+          refSuggestions.innerHTML = list
+            .map(
+              (r) =>
+                `<button type="button" data-code="${r.codigoRaw ?? r.codigo}" data-ref="${r.referencia}">${r.referencia}</button>`
+            )
+            .join("");
+          refSuggestions.hidden = false;
+        }
+
+        function getRefSuggestions(query) {
+          const q = normalize(query);
+          if (!q) return refIndex.slice(0, 25);
+          const tokens = q.split(" ").filter(Boolean);
+          if (!tokens.length) return refIndex.slice(0, 25);
+          return refIndex
+            .map((r) => {
+              const refNorm = normalize(r.referencia);
+              const hits = tokens.filter((t) => refNorm.includes(t)).length;
+              if (!hits) return null;
+              const missing = tokens.length - hits;
+              const lenDiff = Math.abs(refNorm.length - q.length);
+              // Mejor puntuación: más coincidencias y longitud cercana
+              return { ...r, score: missing, lenDiff };
+            })
+            .filter(Boolean)
+            .sort((a, b) => (a.score === b.score ? a.lenDiff - b.lenDiff : a.score - b.score))
+            .slice(0, 25);
+        }
+
+        function loadTemplate() {
+          if (templatePromise) return templatePromise;
+          const paths = ["/plantillaexcel/plantilla.xlsx", "/plantillaexcel/plantilla.xlsc"];
+          templatePromise = (async () => {
+            for (const p of paths) {
+              try {
+                const res = await fetch(p);
+                if (!res.ok) continue;
+                const buf = await res.arrayBuffer();
+                const wb = new ExcelJS.Workbook();
+                await wb.xlsx.load(buf);
+                return wb;
+              } catch (_e) {
+                /* try next */
+              }
+            }
+            throw new Error("No se pudo cargar la plantilla (plantillaexcel/plantilla.xlsx).");
+          })();
+          return templatePromise;
+        }
+
+        function setActiveCard(card) {
+          const cards = [uploadBtn, extrasBtn, viewBtn, dlBtn];
+          cards.forEach((c) => c?.classList.remove("is-active"));
+          card?.classList.add("is-active");
+        }
+
+        function setCardState(card, badgeEl, unlocked) {
+          if (!card) return;
+          if (unlocked) {
+            card.setAttribute("aria-disabled", "false");
+            card.classList.remove("is-locked", "is-disabled");
+            card.style.pointerEvents = "auto";
+          } else {
+            card.setAttribute("aria-disabled", "true");
+            card.classList.add("is-locked");
+            card.style.pointerEvents = "none";
+          }
+        }
+
+        function resetTones() {
+          [extrasBtn, viewBtn, dlBtn].forEach((c) => c?.classList.remove("card-tone-light", "card-tone-mid", "card-tone-dark"));
+        }
+
+        function applyStageTones(stage) {
+          resetTones();
+          if (stage === "afterUpload") {
+            // Sólo "Datos adicionales" habilitado: usar tono azul oscuro
+            extrasBtn?.classList.add("card-tone-dark");
+          } else if (stage === "afterExtras") {
+            extrasBtn?.classList.add("card-tone-light");
+            viewBtn?.classList.add("card-tone-mid");
+            dlBtn?.classList.add("card-tone-dark");
+          } else if (stage === "afterDownload") {
+            extrasBtn?.classList.add("card-tone-light");
+            viewBtn?.classList.add("card-tone-mid");
+            dlBtn?.classList.add("card-tone-dark");
+          }
+        }
+
+        function setStage(stage) {
+          const map = {
+            start: { upload: true, extras: false, view: false, dl: false },
+            afterUpload: { upload: false, extras: true, view: false, dl: false },
+            // Mantener "Datos adicionales" y "Descargar tabla" habilitados tras completar datos
+            afterExtras: { upload: false, extras: true, view: true, dl: true },
+            afterDownload: { upload: false, extras: true, view: true, dl: true }
+          };
+          const s = map[stage] || map.start;
+          resetTones();
+          if (stage === "start") {
+            uploadBtn?.classList.remove("show-lock");
+          } else {
+            uploadBtn?.classList.add("show-lock");
+          }
+          setCardState(uploadBtn, badges.upload, s.upload);
+          setCardState(extrasBtn, badges.extras, s.extras);
+          setCardState(viewBtn, badges.view, s.view);
+          setCardState(dlBtn, badges.dl, s.dl);
+          if (s.upload) setActiveCard(uploadBtn);
+          else if (s.extras) setActiveCard(extrasBtn);
+          else if (s.view) setActiveCard(viewBtn);
+          else if (s.dl) setActiveCard(dlBtn);
+          if (stage !== "start") applyStageTones(stage);
+        }
+
+        function setStatus(msg) {
+          if (status) status.textContent = msg || "";
+        }
+
+        function hideAllModals() {
+          if (entregaPanel) {
+            entregaPanel.hidden = true;
+            entregaPanel.style.display = "none";
+          }
+          if (visualModal) {
+            visualModal.hidden = true;
+            visualModal.style.display = "none";
+          }
+          modalBackdrop?.setAttribute("aria-hidden", "true");
+          visualBackdrop?.setAttribute("aria-hidden", "true");
+        }
+
+        function ensureWorkbook() {
+          if (!workbook) {
+            alert("Primero sube un archivo Excel.");
+            return false;
+          }
+          return true;
+        }
+
+        
+        function openModal() {
+          if (entregaPanel) {
+            entregaPanel.hidden = false;
+            entregaPanel.classList.add("is-modal");
+            entregaPanel.setAttribute("aria-hidden", "false");
+            entregaPanel.style.display = "grid";
+          }
+          if (modalBackdrop) modalBackdrop.setAttribute("aria-hidden", "false");
+        }
+
+        function closeModal() {
+          if (entregaPanel) {
+            entregaPanel.hidden = true;
+            entregaPanel.setAttribute("aria-hidden", "true");
+            entregaPanel.style.display = "none";
+          }
+          if (modalBackdrop) modalBackdrop.setAttribute("aria-hidden", "true");
+        }
+
+        function openVisual() {
+          if (visualModal) {
+            visualModal.hidden = false;
+            visualModal.classList.add("is-modal");
+            visualModal.setAttribute("aria-hidden", "false");
+            visualModal.style.display = "grid";
+          }
+          if (visualBackdrop) visualBackdrop.setAttribute("aria-hidden", "false");
+        }
+
+        function closeVisual() {
+          if (visualModal) {
+            visualModal.hidden = true;
+            visualModal.setAttribute("aria-hidden", "true");
+            visualModal.style.display = "none";
+          }
+          if (visualBackdrop) visualBackdrop.setAttribute("aria-hidden", "true");
+        }
+
+        function todayISO() {
+          return new Date().toISOString().slice(0, 10);
+        }
+
+        function normalize(val) {
+          return String(val ?? "")
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .replace(/[^a-z0-9 ]+/g, "")
+            .replace(/\s+/g, " ");
+        }
+
+        function getActiveSheet() {
+          if (!workbook) return null;
+          if (activeSheetName) {
+            const s = workbook.worksheets?.find((ws) => ws.name === activeSheetName);
+            if (s) return s;
+          }
+          return workbook.worksheets?.[0] || null;
+        }
+
+        function getSheetAndData() {
+          const sheet = getActiveSheet();
+          if (!sheet) throw new Error("No encontre hojas en el Excel.");
+          activeSheetName = sheet.name;
+          const values = sheet.getSheetValues(); // 1-based rows/cols, values[0] = undefined
+          const data = (values || [])
+            .slice(1)
+            .map((row) => (row ? row.slice(1) : [])); // remove col 0 placeholder
+          return { sheet, data };
+        }
+
+        function findColumn(headers, keywords) {
+          return headers.findIndex((h) => keywords.some((k) => normalize(h) === k || normalize(h).includes(k)));
+        }
+
+        // Column for "N° Entrega" only (avoid "Entrega SALES" / "Entrega equipo")
+        function findNumeroEntrega(headers) {
+          return headers.findIndex((h) => {
+            const n = normalize(h);
+            if (n.includes("sales") || n.includes("equipo")) return false;
+            const keys = ["n entrega", "n° entrega", "no entrega", "numero entrega", "numero de entrega", "nro entrega", "num entrega"];
+            return keys.some((k) => n === k || n.includes(k));
+          });
+        }
+
+        function writeCell(sheet, r, c, value, color) {
+          const cell = sheet.getCell(r + 1, c + 1); // ExcelJS is 1-based
+          cell.value = value;
+          if (color) {
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: `FF${color}` }
+            };
+          }
+        }
+
+        function renderCambios() {
+          if (!cambios.length) {
+            cambiosList.innerHTML = '<p style="margin:0; color:#5a6a74;">Sin entregas aplicadas.</p>';
+            return;
+          }
+          const rows = cambios
+            .map(
+              (c, i) =>
+                `<tr>
+                  <td>${i + 1}</td>
+                  <td>${c.codigo}</td>
+                  <td>${c.referencia || "-"}</td>
+                  <td>${c.entrega}</td>
+                  <td>${c.fecha}</td>
+                  <td><span class="cambio-dot" style="background:#${c.color}"></span></td>
+                </tr>`
+            )
+            .join("");
+          cambiosList.innerHTML = `<table class="cambios-table">
+              <thead><tr><th>#</th><th>Código</th><th>Referencia</th><th>N° Entrega</th><th>Fecha</th><th>Color</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>`;
+        }
+
+        hideAllModals();
+        setStage("start");
+        uploadBtn?.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          fileInput?.click();
+        });
+
+        fileInput?.addEventListener("change", async (e) => {
+          const files = Array.from(e.target.files || []);
+          const file = files.find((f) => /(\.xlsx|\.xls)$/i.test(f.name));
+          if (!file) {
+            setStatus("Sube un Excel (.xlsx o .xls).");
+            workbook = null;
+            return;
+          }
+          entregaColorMap.clear();
+          sourceFileName = file.name.replace(/\.[^.]+$/, "") || "tabla";
+          try {
+            const data = await file.arrayBuffer();
+            workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(data);
+          } catch (err) {
+            console.error(err);
+            workbook = null;
+            setStatus("No pude leer el Excel (¿está dañado o protegido?). Sube un .xlsx/.xls válido.");
+            return;
+          }
+          activeSheetName = workbook.worksheets?.[0]?.name || "";
+          updateReferenceIndex();
+          cambios.splice(0, cambios.length);
+          renderCambios();
+          closeModal();
+          if (fechaInput) fechaInput.value = todayISO();
+          setStatus(`Archivo cargado: ${file.name}`);
+          // activar paso 2 (datos adicionales) y bloquear resto
+          setStage("afterUpload");
+          uploadBtn?.classList.add("show-lock");
+        });
+
+        extrasBtn?.addEventListener("click", () => {
+          if (!ensureWorkbook()) return;
+          // Forzar apertura, aun si alguna clase quedo colgada
+          openModal();
+          codigoInput?.focus();
+          setStatus("Listo para aplicar entregas.");
+        });
+
+        modalBackdrop?.addEventListener("click", closeModal);
+        cerrarModalBtn?.addEventListener("click", closeModal);
+        visualBackdrop?.addEventListener("click", closeVisual);
+        document.addEventListener("keydown", (ev) => {
+          if (ev.key === "Escape") {
+            closeModal();
+            closeVisual();
+          }
+        });
+
+        entregaForm?.addEventListener("submit", (ev) => {
+          ev.preventDefault();
+          if (!ensureWorkbook()) return;
+          const entrega = numeroInput?.value;
+          const fecha = fechaInput?.value || todayISO();
+          const codes = (codigoInput?.value || "")
+            .split(/[\s,;]+/)
+            .map((s) => normalize(s))
+            .filter(Boolean);
+
+          if (!codes.length || !entrega) {
+            setStatus("Completa los códigos y numero de entrega.");
+            return;
+          }
+
+          try {
+            const { sheet, data } = getSheetAndData();
+            if (!data.length) throw new Error("La hoja esta vacia.");
+            const headers = data[0] || [];
+            const codigoCol = findColumn(headers, ["codigo sales", "codigo", "codigo_sales", "codigo sales id", "codigo cliente"]);
+            const entregaCol = findNumeroEntrega(headers);
+            const fechaCol = findColumn(headers, ["fecha de entrega", "fecha entrega", "fecha"]);
+            const refCol = findColumn(headers, ["referencia", "descripcion", "descripción", "nombre", "producto", "plan"]);
+            if (codigoCol === -1) throw new Error("No encontre la columna 'Codigo SALES'.");
+            if (entregaCol === -1) throw new Error("No encontre la columna 'N° Entrega'.");
+            if (fechaCol === -1) throw new Error("No encontre la columna 'Fecha de entrega'.");
+
+            let ok = 0;
+            const notFound = [];
+
+            const entregaValNum = Number(entrega);
+            const entregaValue = Number.isFinite(entregaValNum) ? entregaValNum : entrega;
+
+            codes.forEach((codeNorm) => {
+              const filaIndex = data.findIndex((row, idx) => idx > 0 && normalize(row[codigoCol]) === codeNorm);
+              if (filaIndex === -1) {
+                notFound.push(codeNorm);
+                return;
+              }
+              let color = entregaColorMap.get(entrega);
+              if (!color) {
+                color = colorPalette[entregaColorMap.size % colorPalette.length];
+                entregaColorMap.set(entrega, color);
+              }
+              writeCell(sheet, filaIndex, entregaCol, entregaValue, color);
+              writeCell(sheet, filaIndex, fechaCol, fecha, color);
+              cambios.push({
+                codigo: codes.length === 1 ? codigoInput.value.trim() : codeNorm,
+                entrega: entrega,
+                fecha,
+                color,
+                row: filaIndex,
+                entregaCol,
+                fechaCol,
+                maxCols: sheet.actualColumnCount || sheet.columnCount || (data[0]?.length || 20),
+                referencia: refCol >= 0 ? data[filaIndex]?.[refCol] ?? "" : ""
+              });
+              ok += 1;
+            });
+
+            renderCambios();
+            entregaForm?.reset();
+            if (fechaInput) fechaInput.value = todayISO();
+            const msgOk = ok ? `Actualizados ${ok} código(s).` : "";
+            const msgErr = notFound.length ? ` No encontrados: ${notFound.join(", ")}` : "";
+            setStatus((msgOk + msgErr).trim() || "Sin cambios aplicados.");
+            // habilitar paso 3 (visualizar) y activarlo
+            setStage("afterExtras");
+          } catch (err) {
+            console.error(err);
+            setStatus(err?.message || "No se pudo aplicar el cambio.");
+          }
+        });
+
+        limpiarEntregaBtn?.addEventListener("click", () => {
+          entregaForm?.reset();
+          if (fechaInput) fechaInput.value = todayISO();
+          setStatus("Formulario limpio.");
+        });
+
+        toggleCambiosBtn?.addEventListener("click", () => {
+          const isHidden = cambiosWrap?.hidden;
+          if (cambiosWrap) cambiosWrap.hidden = !isHidden;
+          if (toggleCambiosBtn) {
+            const expanded = !isHidden;
+            toggleCambiosBtn.setAttribute("aria-expanded", expanded ? "true" : "false");
+            const icon = toggleCambiosBtn.querySelector("i");
+            if (icon) icon.className = expanded ? "bi bi-eye-slash" : "bi bi-eye-fill";
+          }
+        });
+
+        salirVistaBtn?.addEventListener("click", closeModal);
+        refSearchInput?.addEventListener("change", () => {
+          const val = String(refSearchInput.value || "").trim();
+          const match = refIndex.find((r) => normalize(r.referencia) === normalize(val));
+          if (match && codigoInput) {
+            codigoInput.value = match.codigoRaw || match.referencia || "";
+          }
+        });
+        refSearchInput?.addEventListener("input", () => {
+          const val = refSearchInput.value || "";
+          renderRefSuggestions(getRefSuggestions(val));
+        });
+        refSearchInput?.addEventListener("focus", () => {
+          renderRefSuggestions(getRefSuggestions(refSearchInput.value || ""));
+        });
+        refSearchInput?.addEventListener("blur", () => {
+          setTimeout(() => renderRefSuggestions([]), 120);
+        });
+        refSuggestions?.addEventListener("click", (e) => {
+          const btn = e.target.closest("button");
+          if (!btn) return;
+          const code = btn.getAttribute("data-code") || "";
+          const ref = btn.getAttribute("data-ref") || "";
+          if (codigoInput) codigoInput.value = code;
+          if (refSearchInput) refSearchInput.value = ref;
+          renderRefSuggestions([]);
+        });
+        copyCodigoBtn?.addEventListener("click", async () => {
+          const val = (codigoInput?.value || "").trim();
+          if (!val) return;
+          try {
+            await navigator.clipboard.writeText(val);
+            showCopyToast("Código copiado");
+          } catch (_e) {
+            setStatus("No pude copiar el código (permisos del navegador).");
+          }
+        });
+        backBtn?.addEventListener("click", () => {
+          workbook = null;
+          sourceFileName = "tabla.xlsx";
+          cambios.splice(0, cambios.length);
+          renderCambios();
+          refIndex = [];
+          renderRefSuggestions([]);
+          if (refSearchInput) refSearchInput.value = "";
+          setStage("start");
+          hideAllModals();
+          setStatus("Seleccion limpiada.");
+        });
+
+        function showCopyToast(msg) {
+          if (!copyToast) return;
+          copyToast.textContent = msg;
+          copyToast.hidden = false;
+          copyToast.classList.add("is-visible");
+          clearTimeout(copyToastTimer);
+          copyToastTimer = setTimeout(() => {
+            copyToast.classList.remove("is-visible");
+          }, 1800);
+        }
+
+        viewBtn?.addEventListener("click", () => {
+          if (!ensureWorkbook()) return;
+          if (!cambios.length) {
+            setStatus("Primero agrega datos adicionales para visualizar la tabla.");
+            return;
+          }
+          const { sheet, data } = getSheetAndData();
+          const rows = data.length ? data : [];
+          if (!rows.length) {
+            setStatus("Hoja vacia.");
+            return;
+          }
+          const headers = rows[0] || [];
+          const codigoCol = findColumn(headers, ["codigo sales", "codigo", "codigo_sales", "codigo sales id", "codigo cliente"]);
+          const entregaCol = findNumeroEntrega(headers);
+          const maxCols = Math.max(headers.length, ...rows.map((r) => r.length));
+
+          function escape(val) {
+            return String(val ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          }
+
+          // Mapa color por codigo para no perderlo al ordenar
+          const colorByCodigo = new Map();
+          cambios.forEach((c) => colorByCodigo.set(normalize(c.codigo), c.color));
+
+          const bodyRows = rows.slice(1);
+          // Ordenar por N° Entrega asc (vacíos al final)
+          const sorted = bodyRows
+            .map((row, idx) => {
+              const raw = entregaCol >= 0 ? row[entregaCol] : "";
+              const num = Number(raw);
+              const key = Number.isFinite(num) ? num : Number.MAX_SAFE_INTEGER;
+              return { row, idx, key };
+            })
+            .sort((a, b) => (a.key === b.key ? a.idx - b.idx : a.key - b.key))
+            .map((x) => x.row);
+
+          const headerHtml = headers.map((cell) => `<th>${escape(cell)}</th>`).join("");
+
+          const bodyHtml = sorted
+            .map((row) => {
+              const codigoVal = codigoCol >= 0 ? row[codigoCol] : "";
+              const color = colorByCodigo.get(normalize(codigoVal));
+              const rowStyle = color ? ` style="background:#${color}33;"` : "";
+              const tds = [];
+              for (let c = 0; c < maxCols; c++) {
+                const val = row[c] ?? "";
+                tds.push(`<td>${escape(val)}</td>`);
+              }
+              return `<tr${rowStyle}>${tds.join("")}</tr>`;
+            })
+            .join("");
+
+          const html =
+            rows.length > 0
+              ? `<div class="visual-meta">
+                    <span class="pill">Filas: ${rows.length - 1}</span>
+                    <span class="pill">Cambios: ${cambios.length}</span>
+                 </div>
+                 <div>
+                  <table class="excel-preview visual-table">
+                    <thead><tr>${headerHtml}</tr></thead>
+                    <tbody>${bodyHtml}</tbody>
+                  </table>
+                 </div>`
+            : "<p style='margin:0; color:#555'>No hay datos en la hoja.</p>";
+
+          if (visualBody) visualBody.innerHTML = html;
+          openVisual();
+        });
+
+        dlBtn?.addEventListener("click", () => {
+          (async () => {
+            if (!ensureWorkbook()) return;
+            try {
+              const sourceSheet = getActiveSheet();
+              if (!sourceSheet) throw new Error("No encontre hoja activa.");
+
+              // Cargar plantilla con estilos intactos (si falla, usar el workbook original)
+              let outputWb = workbook;
+              let targetSheet = sourceSheet;
+              try {
+                const templateWb = await loadTemplate();
+                outputWb = templateWb || workbook;
+                targetSheet =
+                  outputWb.getWorksheet(activeSheetName) ||
+                  outputWb.getWorksheet(sourceSheet.name) ||
+                  outputWb.worksheets[0] ||
+                  sourceSheet;
+                // Copiar valores desde el Excel del usuario al template, sin tocar estilos
+                const maxRow = sourceSheet.actualRowCount || sourceSheet.rowCount;
+                const maxCol = sourceSheet.actualColumnCount || sourceSheet.columnCount || 20;
+                for (let r = 1; r <= maxRow; r++) {
+                  const srcRow = sourceSheet.getRow(r);
+                  const tgtRow = targetSheet.getRow(r);
+                  for (let c = 1; c <= maxCol; c++) {
+                    tgtRow.getCell(c).value = srcRow.getCell(c).value;
+                  }
+                  tgtRow.commit?.();
+                }
+              } catch (_e) {
+                setStatus("No pude cargar la plantilla, uso el libro original.");
+              }
+
+              // Releer datos ya copiados (para ubicar filas a colorear)
+              const dataAfter = sourceSheet.getSheetValues()?.slice(1).map((row) => (row ? row.slice(1) : [])) || [];
+              const headersAfter = dataAfter[0] || [];
+              const codigoCol = findColumn(headersAfter, ["codigo sales", "codigo", "codigo_sales", "codigo sales id", "codigo cliente"]);
+              const entregaColAfter = findNumeroEntrega(headersAfter);
+              const fechaColAfter = findColumn(headersAfter, ["fecha de entrega", "fecha entrega", "fecha"]);
+              const totalCols = targetSheet.actualColumnCount || targetSheet.columnCount || (headersAfter.length || (sourceSheet.actualColumnCount || 20));
+
+              // Limpiar solo rellenos de nuestra paleta previa (sin tocar estilos base)
+              const paletteArgb = new Set(colorPalette.map((c) => `FF${c}`));
+              targetSheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+                if (rowNumber === 1) return;
+                row.eachCell({ includeEmpty: false }, (cell) => {
+                  const fg = cell.fill?.fgColor?.argb;
+                  if (fg && paletteArgb.has(fg)) {
+                    cell.fill = undefined;
+                  }
+                });
+              });
+
+              // Colorear solo las filas aplicadas
+              cambios.forEach((c) => {
+                const codeNorm = normalize(c.codigo);
+                const idxRow = dataAfter.findIndex((row, idx) => idx > 0 && normalize(row[codigoCol]) === codeNorm);
+                if (idxRow === -1) return;
+                const rowNumber = idxRow + 1; // header = fila 1
+                for (let col = 1; col <= totalCols; col++) {
+                  const cell = targetSheet.getCell(rowNumber, col);
+                  cell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: `FF${c.color}` }
+                  };
+                }
+                const entregaCell = targetSheet.getCell(rowNumber, (entregaColAfter ?? 0) + 1);
+                entregaCell.value = Number.isFinite(Number(c.entrega)) ? Number(c.entrega) : c.entrega;
+                const fechaCell = targetSheet.getCell(rowNumber, (fechaColAfter ?? 0) + 1);
+                fechaCell.value = c.fecha;
+              });
+
+              const buf = await (outputWb || workbook).xlsx.writeBuffer();
+              const blob = new Blob([buf], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              });
+              const a = document.createElement("a");
+              a.href = URL.createObjectURL(blob);
+              a.download = `${sourceFileName || "tabla"}-actualizada.xlsx`;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              URL.revokeObjectURL(a.href);
+              setStatus(`Descargado: ${sourceFileName || "tabla"}-actualizada.xlsx`);
+              setStage("afterDownload");
+            } catch (err) {
+              console.error(err);
+              setStatus(err?.message || "No se pudo generar el archivo con formato.");
+            }
+          })();
+        });
+      })();
+    </script>
+  </body>
+</html>
+
+<style>
+  /* Candado final: tamaño compacto y oculto en paso activo */
+  .hero-badges .work-card .work-card-lock,
+  .sales-workspace .work-card-lock {
+    position: absolute !important;
+    top: 8px !important;
+    right: 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 6px !important;
+    background: #1f2d28 !important;
+    border: 1px solid #2f473e !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22) !important;
+    color: #ffffff !important;
+    padding: 0 !important;
+    pointer-events: none !important;
+  }
+  .hero-badges .work-card .work-card-lock i,
+  .sales-workspace .work-card-lock i {
+    font-size: 0.82rem !important;
+    line-height: 1 !important;
+    color: #ffffff !important;
+  }
+      .sales-workspace .work-card.is-active .work-card-lock,
+      .sales-workspace .work-card[aria-disabled='false'] .work-card-lock,
+      #upload-card .work-card-lock {
+        display: none !important;
+      }
+      /* Permitir candado visible en Subir Excel cuando se agrega show-lock tras cargar archivo */
+      .sales-workspace #upload-card.show-lock .work-card-lock {
+        display: inline-flex !important;
+      }
+    </style>
+    <style>
+      /* Override final para badges numerados: fondo blanco y bordes redondeados */
+      .hero-badges .work-card .step-badge,
+      .step-badge {
+        position: absolute !important;
+        top: 8px !important;
+        right: 10px !important;
+        min-width: 34px !important;
+        width: 34px !important;
+        height: 34px !important;
+        padding: 0 !important;
+        border-radius: 10px !important; /* esquinas redondeadas */
+        background: #ffffff !important;
+        color: #0f4c75 !important; /* azul del contenedor */
+        border: 1px solid rgba(15, 76, 117, 0.28) !important;
+        box-shadow: 0 8px 18px rgba(15, 76, 117, 0.18) !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800 !important;
+        font-size: 0.9rem !important;
+        mix-blend-mode: normal !important;
+        background-clip: padding-box !important;
+        z-index: 3 !important;
+      }
+      .work-card.is-locked .step-badge,
+      .work-card[aria-disabled='true'] .step-badge {
+        display: none !important;
+      }
+    </style>
+    <style>
+      /* Visual modal & tabla pro */
+      .excel-preview {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: auto;
+        font-size: 12px;
+        background: #fdfefe;
+      }
+      .excel-preview th,
+      .excel-preview td {
+        border: 1px solid #d6dde8;
+        padding: 7px 10px;
+        vertical-align: top;
+        word-break: break-word;
+      }
+      .excel-preview th {
+        background: #eef1f9;
+        font-weight: 800;
+        color: #1c2b3a;
+      }
+      .excel-preview tr:nth-child(even) td {
+        background: #f7f9fc;
+      }
+      .visual-table {
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .visual-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: linear-gradient(180deg, #f1f3ff 0%, #e5ebff 100%);
+        border-bottom: 1px solid #cbd4e6;
+        color: #16233a;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        font-size: 12.5px;
+        font-weight: 800;
+        padding: 10px 12px;
+        white-space: nowrap;
+      }
+      .visual-table thead th:first-child {
+        border-top-left-radius: 12px;
+      }
+      .visual-table thead th:last-child {
+        border-top-right-radius: 12px;
+      }
+      .visual-table tbody tr:hover td {
+        background: #f1f5ff;
+      }
+      .visual-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.9rem;
+        color: #344054;
+      }
+      .visual-meta .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #1f2b5a;
+        font-weight: 700;
+        border: 1px solid #d7ddf5;
+      }
+      #visual-modal {
+        padding: 32px 24px 20px;
+        background: #ffffff;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+        border-radius: 18px;
+        width: min(98vw, 1400px);
+        max-width: 98vw;
+      }
+      #visual-body {
+        display: grid;
+        gap: 10px;
+        max-height: none;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+
+
+

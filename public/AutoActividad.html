@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Actividad automática</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230b6f7f' d='M4 3h11l5 5v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z' opacity='.2'/%3E%3Cpath fill='%230b6f7f' d='M15 3v5h5'/%3E%3Cpath fill='%230b6f7f' d='M9 9.5h6v1.5H9V9.5zm0 3h6v1.5H9v-1.5zm0 3h6v1.5H9v-1.5z'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        background: linear-gradient(180deg, #e8f5f6 0%, #e3eef0 100%);
+        min-height: 100dvh;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .activity-shell {
+        padding: clamp(14px, 2vw, 28px);
+        gap: clamp(12px, 1.5vw, 22px);
+        width: 100%;
+        min-height: 100dvh;
+        height: auto !important;
+        align-content: start;
+      }
+
+      .activity-shell .app-rail {
+        background: linear-gradient(180deg, #0f7789 0%, #0b5f6d 100%);
+        border: 1px solid rgba(9, 90, 104, 0.3);
+        box-shadow: 0 14px 28px rgba(7, 60, 70, 0.28);
+      }
+
+      .activity-shell .rail-btn {
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .activity-shell .rail-btn.is-current {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .activity-shell .workspace {
+        border-radius: 32px;
+        border: 1px solid #d2e5e8;
+        background: linear-gradient(145deg, #f9fdff 0%, #f1f6f8 100%);
+        padding: clamp(14px, 2vw, 22px);
+        box-shadow: 0 18px 32px rgba(37, 74, 88, 0.12);
+      }
+
+      .workspace-kicker .workspace-home-link {
+        color: #0f7789;
+        margin-right: 10px;
+        padding-right: 16px;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+
+      .workspace-kicker .workspace-home-link::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 56%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 22px;
+        background: rgba(15, 119, 137, 0.24);
+      }
+
+      .activity-layout {
+        min-height: 0;
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        gap: 14px;
+      }
+
+      .panel-card {
+        background: #ffffff;
+        border: 1px solid #dde7ec;
+        border-radius: 18px;
+        padding: 14px;
+        box-shadow: 0 10px 28px rgba(32, 60, 82, 0.08);
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 12px;
+        min-height: 0;
+      }
+
+      .panel-card header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .panel-card h2 {
+        margin: 0;
+        font: 800 1.08rem/1 "Outfit", "Manrope", sans-serif;
+        letter-spacing: -0.01em;
+        color: #0f1f29;
+      }
+
+      .panel-card p {
+        margin: 4px 0 0;
+        color: #5c6c76;
+        font-size: 0.95rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 11px;
+        border-radius: 999px;
+        background: rgba(20, 184, 166, 0.12);
+        color: #0f6b62;
+        font-weight: 800;
+        font-size: 0.85rem;
+      }
+
+      .stage {
+        position: relative;
+        min-height: 320px;
+        border-radius: 16px;
+        border: 1px dashed #b9d4da;
+        background:
+          radial-gradient(circle at 26% 22%, rgba(14, 119, 137, 0.09) 0%, transparent 38%),
+          radial-gradient(circle at 78% 72%, rgba(15, 95, 109, 0.12) 0%, transparent 46%),
+          #f6fbfc;
+        overflow: hidden;
+      }
+
+      .ghost-cursor {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #ffffff 0%, #0f7789 55%, #0a4c56 100%);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 0 8px rgba(14, 119, 137, 0.16), 0 8px 18px rgba(0, 0, 0, 0.28);
+        transition: transform 0.8s cubic-bezier(0.18, 0.82, 0.25, 1);
+        pointer-events: none;
+      }
+
+      .trail {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .trail-dot {
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: rgba(14, 119, 137, 0.32);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      .kbd-box {
+        background: linear-gradient(180deg, #f8fbfd 0%, #eef5f7 100%);
+        border-radius: 16px;
+        border: 1px solid #d4e4e8;
+        padding: 12px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 10px;
+        min-height: 320px;
+      }
+
+      .kbd-status {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: #5b6f77;
+        font-size: 0.92rem;
+      }
+
+      .kbd-status strong {
+        color: #0f1f29;
+      }
+
+      textarea {
+        width: 100%;
+        height: 100%;
+        resize: none;
+        border-radius: 14px;
+        border: 1px solid #c5d8de;
+        padding: 12px;
+        background: #ffffff;
+        color: #0f1f29;
+        font: 700 1rem/1.5 "Manrope", "Segoe UI", monospace;
+        outline: none;
+        box-shadow: inset 0 0 0 1px rgba(14, 119, 137, 0.08);
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: 1px solid #0f7789;
+        background: linear-gradient(135deg, #0f7789 0%, #0b5f6d 100%);
+        color: #f7fdfd;
+        font: 800 0.95rem/1 "Manrope", sans-serif;
+        border-radius: 12px;
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: transform 0.1s ease, filter 0.2s ease;
+      }
+
+      button:hover {
+        filter: brightness(1.08);
+        transform: translateY(-1px);
+      }
+
+      button.secondary {
+        background: #ffffff;
+        color: #0f1f29;
+        border-color: #c5d8de;
+      }
+
+      .note {
+        margin: 4px 0 0;
+        color: #5c6c76;
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 760px) {
+        .workspace-top {
+          grid-template-columns: 1fr;
+        }
+        .workspace-chip {
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="dashboard-shell activity-shell">
+      <div id="dynamic-island" class="dynamic-island" role="status" aria-live="polite" aria-atomic="true"></div>
+      <aside class="app-rail" aria-label="Navegacion">
+        <a class="rail-btn" href="/index.html" title="Pagina principal">
+          <i class="bi bi-house-door-fill"></i>
+        </a>
+        <a class="rail-btn" href="/AdaptadorSALES.html" aria-label="Adaptador SALES" title="Adaptador SALES">
+          <i class="bi bi-file-earmark-bar-graph-fill"></i>
+        </a>
+        <a class="rail-btn" href="/InformesHACKY.html" aria-label="Informes HACKY" title="Informes HACKY">
+          <i class="bi bi-bar-chart-fill"></i>
+        </a>
+        <a class="rail-btn is-current" href="/AutoActividad.html" aria-current="page" title="Actividad automatica">
+          <i class="bi bi-mouse3-fill"></i>
+        </a>
+        <a class="rail-btn" href="/enviarvideosHACKY.html" aria-label="Enviar videos" title="Enviar videos">
+          <i class="bi bi-image-fill"></i>
+        </a>
+        <a class="rail-btn" href="/PlantillasPPTX.html" aria-label="Plantillas PPTX" title="Plantillas PPTX">
+          <i class="bi bi-easel3-fill"></i>
+        </a>
+      </aside>
+
+      <section class="workspace">
+        <header class="workspace-top">
+          <p class="workspace-kicker">
+            <a class="workspace-home-link" href="/index.html" aria-label="Ir al inicio" title="Inicio">
+              <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+            </a>
+            ProyecJO
+          </p>
+          <h1>Simulador de actividad</h1>
+          <span class="workspace-chip"><i class="bi bi-activity"></i> Mantén la sesión con movimiento</span>
+        </header>
+
+        <div class="layout activity-layout">
+          <section class="panel-card" aria-label="Movimiento automático del mouse">
+            <header>
+              <div>
+                <h2>Movimiento del mouse</h2>
+                <p>El cursor fantasma recorre la zona y deja un rastro suave.</p>
+              </div>
+              <span class="badge"><i class="bi bi-mouse3"></i> Activo</span>
+            </header>
+            <div class="stage" id="stage">
+              <div class="trail" id="trail"></div>
+              <div class="ghost-cursor" id="ghostCursor" aria-hidden="true"></div>
+            </div>
+          </section>
+
+          <section class="panel-card" aria-label="Escritura y borrado automático">
+            <header>
+              <div>
+                <h2>Teclado automático</h2>
+                <p>Escribe frases, las copia y luego las borra en bucle.</p>
+              </div>
+              <span class="badge"><i class="bi bi-keyboard-fill"></i> En curso</span>
+            </header>
+            <div class="kbd-box">
+              <div class="kbd-status">
+                <span>Estado: <strong id="typingState">Preparando</strong></span>
+                <span id="loopCount">0 ciclos</span>
+              </div>
+              <textarea id="ghostText" aria-label="Área de escritura automática"></textarea>
+              <div class="controls">
+                <button id="toggleTyping">Pausar</button>
+                <button class="secondary" id="clearText">Limpiar</button>
+              </div>
+              <p class="note">
+                Nota: los navegadores no permiten mover el cursor real ni mandar teclas al sistema, solo se simula dentro de la
+                página.
+              </p>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Movimiento pseudo-aleatorio del cursor dentro del escenario
+      (() => {
+        const stage = document.getElementById("stage");
+        const cursor = document.getElementById("ghostCursor");
+        const trailLayer = document.getElementById("trail");
+        let moveTimer = null;
+        const dots = [];
+
+        function placeDot(x, y) {
+          const dot = document.createElement("div");
+          dot.className = "trail-dot";
+          dot.style.left = `${x - 3}px`;
+          dot.style.top = `${y - 3}px`;
+          trailLayer.appendChild(dot);
+          dots.push(dot);
+          if (dots.length > 26) {
+            const old = dots.shift();
+            old.remove();
+          }
+          requestAnimationFrame(() => (dot.style.opacity = "1"));
+          setTimeout(() => {
+            dot.style.opacity = "0";
+            setTimeout(() => dot.remove(), 260);
+          }, 1200);
+        }
+
+        function moveCursor() {
+          const bounds = stage.getBoundingClientRect();
+          const targetX = Math.random() * (bounds.width - 36) + 18;
+          const targetY = Math.random() * (bounds.height - 36) + 18;
+          cursor.style.transform = `translate(${targetX}px, ${targetY}px)`;
+          placeDot(targetX, targetY);
+          const nextDelay = 820 + Math.random() * 720;
+          moveTimer = setTimeout(moveCursor, nextDelay);
+        }
+
+        moveCursor();
+        window.addEventListener("resize", () => clearTimeout(moveTimer));
+      })();
+
+      // Escritura y borrado automático
+      (() => {
+        const textarea = document.getElementById("ghostText");
+        const typingState = document.getElementById("typingState");
+        const loopCount = document.getElementById("loopCount");
+        const toggleBtn = document.getElementById("toggleTyping");
+        const clearBtn = document.getElementById("clearText");
+
+        const phrases = [
+          "Simulando escritura automática...",
+          "Manteniendo actividad visible en la página.",
+          "Copiando y borrando texto de prueba."
+        ];
+
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let direction = 1; // 1 = escribiendo, -1 = borrando
+        let loops = 0;
+        let paused = false;
+        let timer = null;
+
+        function tick() {
+          if (paused) return;
+          const phrase = phrases[phraseIndex];
+          charIndex += direction;
+
+          if (charIndex >= phrase.length) {
+            direction = -1;
+            typingState.textContent = "Borrando";
+            timer = setTimeout(tick, 520);
+            return;
+          }
+
+          if (charIndex <= 0) {
+            direction = 1;
+            phraseIndex = (phraseIndex + 1) % phrases.length;
+            loops += 1;
+            loopCount.textContent = `${loops} ciclos`;
+            typingState.textContent = "Escribiendo";
+          }
+
+          textarea.value = phrase.slice(0, Math.max(0, charIndex));
+          textarea.focus();
+          textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+
+          const delay = direction === 1 ? 82 + Math.random() * 44 : 32 + Math.random() * 38;
+          timer = setTimeout(tick, delay);
+        }
+
+        toggleBtn.addEventListener("click", () => {
+          paused = !paused;
+          toggleBtn.textContent = paused ? "Reanudar" : "Pausar";
+          typingState.textContent = paused ? "Pausado" : direction === 1 ? "Escribiendo" : "Borrando";
+          if (!paused) {
+            tick();
+          } else if (timer) {
+            clearTimeout(timer);
+          }
+        });
+
+        clearBtn.addEventListener("click", () => {
+          textarea.value = "";
+          charIndex = 0;
+          direction = 1;
+          typingState.textContent = "Escribiendo";
+          textarea.focus();
+        });
+
+        typingState.textContent = "Escribiendo";
+        tick();
+      })();
+    </script>
+  </body>
+</html>
