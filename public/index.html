@@ -26,6 +26,12 @@
         --green: #9bd65a;
         --purple: #b5a3dc;
         --red: #ff6b6b;
+        --desktop-canvas-width: 1920;
+        --desktop-canvas-height: 1080;
+        --portrait-canvas-width: 1080;
+        --portrait-canvas-height: 1440;
+        --active-canvas-width: var(--desktop-canvas-width);
+        --active-canvas-height: var(--desktop-canvas-height);
       }
 
       * {
@@ -48,6 +54,12 @@
         background: transparent;
       }
 
+      .page-stage {
+        width: 100%;
+        min-height: 100dvh;
+        position: relative;
+      }
+
       .page {
         padding: 12px;
         min-height: 100dvh;
@@ -58,18 +70,156 @@
         overflow: hidden;
       }
 
+      body.desktop-fixed {
+        overflow: hidden;
+      }
+
+      body.desktop-fixed.desktop-portrait {
+        --active-canvas-width: var(--portrait-canvas-width);
+        --active-canvas-height: var(--portrait-canvas-height);
+      }
+
+      body.desktop-fixed .hero-copy h1 {
+        font-size: 8.8rem;
+        line-height: 0.92;
+      }
+
+      body.desktop-fixed.desktop-portrait .hero-copy h1 {
+        font-size: 6.8rem;
+      }
+
+      body.desktop-fixed .hero-copy {
+        max-width: 860px;
+        padding-bottom: 120px;
+        transform: none;
+      }
+
+      body.desktop-fixed.desktop-portrait .hero-copy {
+        max-width: 860px;
+        padding-bottom: 0;
+        align-items: center;
+        text-align: center;
+      }
+
+      body.desktop-fixed .hero-copy p {
+        font-size: 1.42rem;
+        line-height: 1.58;
+        max-width: 52ch;
+        margin-top: 22px;
+      }
+
+      body.desktop-fixed.desktop-portrait .hero-copy p {
+        max-width: 44ch;
+        font-size: 1.5rem;
+      }
+
+      body.desktop-fixed .links a {
+        font-size: 1.18rem;
+        padding: 13px 16px;
+      }
+
+      body.desktop-fixed.desktop-portrait .links a,
+      body.desktop-fixed.desktop-portrait .links .betas > a {
+        font-size: 1.28rem;
+        padding: 12px 16px;
+      }
+
+      body.desktop-fixed .links .betas > a {
+        font-size: 1.18rem;
+      }
+
+      body.desktop-fixed .contact-btn {
+        font-size: 1.1rem;
+        padding: 0 22px;
+        min-height: 50px;
+      }
+
+      body.desktop-fixed.desktop-portrait .contact-btn {
+        font-size: 1.2rem;
+        min-height: 54px;
+        padding: 0 24px;
+      }
+
+      body.desktop-fixed .inspo-word--caps {
+        font-size: 1.18rem;
+      }
+
+      body.desktop-fixed .inspo-word--script {
+        font-size: 2.1rem;
+      }
+
+      body.desktop-fixed .inspo-word--bold,
+      body.desktop-fixed .inspo-word--soft {
+        font-size: 1.24rem;
+      }
+
+      body.desktop-fixed .page-stage {
+        min-height: 100dvh;
+        overflow: hidden;
+      }
+
+      body.desktop-fixed .page {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: calc(var(--active-canvas-width) * 1px);
+        height: calc(var(--active-canvas-height) * 1px);
+        min-height: 0;
+        padding: 18px 20px 16px;
+        gap: 16px;
+        transform-origin: top left;
+      }
+
+      body.desktop-fixed .top-nav,
+      body.desktop-fixed .hero,
+      body.desktop-fixed .inspo {
+        width: 1660px;
+        max-width: none;
+      }
+
+      body.desktop-fixed.desktop-portrait .top-nav,
+      body.desktop-fixed.desktop-portrait .hero,
+      body.desktop-fixed.desktop-portrait .inspo {
+        width: 940px;
+      }
+
+      body.desktop-fixed .top-nav {
+        min-height: 72px;
+        border-radius: 22px;
+        padding: 0 22px;
+        gap: 22px;
+      }
+
+      body.desktop-fixed.desktop-portrait .top-nav {
+        min-height: 86px;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 16px 24px;
+        gap: 16px;
+      }
+
+      body.desktop-fixed .brand {
+        font-size: 2rem;
+      }
+
+      body.desktop-fixed.desktop-portrait .brand {
+        font-size: 2.3rem;
+      }
+
       .top-nav {
-        min-height: 58px;
+        min-height: 64px;
         border-radius: 14px;
         background: #fff;
         width: 100%;
         max-width: 1320px;
         margin: 0 auto;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
+        display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 16px;
-        padding: 0 16px;
+        justify-content: space-between;
+        gap: 12px 18px;
+        padding: 10px 18px;
+        box-shadow: 0 10px 26px rgba(143, 111, 0, 0.08);
       }
 
       .brand {
@@ -79,6 +229,7 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        flex: 0 0 auto;
       }
 
       .brand i {
@@ -86,25 +237,50 @@
       }
 
       .links {
-        display: inline-flex;
+        display: flex;
+        flex: 1 1 760px;
+        min-width: 0;
+        flex-wrap: wrap;
+        align-items: center;
         justify-content: center;
-        gap: clamp(10px, 2vw, 28px);
+        gap: 8px 10px;
+      }
+
+      body.desktop-fixed .links {
+        gap: 12px 14px;
+      }
+
+      body.desktop-fixed.desktop-portrait .links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px 20px;
       }
 
       .links a {
         text-decoration: none;
         color: #1d2421;
         font: 800 0.9rem/1 "Manrope", sans-serif;
-        padding: 10px 12px;
+        min-height: 38px;
+        padding: 0 12px;
         border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
       }
 
       .links a:hover {
         background: rgba(16, 23, 20, 0.06);
+        transform: translateY(-1px);
       }
 
       .links a.link-home {
         color: #8f6f00;
+      }
+
+      .links a.link-buzon {
+        color: #b58900;
       }
 
       .links a.link-sales {
@@ -171,14 +347,18 @@
       .contact-btn {
         text-decoration: none;
         border-radius: 999px;
-        min-height: 40px;
-        padding: 0 16px;
+        min-height: 42px;
+        padding: 0 18px;
         background: #f5eeb8;
         color: #0e150f;
         font: 900 0.88rem/1 "Manrope", sans-serif;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 8px;
+        flex: 0 0 auto;
+        white-space: nowrap;
+        box-shadow: inset 0 0 0 1px rgba(143, 111, 0, 0.12);
       }
 
       .hero {
@@ -199,6 +379,19 @@
         background:
           radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 44%),
           transparent;
+      }
+
+      body.desktop-fixed .hero {
+        grid-template-columns: minmax(0, 860px) 700px;
+        align-items: end;
+        padding: 34px 18px 0;
+      }
+
+      body.desktop-fixed.desktop-portrait .hero {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        align-items: start;
+        padding: 26px 12px 0;
       }
 
       .hero-copy {
@@ -223,6 +416,16 @@
         margin-right: clamp(-56px, -4vw, -8px);
       }
 
+      body.desktop-fixed .hero-side-art {
+        height: 790px;
+        margin-right: -18px;
+      }
+
+      body.desktop-fixed.desktop-portrait .hero-side-art {
+        height: 700px;
+        margin-right: 0;
+      }
+
       .hero-side-art img {
         height: 100%;
         width: auto;
@@ -236,6 +439,10 @@
         margin: 0;
         font: 800 clamp(2rem, 6vw, 5.2rem)/0.95 "Outfit", "Manrope", sans-serif;
         letter-spacing: -0.03em;
+      }
+
+      body.desktop-fixed .hero-copy h1 {
+        font-size: 5.2rem;
       }
 
       .hero-copy p {
@@ -276,6 +483,17 @@
         backdrop-filter: blur(9px);
       }
 
+      body.desktop-fixed .inspo {
+        min-height: 72px;
+        border-radius: 24px;
+        padding: 14px 20px;
+      }
+
+      body.desktop-fixed.desktop-portrait .inspo {
+        min-height: 84px;
+        padding: 16px 20px;
+      }
+
 
       .inspo__items {
         display: flex;
@@ -286,6 +504,13 @@
         white-space: nowrap;
         overflow: hidden;
         width: 100%;
+      }
+
+      body.desktop-fixed.desktop-portrait .inspo__items {
+        justify-content: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        white-space: normal;
       }
 
       .inspo-word {
@@ -321,8 +546,7 @@
         color: rgba(29, 36, 33, 0.62);
       }
 
-
-      @media (max-width: 960px) {
+      @media (max-width: 900px) {
         .top-nav {
           grid-template-columns: 1fr;
           justify-items: start;
@@ -354,30 +578,101 @@
         }
       }
 
-      @media (max-width: 720px) {
+      @media (max-width: 900px) {
         .hero {
           border-radius: 22px;
         }
+        body {
+          overflow-y: auto;
+        }
+        .page {
+          height: auto;
+          min-height: 100dvh;
+          overflow: visible;
+        }
+        .top-nav {
+          min-height: auto;
+          justify-content: stretch;
+          padding: 12px;
+          gap: 8px;
+        }
+        .links {
+          width: 100%;
+          flex: none;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+        }
+        .links a {
+          text-align: center;
+          font-size: 0.84rem;
+          padding: 9px 8px;
+        }
+        .links .betas {
+          grid-column: 1 / -1;
+        }
+        .links .betas > a {
+          justify-content: center;
+          width: 100%;
+        }
+        .links .betas .submenu {
+          position: static;
+          width: 100%;
+          box-shadow: none;
+        }
+        .contact-btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .hero {
+          padding: 10px 8px 16px;
+        }
+        .hero-copy {
+          transform: none;
+        }
+        .hero-copy h1 {
+          font-size: clamp(1.8rem, 9vw, 2.6rem);
+        }
+        .hero-copy p {
+          font-size: 0.9rem;
+          line-height: 1.45;
+        }
+        .inspo {
+          padding: 10px 12px;
+        }
+        .inspo__items {
+          justify-content: flex-start;
+          gap: 14px;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+        }
+        .inspo-word {
+          scroll-snap-align: start;
+        }
       }
+
     </style>
   </head>
   <body>
     <main class="window">
-      <section class="page">
+      <div class="page-stage" data-page-stage>
+      <section class="page" data-home-page>
         <header class="top-nav" aria-label="Menu principal">
-          <a class="brand" href="/index.html">ProyecJO</a>
+          <a class="brand" href="./index.html">ProyecJO</a>
           <nav class="links">
-            <a class="link-home" href="/index.html">Home</a>
-            <a class="link-sales" href="/AdaptadorSALES.html">Adaptador Sales</a>
-            <a class="link-visor" href="/AdaptadorVISOR.html">Adaptador Visor</a>
-            <a class="link-hacky" href="/InformesHACKY.html">Informes Hacky</a>
-            <a class="link-videos" href="/enviarvideosHACKY.html">Enviar videos Hacky</a>
+            <a class="link-home" href="./index.html">Home</a>
+            <a class="link-sales" href="./AdaptadorSALES.html">Adaptador Sales</a>
+            <a class="link-visor" href="./AdaptadorVISOR.html">Adaptador Visor</a>
+            <a class="link-hacky" href="./InformesHACKY.html">Informes Hacky</a>
+            <a class="link-buzon" href="./BuzonContenidos.html">Buzón Contenidos</a>
+            <a class="link-videos" href="./enviarvideosHACKY.html">Enviar videos Hacky</a>
             <div class="betas">
               <a href="#" onclick="return false;">Betas ▾</a>
               <div class="submenu" role="menu">
-                <a href="/AutoActividad.html" role="menuitem">AutoActividad</a>
-                <a href="/PlantillasPPTX.html" role="menuitem">Plantillas PPTX</a>
-                <a href="/TablaVS.html" role="menuitem">Tabla V-S</a>
+                <a href="./AutoActividad.html" role="menuitem">AutoActividad</a>
+                <a href="./PlantillasPPTX.html" role="menuitem">Plantillas PPTX</a>
+                <a href="./TablaVS.html" role="menuitem">Tabla V-S</a>
+                <a href="./EventosBETA.html" role="menuitem">Eventos Beta</a>
               </div>
             </div>
           </nav>
@@ -402,9 +697,9 @@
             </p>
           </div>
           <picture class="hero-side-art" aria-hidden="true">
-            <source srcset="/Imagenes/Yo%201.webp?v=20260312-1718" type="image/webp" />
+            <source srcset="./Imagenes/Yo%201.webp?v=20260312-1718" type="image/webp" />
             <img
-              src="/Imagenes/Yo%201.png?v=20260312-1718"
+              src="./Imagenes/Yo%201.png?v=20260312-1718"
               width="2828"
               height="2704"
               alt=""
@@ -412,7 +707,6 @@
               decoding="async"
             />
           </picture>
-
         </section>
 
         <footer class="inspo" aria-label="Frases inspiradoras">
@@ -435,6 +729,53 @@
           </div>
         </footer>
       </section>
+      </div>
     </main>
+    <script>
+      (() => {
+        const mobileMaxWidth = 900;
+        const page = document.querySelector('[data-home-page]');
+        if (!page) {
+          return;
+        }
+
+        function syncDesktopFixedLayout() {
+          const viewportWidth = window.visualViewport?.width || window.innerWidth;
+          const viewportHeight = window.visualViewport?.height || window.innerHeight;
+          const usePortraitCanvas = viewportHeight > viewportWidth;
+          const rootStyles = getComputedStyle(document.documentElement);
+          const baseWidth = Number.parseFloat(
+            rootStyles.getPropertyValue(usePortraitCanvas ? '--portrait-canvas-width' : '--desktop-canvas-width')
+          ) || (usePortraitCanvas ? 1080 : 1920);
+          const baseHeight = Number.parseFloat(
+            rootStyles.getPropertyValue(usePortraitCanvas ? '--portrait-canvas-height' : '--desktop-canvas-height')
+          ) || (usePortraitCanvas ? 1440 : 1080);
+          const scale = Math.max(0.1, Math.min(viewportWidth / baseWidth, viewportHeight / baseHeight));
+          const shouldUseDesktopCanvas = viewportWidth > mobileMaxWidth && scale >= 0.72;
+
+          if (!shouldUseDesktopCanvas) {
+            document.body.classList.remove('desktop-fixed');
+            document.body.classList.remove('desktop-portrait');
+            page.style.removeProperty('transform');
+            return;
+          }
+
+          document.body.classList.add('desktop-fixed');
+          document.body.classList.toggle('desktop-portrait', usePortraitCanvas);
+          const scaledWidth = baseWidth * scale;
+          const scaledHeight = baseHeight * scale;
+          const offsetX = Math.max(0, (viewportWidth - scaledWidth) / 2);
+          const offsetY = Math.max(0, (viewportHeight - scaledHeight) / 2);
+          page.style.transform = `translate(${offsetX.toFixed(2)}px, ${offsetY.toFixed(2)}px) scale(${scale.toFixed(4)})`;
+        }
+
+        syncDesktopFixedLayout();
+        window.addEventListener('resize', syncDesktopFixedLayout);
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', syncDesktopFixedLayout);
+          window.visualViewport.addEventListener('scroll', syncDesktopFixedLayout);
+        }
+      })();
+    </script>
   </body>
 </html>

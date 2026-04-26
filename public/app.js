@@ -101,6 +101,47 @@ const isAdaptadorSalesPage = /\/AdaptadorSALES\.html$/i.test(window.location.pat
 const isAdaptadorVisorPage = /\/AdaptadorVISOR\.html$/i.test(window.location.pathname || '');
 const isAdaptadorPage = isAdaptadorSalesPage || isAdaptadorVisorPage;
 const isTablaVSPage = /\/TablaVS\.html$/i.test(window.location.pathname || '');
+const STATIC_FIREBASE_CONFIG = window.VISOR_FIREBASE || {};
+const STATIC_FIREBASE_WEB_CONFIG = STATIC_FIREBASE_CONFIG.webConfig || null;
+const STATIC_FIRESTORE_CONFIG = STATIC_FIREBASE_CONFIG.firestore || {};
+const STATIC_PROCESSING_PRESETS = {
+  sales: { width: 2550, height: 3300, fit: 'cover' },
+  visor: { width: 1080, height: 1080, fit: 'cover' },
+};
+const STATIC_HISTORY_LIMIT = 25;
+const STATIC_ACTIVE_WINDOW_MS = 90000;
+const STATIC_JPEG_QUALITY = 0.96;
+
+function getFirestoreDb() {
+  if (!firebaseAuthRequired || !window.firebase?.firestore || !window.firebase?.apps?.length) {
+    return null;
+  }
+  return window.firebase.firestore();
+}
+
+function getPresenceCollection() {
+  const db = getFirestoreDb();
+  const collectionName = String(STATIC_FIRESTORE_CONFIG.presenceCollection || 'presence').trim();
+  return db ? db.collection(collectionName) : null;
+}
+
+function getHistoryCollection(uid) {
+  const db = getFirestoreDb();
+  if (!db || !uid) {
+    return null;
+  }
+  const usersCollection = String(STATIC_FIRESTORE_CONFIG.usersCollection || 'users').trim();
+  const historySubcollection = String(STATIC_FIRESTORE_CONFIG.historySubcollection || 'processedHistory').trim();
+  return db.collection(usersCollection).doc(uid).collection(historySubcollection);
+}
+
+function normalizeOutputRelativePath(relativePath) {
+  const safeRelativePath = String(relativePath || 'imagen')
+    .replace(/\\/g, '/')
+    .replace(/\.\./g, '_')
+    .replace(/^\/+/, '');
+  return safeRelativePath.replace(/\.[^.]+$/, '.jpg');
+}
 
 function isHelpPrimaryAction() {
   return submitBtn?.dataset?.action === 'help';
@@ -658,6 +699,52 @@ function mergeHistoryItems(serverItems) {
     .slice(0, 25);
 }
 
+async function persistHistoryEntry(entry) {
+  const uid = String(firebaseUser?.uid || '').trim();
+  const collection = getHistoryCollection(uid);
+  if (!collection) {
+    return null;
+  }
+  const createdAtMs = new Date(entry?.createdAt || Date.now()).getTime();
+  const payload = {
+    createdAt: String(entry?.createdAt || new Date().toISOString()),
+    createdAtMs: Number.isFinite(createdAtMs) ? createdAtMs : Date.now(),
+    outputImages: Number(entry?.outputImages || 0),
+    sourceFiles: Number(entry?.sourceFiles || 0),
+    previewNames: Array.isArray(entry?.previewNames) ? entry.previewNames.slice(0, 6) : [],
+    previews: Array.isArray(entry?.previews) ? entry.previews.slice(0, 3) : [],
+  };
+  const docRef = await collection.add(payload);
+  return { ...payload, firestoreId: docRef.id };
+}
+
+async function removeRemoteHistoryEntry(entry) {
+  const uid = String(firebaseUser?.uid || '').trim();
+  const firestoreId = String(entry?.firestoreId || '').trim();
+  const collection = getHistoryCollection(uid);
+  if (!collection || !firestoreId) {
+    return;
+  }
+  await collection.doc(firestoreId).delete();
+}
+
+async function clearRemoteHistoryEntries(items) {
+  const uid = String(firebaseUser?.uid || '').trim();
+  const collection = getHistoryCollection(uid);
+  if (!collection) {
+    return;
+  }
+  const deletions = [];
+  for (const item of items) {
+    const firestoreId = String(item?.firestoreId || '').trim();
+    if (!firestoreId) {
+      continue;
+    }
+    deletions.push(collection.doc(firestoreId).delete());
+  }
+  await Promise.all(deletions);
+}
+
 function firstHistoryPreview(item) {
   if (Array.isArray(item?.previews) && item.previews.length > 0) {
     return item.previews[0];
@@ -872,11 +959,16 @@ function renderProcessedHistory(items) {
     removeBtn.className = 'history-remove';
     removeBtn.setAttribute('aria-label', 'Eliminar registro');
     removeBtn.innerHTML = '<i class="bi bi-trash3-fill" aria-hidden="true"></i>';
-    removeBtn.addEventListener('click', () => {
+    removeBtn.addEventListener('click', async () => {
       const entryKey = getHistoryItemKey(item);
       markHistoryEntryDeleted(item);
       latestProcessedHistory = latestProcessedHistory.filter((entry) => getHistoryItemKey(entry) !== entryKey);
       renderProcessedHistory();
+      try {
+        await removeRemoteHistoryEntry(item);
+      } catch (_error) {
+        setStatus('No se pudo eliminar el registro en Firebase.', 'error');
+      }
       fetchProcessedHistory().catch(() => {});
     });
 
@@ -937,7 +1029,7 @@ function exportHistoryCsv() {
   setStatus('Historial exportado en CSV.', 'ok');
 }
 
-function clearHistoryAll() {
+async function clearHistoryAll() {
   if (!latestProcessedHistory.length) {
     setStatus('No hay registros para limpiar.', 'error');
     return;
@@ -946,14 +1038,20 @@ function clearHistoryAll() {
   if (!confirmed) {
     return;
   }
+  const snapshot = latestProcessedHistory.slice();
   const deleted = getDeletedHistoryKeys();
-  for (const item of latestProcessedHistory) {
+  for (const item of snapshot) {
     deleted.add(getHistoryItemKey(item));
   }
   saveDeletedHistoryKeys(deleted);
   saveLocalHistoryItems([]);
   latestProcessedHistory = [];
   renderProcessedHistory([]);
+  try {
+    await clearRemoteHistoryEntries(snapshot);
+  } catch (_error) {
+    setStatus('No se pudo limpiar el historial remoto completo.', 'error');
+  }
   fetchProcessedHistory().catch(() => {});
   setStatus('Historial limpiado.', 'ok');
 }
@@ -1009,21 +1107,18 @@ async function sendPresenceHeartbeat() {
   if (!firebaseUser || !firebaseAuthRequired) {
     return;
   }
-  const authToken = await getCurrentAuthToken(true);
-  if (!authToken) {
+  const collection = getPresenceCollection();
+  if (!collection) {
     return;
   }
-  const response = await fetch('/api/presence', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${authToken}`,
-    },
-    body: JSON.stringify({ t: Date.now() }),
-  });
-  if (!response.ok) {
-    throw new Error(await readErrorMessage(response));
-  }
+  const payload = {
+    uid: firebaseUser.uid || 'self',
+    name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Usuario'),
+    email: firebaseUser.email || '',
+    picture: firebaseUser.photoURL || '',
+    lastSeen: Date.now(),
+  };
+  await collection.doc(payload.uid).set(payload, { merge: true });
 }
 
 async function fetchActiveUsers() {
@@ -1033,35 +1128,26 @@ async function fetchActiveUsers() {
     renderUsersPresence();
     return;
   }
-  const authToken = await getCurrentAuthToken();
-  if (!authToken) {
+  const collection = getPresenceCollection();
+  if (!collection) {
     return;
   }
-  let response = await fetch('/api/users-presence', {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
+  const snapshot = await collection.orderBy('lastSeen', 'desc').limit(60).get();
+  const now = Date.now();
+  const users = snapshot.docs.map((doc) => {
+    const data = doc.data() || {};
+    const lastSeen = Number(data.lastSeen || 0);
+    return {
+      uid: String(data.uid || doc.id || '').trim(),
+      name: String(data.name || (data.email ? String(data.email).split('@')[0] : 'Usuario')).trim() || 'Usuario',
+      email: String(data.email || '').trim(),
+      picture: String(data.picture || '').trim(),
+      agoSec: Math.max(0, Math.round((now - lastSeen) / 1000)),
+      isActive: now - lastSeen <= STATIC_ACTIVE_WINDOW_MS,
+    };
   });
-  if (response.ok) {
-    const data = await response.json();
-    latestActiveUsers = Array.isArray(data?.activeUsers) ? data.activeUsers : [];
-    latestInactiveUsers = Array.isArray(data?.inactiveUsers) ? data.inactiveUsers : [];
-    renderUsersPresence();
-    return;
-  }
-
-  // Fallback to old endpoint if backend still running old version.
-  response = await fetch('/api/active-users', {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error(await readErrorMessage(response));
-  }
-  const fallbackData = await response.json();
-  latestActiveUsers = Array.isArray(fallbackData?.users) ? fallbackData.users : [];
-  latestInactiveUsers = [];
+  latestActiveUsers = users.filter((item) => item.isActive).slice(0, 20);
+  latestInactiveUsers = users.filter((item) => !item.isActive).slice(0, 40);
   renderUsersPresence();
 }
 
@@ -1070,20 +1156,24 @@ async function fetchProcessedHistory() {
     renderProcessedHistory([]);
     return;
   }
-  const authToken = await getCurrentAuthToken();
-  if (!authToken) {
+  const collection = getHistoryCollection(String(firebaseUser.uid || '').trim());
+  if (!collection) {
     return;
   }
-  const response = await fetch('/api/processed-history', {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
+  const snapshot = await collection.orderBy('createdAtMs', 'desc').limit(STATIC_HISTORY_LIMIT).get();
+  const remoteItems = snapshot.docs.map((doc) => {
+    const data = doc.data() || {};
+    return {
+      firestoreId: doc.id,
+      createdAt: String(data.createdAt || ''),
+      createdAtMs: Number(data.createdAtMs || 0),
+      outputImages: Number(data.outputImages || 0),
+      sourceFiles: Number(data.sourceFiles || 0),
+      previewNames: Array.isArray(data.previewNames) ? data.previewNames : [],
+      previews: Array.isArray(data.previews) ? data.previews : [],
+    };
   });
-  if (!response.ok) {
-    throw new Error(await readErrorMessage(response));
-  }
-  const data = await response.json();
-  const merged = mergeHistoryItems(Array.isArray(data?.items) ? data.items : []);
+  const merged = mergeHistoryItems(remoteItems);
   saveLocalHistoryItems(merged);
   renderProcessedHistory(merged);
 }
@@ -1215,14 +1305,10 @@ async function initFirebaseAuth() {
   }
 
   try {
-    const response = await fetch('/api/firebase-config');
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    const data = await response.json();
-    firebaseAuthRequired = Boolean(data?.enabled);
-    firebasePushEnabled = Boolean(data?.pushEnabled);
-    firebaseVapidKey = firebasePushEnabled ? String(data?.vapidKey || '') : '';
+    const data = STATIC_FIREBASE_CONFIG || {};
+    firebaseAuthRequired = Boolean(data.authEnabled);
+    firebasePushEnabled = Boolean(data.pushEnabled);
+    firebaseVapidKey = firebasePushEnabled ? String(data.vapidKey || '') : '';
 
     if (!firebaseAuthRequired) {
       firebaseAuthReady = true;
@@ -1231,12 +1317,12 @@ async function initFirebaseAuth() {
       return;
     }
 
-    if (!data?.webConfig) {
-      throw new Error('Falta configuracion web de Firebase en el servidor.');
+    if (!STATIC_FIREBASE_WEB_CONFIG) {
+      throw new Error('Falta configuracion web estatica de Firebase.');
     }
 
     if (!window.firebase.apps.length) {
-      window.firebase.initializeApp(data.webConfig);
+      window.firebase.initializeApp(STATIC_FIREBASE_WEB_CONFIG);
     }
     if (firebasePushEnabled && window.firebase.messaging) {
       firebaseMessaging = window.firebase.messaging();
@@ -1297,13 +1383,7 @@ async function registerPushToken() {
     return;
   }
 
-  const authToken = await getCurrentAuthToken(true);
-  if (!authToken) {
-    setStatus('Sesion invalida para activar notificaciones.', 'error');
-    return;
-  }
-
-  const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+  const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
   await navigator.serviceWorker.ready;
 
   if (!registration.active) {
@@ -1329,18 +1409,6 @@ async function registerPushToken() {
     throw new Error('No se pudo generar token de notificaciones.');
   }
   pushToken = token;
-
-  const response = await fetch('/api/push/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${authToken}`,
-    },
-    body: JSON.stringify({ token }),
-  });
-  if (!response.ok) {
-    throw new Error(await readErrorMessage(response));
-  }
 }
 
 async function unregisterPushToken() {
@@ -1348,19 +1416,6 @@ async function unregisterPushToken() {
     pushToken = '';
     return;
   }
-  const authToken = await getCurrentAuthToken(true).catch(() => '');
-  if (!authToken) {
-    pushToken = '';
-    return;
-  }
-  await fetch('/api/push/unregister', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${authToken}`,
-    },
-    body: JSON.stringify({ token: pushToken }),
-  }).catch(() => {});
   pushToken = '';
 }
 
@@ -1762,22 +1817,10 @@ async function checkHealth() {
   if (!healthEl) {
     return;
   }
-  try {
-    const response = await fetch('/api/health');
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    const data = await response.json();
-    const aiModelText = data.ai?.models?.strong ? data.ai.models.strong : 'n/a';
-    const aiProfiles = Array.isArray(data.ai?.profiles) ? data.ai.profiles.join(',') : 'n/a';
-    const aiText = data.ai ? ` | IA: ${data.ai.engine} (${aiModelText}) | perfiles: ${aiProfiles}` : '';
-    const authText = data.auth?.enabled ? ' | Auth: Firebase activo' : ' | Auth: desactivado';
-    healthEl.textContent = `Backend activo | ${data.resize.width}x${data.resize.height} | ${data.resize.fit}${aiText}${authText}`;
-    healthEl.style.color = '#1e3a8a';
-  } catch (_error) {
-    healthEl.textContent = 'Backend no detectado en este origen. Abre la app desde http://localhost:3000';
-    healthEl.style.color = '#b91c1c';
-  }
+  const target = isAdaptadorVisorPage ? STATIC_PROCESSING_PRESETS.visor : STATIC_PROCESSING_PRESETS.sales;
+  const authText = firebaseAuthRequired ? 'Firebase activo' : 'Firebase opcional';
+  healthEl.textContent = `Modo estatico | ${target.width}x${target.height} | ${target.fit} | procesamiento local | ${authText}`;
+  healthEl.style.color = '#1e3a8a';
 }
 
 async function readErrorMessage(response) {
@@ -1812,55 +1855,10 @@ async function extractXhrError(xhr) {
 }
 
 function sendResizeRequest(formData, authToken = '', targetMode = '') {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/resize', true);
-    xhr.responseType = 'blob';
-    if (authToken) {
-      xhr.setRequestHeader('Authorization', `Bearer ${authToken}`);
-    }
-    if (targetMode) {
-      xhr.setRequestHeader('X-Target-Mode', targetMode);
-    }
-
-    xhr.upload.onprogress = (event) => {
-      if (!event.lengthComputable) {
-        setButtonProgress(20, 'Subiendo archivos...');
-        return;
-      }
-      const uploadPercent = (event.loaded / event.total) * 65;
-      setButtonProgress(uploadPercent, `Subiendo... ${Math.round((event.loaded / event.total) * 100)}%`);
-    };
-
-    xhr.onprogress = (event) => {
-      if (xhr.readyState < 3) {
-        return;
-      }
-
-      if (!event.lengthComputable) {
-        setButtonProgress(88, 'Procesando en servidor...');
-        return;
-      }
-
-      const mapped = 70 + (event.loaded / event.total) * 30;
-      setButtonProgress(mapped, `Descargando... ${Math.round((event.loaded / event.total) * 100)}%`);
-    };
-
-    xhr.onload = async () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        setButtonProgress(100, 'Completado 100%');
-        resolve(xhr.response);
-        return;
-      }
-      reject(new Error(await extractXhrError(xhr)));
-    };
-
-    xhr.onerror = () => {
-      reject(new Error('No se pudo conectar con el servidor.'));
-    };
-
-    xhr.send(formData);
-  });
+  void formData;
+  void authToken;
+  void targetMode;
+  return Promise.reject(new Error('La app ya no usa el endpoint de resize; ahora procesa localmente.'));
 }
 
 itemsInput.addEventListener('change', async () => {
@@ -1999,27 +1997,13 @@ form.addEventListener('submit', async (event) => {
   submitBtn.disabled = true;
   syncActionCards();
   setButtonProgress(5, 'Preparando...');
-  setStatus(`Procesando ${selectedFiles.length} archivo(s) con IA...`, 'ok');
+  setStatus(`Procesando ${selectedFiles.length} archivo(s) en tu navegador...`, 'ok');
 
   try {
     const selectedSnapshot = selectedFiles.map((item) => item.file.name);
-    const authToken = await getCurrentAuthToken(true);
-    if (firebaseAuthRequired && !authToken) {
-      throw new Error('Sesion no valida. Vuelve a iniciar sesion.');
-    }
-
-    const formData = new FormData();
     const targetMode = isAdaptadorVisorPage ? 'visor' : 'sales';
-    formData.append('target', targetMode);
-    formData.append('aiMode', '1');
-    formData.append('aiStrength', 'strong');
-    formData.append('aiProfile', 'product');
-    for (const item of selectedFiles) {
-      formData.append('items', item.file, item.file.name);
-      formData.append('paths', item.file.webkitRelativePath || item.file.name);
-    }
-
-    const blob = await sendResizeRequest(formData, authToken, targetMode);
+    const result = await processImagesClientSide(targetMode);
+    const blob = result.blob;
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -2033,13 +2017,15 @@ form.addEventListener('submit', async (event) => {
     setStatus('Descargado con exito.', 'ok');
     resetDownloadProgress(900);
     const previews = await buildHistoryPreviews();
-    const localItems = addLocalHistoryEntry({
+    const historyEntry = {
       createdAt: new Date().toISOString(),
-      outputImages: previewImages.length > 0 ? previewImages.length : selectedSnapshot.length,
+      outputImages: Number(result.totalImages || (previewImages.length > 0 ? previewImages.length : selectedSnapshot.length)),
       sourceFiles: selectedSnapshot.length,
       previewNames: selectedSnapshot.slice(0, 3),
       previews,
-    });
+    };
+    const remoteEntry = await persistHistoryEntry(historyEntry).catch(() => null);
+    const localItems = addLocalHistoryEntry(remoteEntry || historyEntry);
     renderProcessedHistory(localItems);
     fetchProcessedHistory().catch(() => {});
   } catch (error) {
@@ -2405,4 +2391,130 @@ for (const tab of usersFilterTabEls) {
     usersFilter = nextFilter;
     renderUsersPresence();
   });
+}
+
+function loadImageElementFromBlob(blob) {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(blob);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('No se pudo abrir una imagen.'));
+    };
+    image.src = objectUrl;
+  });
+}
+
+async function renderBlobToJpeg(blob, target) {
+  const image = await loadImageElementFromBlob(blob);
+  const canvas = document.createElement('canvas');
+  canvas.width = target.width;
+  canvas.height = target.height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('El navegador no pudo crear el lienzo de conversion.');
+  }
+
+  const srcWidth = Number(image.naturalWidth || image.width || 0);
+  const srcHeight = Number(image.naturalHeight || image.height || 0);
+  if (!srcWidth || !srcHeight) {
+    throw new Error('La imagen no tiene dimensiones validas.');
+  }
+
+  const scale = Math.max(target.width / srcWidth, target.height / srcHeight);
+  const drawWidth = srcWidth * scale;
+  const drawHeight = srcHeight * scale;
+  const dx = (target.width - drawWidth) / 2;
+  const dy = (target.height - drawHeight) / 2;
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, target.width, target.height);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(image, dx, dy, drawWidth, drawHeight);
+
+  return await new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (result) => {
+        if (!result) {
+          reject(new Error('No se pudo exportar la imagen convertida.'));
+          return;
+        }
+        resolve(result);
+      },
+      'image/jpeg',
+      STATIC_JPEG_QUALITY,
+    );
+  });
+}
+
+async function collectImagesForProcessing() {
+  const items = [];
+  for (const selectedItem of selectedFiles) {
+    const sourcePath = selectedItem.file.webkitRelativePath || selectedItem.file.name;
+    if (!selectedItem.isZip) {
+      items.push({
+        blob: selectedItem.file,
+        relativePath: sourcePath,
+      });
+      continue;
+    }
+
+    if (!window.JSZip) {
+      throw new Error('Falta JSZip para abrir archivos ZIP en modo estatico.');
+    }
+
+    const zip = await window.JSZip.loadAsync(selectedItem.file);
+    const entries = Object.values(zip.files);
+    const zipFolder = String(sourcePath || selectedItem.file.name).replace(/\.zip$/i, '');
+
+    for (const entry of entries) {
+      if (entry.dir || !isImageFile(entry.name)) {
+        continue;
+      }
+      items.push({
+        blob: await entry.async('blob'),
+        relativePath: `${zipFolder}/${entry.name}`,
+      });
+    }
+  }
+  return items;
+}
+
+async function processImagesClientSide(targetMode) {
+  const target = STATIC_PROCESSING_PRESETS[targetMode] || STATIC_PROCESSING_PRESETS.sales;
+  const normalizedImages = await collectImagesForProcessing();
+  if (!normalizedImages.length) {
+    throw new Error('No se encontraron imagenes validas en los archivos seleccionados.');
+  }
+  if (!window.JSZip) {
+    throw new Error('Falta JSZip para empaquetar el ZIP final.');
+  }
+
+  const archive = new window.JSZip();
+  for (let index = 0; index < normalizedImages.length; index += 1) {
+    const image = normalizedImages[index];
+    const progress = 8 + (index / normalizedImages.length) * 84;
+    setButtonProgress(progress, `Procesando ${index + 1} de ${normalizedImages.length}...`);
+    const outputBlob = await renderBlobToJpeg(image.blob, target);
+    archive.file(normalizeOutputRelativePath(image.relativePath), outputBlob);
+  }
+
+  setButtonProgress(94, 'Empaquetando ZIP...');
+  const zipBlob = await archive.generateAsync(
+    { type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 9 } },
+    (metadata) => {
+      const progress = 94 + Math.round((Number(metadata.percent || 0) / 100) * 6);
+      setButtonProgress(progress, 'Empaquetando ZIP...');
+    },
+  );
+
+  return {
+    blob: zipBlob,
+    totalImages: normalizedImages.length,
+  };
 }

@@ -214,7 +214,8 @@
       .sales-workspace #auth-logout-btn:hover {
         background: #eceee9;
       }
-      .sales-workspace #auth-logout-btn i {
+      .sales-workspace #auth-logout-btn i,
+      .sales-workspace #auth-logout-btn .auth-logout-icon {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -600,7 +601,7 @@
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
-      @media (max-width: 1080px) {
+      @media (max-width: 960px) {
         .sales-shell {
           grid-template-columns: 1fr;
           padding: 10px;
@@ -1502,7 +1503,7 @@
         pointer-events: none;
       }
 
-      @media (max-width: 1080px) {
+      @media (max-width: 960px) {
         .sales-shell {
           place-items: start stretch;
         }
@@ -1726,7 +1727,8 @@
       .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn:hover {
         background: rgba(0, 0, 0, 0.04);
       }
-      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn i {
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn i,
+      .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn .auth-logout-icon {
         font-size: 1.28rem;
       }
       .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn span {
@@ -1747,9 +1749,33 @@
           width: 34px;
           min-height: 34px;
         }
-        .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn i {
+        .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn i,
+        .sales-workspace .workspace-auth.workspace-auth--panel #auth-logout-btn .auth-logout-icon {
           font-size: 1.18rem;
         }
+      }
+
+      body.sales-secondary-fit {
+        overflow: hidden;
+      }
+
+      body.sales-secondary-fit .sales-shell {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 1025px !important;
+        height: 685px !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 14px 18px !important;
+        transform-origin: top left;
+        overflow: visible !important;
+      }
+
+      body.sales-secondary-fit .sales-workspace .workspace-auth.workspace-auth--panel {
+        min-height: 144px;
+        padding: 12px 6px;
+        gap: 14px;
       }
       /* Pink theme overrides for Adaptador VISOR */
       body.theme-visor {
@@ -1762,6 +1788,10 @@
         --visor-accent-soft: #fde2ef;
         --visor-bg: #fff6fb;
         --visor-border: #f3d5e4;
+        --menu-accent: var(--visor-accent);
+        --menu-accent-ink: #6b153c;
+        --menu-accent-soft: rgba(232, 62, 140, 0.16);
+        --menu-accent-border: rgba(232, 62, 140, 0.35);
         background: linear-gradient(180deg, #fff5fb 0%, #fde7f1 100%);
       }
       .theme-visor .sales-workspace .workspace-auth.workspace-auth--panel {
@@ -2009,22 +2039,44 @@
     </style>
   </head>
   <body class="theme-visor">
+    <button
+      class="page-menu-toggle"
+      type="button"
+      aria-label="Abrir menu de paginas"
+      aria-controls="page-menu"
+      aria-expanded="false"
+      data-page-menu-toggle
+    >
+      <i class="bi bi-list" aria-hidden="true"></i>
+    </button>
+    <div class="page-menu-backdrop" data-page-menu-backdrop></div>
+    <nav class="page-menu" id="page-menu" aria-label="Paginas" aria-hidden="true" data-page-menu>
+          <a href="./index.html"><i class="bi bi-house-door-fill" aria-hidden="true"></i>Pagina principal</a>
+          <a href="./AdaptadorSALES.html"><i class="bi bi-file-earmark-bar-graph-fill" aria-hidden="true"></i>Adaptador SALES</a>
+          <a href="./AdaptadorVISOR.html"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>Adaptador VISOR</a>
+          <a href="./InformesHACKY.html"><i class="bi bi-bar-chart-fill" aria-hidden="true"></i>Informes HACKY</a>
+          <a href="./TablaVS.html"><i class="bi bi-table" aria-hidden="true"></i>Tabla VS</a>
+          <a href="./EventosBETA.html"><i class="bi bi-calendar-event-fill" aria-hidden="true"></i>Eventos Beta</a>
+          <a href="./AutoActividad.html"><i class="bi bi-mouse3-fill" aria-hidden="true"></i>Actividad automatica</a>
+          <a href="./enviarvideosHACKY.html"><i class="bi bi-image-fill" aria-hidden="true"></i>Enviar videos</a>
+          <a href="./PlantillasPPTX.html"><i class="bi bi-easel3-fill" aria-hidden="true"></i>Plantillas PPTX</a>
+    </nav>
     <main class="dashboard-shell sales-shell visor-shell">
       <div id="dynamic-island" class="dynamic-island" role="status" aria-live="polite" aria-atomic="true"></div>
       <aside class="app-rail" aria-label="Navegacion">
-        <a class="rail-btn" href="/index.html" title="Pagina principal">
+        <a class="rail-btn" href="./index.html" title="Pagina principal">
           <i class="bi bi-house-door-fill"></i>
         </a>
-        <a class="rail-btn is-current" href="/AdaptadorVISOR.html" title="Adaptador VISOR" aria-current="page">
+        <a class="rail-btn is-current" href="./AdaptadorVISOR.html" title="Adaptador VISOR" aria-current="page">
           <i class="bi bi-file-earmark-bar-graph-fill"></i>
         </a>
-        <a class="rail-btn" href="/AdaptadorSALES.html" title="Adaptador SALES">
+        <a class="rail-btn" href="./AdaptadorSALES.html" title="Adaptador SALES">
           <i class="bi bi-file-earmark-bar-graph"></i>
         </a>
-        <a class="rail-btn" href="/InformesHACKY.html" aria-label="Informes HACKY" title="Informes HACKY">
+        <a class="rail-btn" href="./InformesHACKY.html" aria-label="Informes HACKY" title="Informes HACKY">
           <i class="bi bi-bar-chart-fill"></i>
         </a>
-        <a class="rail-btn" href="/PlantillasPPTX.html" aria-label="Plantillas PPTX" title="Plantillas PPTX">
+        <a class="rail-btn" href="./PlantillasPPTX.html" aria-label="Plantillas PPTX" title="Plantillas PPTX">
           <i class="bi bi-easel3-fill"></i>
         </a>
         <button type="button" class="rail-btn" aria-label="Multimedia">
@@ -2035,7 +2087,7 @@
       <section class="workspace sales-workspace visor-workspace">
         <header class="workspace-top">
           <p class="workspace-kicker">
-            <a class="workspace-home-link" href="/index.html" aria-label="Ir al inicio" title="Inicio">
+      <a class="workspace-home-link" href="./index.html" aria-label="Ir al inicio" title="Inicio">
               <i class="bi bi-house-door-fill" aria-hidden="true"></i>
             </a>
             ProyecJO
@@ -2124,7 +2176,12 @@
                 <span id="auth-avatar-fallback" class="rail-avatar-fallback" hidden>U</span>
               </button>
               <button id="auth-logout-btn" type="button" class="workspace-auth-logout" aria-label="Cerrar sesion" hidden>
-                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                <svg class="auth-logout-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                  <path
+                    fill="currentColor"
+                    d="M6.5 2.5a.75.75 0 0 1 .75-.75h4A1.75 1.75 0 0 1 13 3.5v9A1.75 1.75 0 0 1 11.25 14h-4a.75.75 0 0 1 0-1.5h4a.25.25 0 0 0 .25-.25v-9a.25.25 0 0 0-.25-.25h-4a.75.75 0 0 1-.75-.75Zm-2.72 2.22a.75.75 0 0 1 1.06 0l2.75 2.75a.75.75 0 0 1 0 1.06L4.84 11.28a.75.75 0 1 1-1.06-1.06l1.47-1.47H1.75a.75.75 0 0 1 0-1.5h3.5L3.78 5.78a.75.75 0 0 1 0-1.06Z"
+                  ></path>
+                </svg>
                 <span>Cerrar sesi&oacute;n</span>
               </button>
             </div>
@@ -2138,7 +2195,7 @@
             </div>
             <figure class="profile-art" aria-label="Imagen de perfil">
               <div class="profile-art-bg" aria-hidden="true"></div>
-              <img class="profile-art-photo" src="/Imagenes/Yo 5.png" alt="Imagen de perfil" loading="lazy" />
+            <img class="profile-art-photo" src="./Imagenes/Yo 5.png" alt="Imagen de perfil" loading="lazy" />
             </figure>
           </section>
 
@@ -2245,10 +2302,13 @@
     </div>
 
     <script src="vendor/jszip.min.js"></script>
+    <script src="firebase-config.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging-compat.js"></script>
     <script src="app.js"></script>
+    <script src="menu.js"></script>
   </body>
 </html>
 

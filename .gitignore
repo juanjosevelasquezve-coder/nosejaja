@@ -2,7 +2,3 @@
 secrets/
 *.pem
 *.key
-node_modules/
-logs/
-*.log
-proyecjo-firebase-adminsdk-fbsvc-d166f941f7.json

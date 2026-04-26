@@ -25,6 +25,10 @@
         height: auto;
         overflow-x: hidden;
         overflow-y: auto;
+        --menu-accent: #0f7789;
+        --menu-accent-ink: #0b5a66;
+        --menu-accent-soft: rgba(15, 119, 137, 0.16);
+        --menu-accent-border: rgba(15, 119, 137, 0.35);
       }
 
       .activity-shell {
@@ -259,25 +263,47 @@
     </style>
   </head>
   <body>
+    <button
+      class="page-menu-toggle"
+      type="button"
+      aria-label="Abrir menu de paginas"
+      aria-controls="page-menu"
+      aria-expanded="false"
+      data-page-menu-toggle
+    >
+      <i class="bi bi-list" aria-hidden="true"></i>
+    </button>
+    <div class="page-menu-backdrop" data-page-menu-backdrop></div>
+    <nav class="page-menu" id="page-menu" aria-label="Paginas" aria-hidden="true" data-page-menu>
+        <a href="./index.html"><i class="bi bi-house-door-fill" aria-hidden="true"></i>Pagina principal</a>
+        <a href="./AdaptadorSALES.html"><i class="bi bi-file-earmark-bar-graph-fill" aria-hidden="true"></i>Adaptador SALES</a>
+        <a href="./AdaptadorVISOR.html"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>Adaptador VISOR</a>
+        <a href="./InformesHACKY.html"><i class="bi bi-bar-chart-fill" aria-hidden="true"></i>Informes HACKY</a>
+        <a href="./TablaVS.html"><i class="bi bi-table" aria-hidden="true"></i>Tabla VS</a>
+        <a href="./EventosBETA.html"><i class="bi bi-calendar-event-fill" aria-hidden="true"></i>Eventos Beta</a>
+        <a href="./AutoActividad.html"><i class="bi bi-mouse3-fill" aria-hidden="true"></i>Actividad automatica</a>
+        <a href="./enviarvideosHACKY.html"><i class="bi bi-image-fill" aria-hidden="true"></i>Enviar videos</a>
+        <a href="./PlantillasPPTX.html"><i class="bi bi-easel3-fill" aria-hidden="true"></i>Plantillas PPTX</a>
+    </nav>
     <main class="dashboard-shell activity-shell">
       <div id="dynamic-island" class="dynamic-island" role="status" aria-live="polite" aria-atomic="true"></div>
       <aside class="app-rail" aria-label="Navegacion">
-        <a class="rail-btn" href="/index.html" title="Pagina principal">
+      <a class="rail-btn" href="./index.html" title="Pagina principal">
           <i class="bi bi-house-door-fill"></i>
         </a>
-        <a class="rail-btn" href="/AdaptadorSALES.html" aria-label="Adaptador SALES" title="Adaptador SALES">
+      <a class="rail-btn" href="./AdaptadorSALES.html" aria-label="Adaptador SALES" title="Adaptador SALES">
           <i class="bi bi-file-earmark-bar-graph-fill"></i>
         </a>
-        <a class="rail-btn" href="/InformesHACKY.html" aria-label="Informes HACKY" title="Informes HACKY">
+      <a class="rail-btn" href="./InformesHACKY.html" aria-label="Informes HACKY" title="Informes HACKY">
           <i class="bi bi-bar-chart-fill"></i>
         </a>
-        <a class="rail-btn is-current" href="/AutoActividad.html" aria-current="page" title="Actividad automatica">
+      <a class="rail-btn is-current" href="./AutoActividad.html" aria-current="page" title="Actividad automatica">
           <i class="bi bi-mouse3-fill"></i>
         </a>
-        <a class="rail-btn" href="/enviarvideosHACKY.html" aria-label="Enviar videos" title="Enviar videos">
+      <a class="rail-btn" href="./enviarvideosHACKY.html" aria-label="Enviar videos" title="Enviar videos">
           <i class="bi bi-image-fill"></i>
         </a>
-        <a class="rail-btn" href="/PlantillasPPTX.html" aria-label="Plantillas PPTX" title="Plantillas PPTX">
+      <a class="rail-btn" href="./PlantillasPPTX.html" aria-label="Plantillas PPTX" title="Plantillas PPTX">
           <i class="bi bi-easel3-fill"></i>
         </a>
       </aside>
@@ -285,7 +311,7 @@
       <section class="workspace">
         <header class="workspace-top">
           <p class="workspace-kicker">
-            <a class="workspace-home-link" href="/index.html" aria-label="Ir al inicio" title="Inicio">
+      <a class="workspace-home-link" href="./index.html" aria-label="Ir al inicio" title="Inicio">
               <i class="bi bi-house-door-fill" aria-hidden="true"></i>
             </a>
             ProyecJO
@@ -450,5 +476,6 @@
         tick();
       })();
     </script>
+    <script src="menu.js"></script>
   </body>
 </html>
