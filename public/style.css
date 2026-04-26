@@ -37,19 +37,10 @@ body {
 
 body.is-view-loading {
   overflow: hidden !important;
-  background: #000000;
 }
 
 body.is-view-loading > * {
   visibility: hidden;
-}
-
-body.is-view-loading::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 12000;
-  background: #000000;
 }
 
 body.is-view-loading::after {

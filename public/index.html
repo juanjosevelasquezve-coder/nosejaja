@@ -50,7 +50,6 @@
 
       body.is-page-loading {
         overflow: hidden !important;
-        background: #000000;
       }
 
       body.is-page-loading .window,
@@ -62,7 +61,6 @@
         position: fixed;
         inset: 0;
         z-index: 10000;
-        background: #000000;
         transition: opacity 320ms ease, visibility 320ms ease;
       }
 
@@ -1763,7 +1761,9 @@
     </script>
     <script>
       (() => {
+        const PAGE_LOADER_MIN_MS = 3000;
         const loaderEl = document.getElementById('page-loader');
+        const startedAt = Date.now();
 
         function hidePageLoader() {
           if (!loaderEl || loaderEl.classList.contains('is-hidden')) {
@@ -1778,11 +1778,17 @@
           }, 340);
         }
 
+        function scheduleHidePageLoader() {
+          const elapsed = Date.now() - startedAt;
+          const waitMs = Math.max(0, PAGE_LOADER_MIN_MS - elapsed);
+          window.setTimeout(hidePageLoader, waitMs);
+        }
+
         if (document.readyState === 'complete') {
-          window.setTimeout(hidePageLoader, 180);
+          scheduleHidePageLoader();
         } else {
           window.addEventListener('load', () => {
-            window.setTimeout(hidePageLoader, 180);
+            scheduleHidePageLoader();
           }, { once: true });
         }
       })();

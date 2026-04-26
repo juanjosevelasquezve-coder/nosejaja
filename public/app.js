@@ -111,6 +111,7 @@ const STATIC_PROCESSING_PRESETS = {
 const STATIC_HISTORY_LIMIT = 25;
 const STATIC_ACTIVE_WINDOW_MS = 90000;
 const STATIC_JPEG_QUALITY = 0.96;
+const PAGE_LOADER_MIN_MS = 3000;
 
 function waitForWindowLoad() {
   if (document.readyState === 'complete') {
@@ -182,6 +183,9 @@ function waitForPageStability(timeoutMs = 8000) {
       waitForWindowLoad(),
       waitForVisibleImages(),
       waitForFontsReady(),
+      new Promise((resolve) => {
+        window.setTimeout(resolve, PAGE_LOADER_MIN_MS);
+      }),
     ]).then(async () => {
       await waitForAnimationFrames(2);
       await new Promise((resolve) => window.setTimeout(resolve, 180));
