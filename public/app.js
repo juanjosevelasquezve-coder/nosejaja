@@ -111,6 +111,97 @@ const STATIC_PROCESSING_PRESETS = {
 const STATIC_HISTORY_LIMIT = 25;
 const STATIC_ACTIVE_WINDOW_MS = 90000;
 const STATIC_JPEG_QUALITY = 0.96;
+
+function waitForWindowLoad() {
+  if (document.readyState === 'complete') {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    window.addEventListener('load', resolve, { once: true });
+  });
+}
+
+function waitForVisibleImages() {
+  const imageElements = Array.from(document.images || []).filter((image) => {
+    const src = String(image.currentSrc || image.getAttribute('src') || '').trim();
+    if (!src) {
+      return false;
+    }
+    if (image.hidden || image.closest('[hidden]')) {
+      return false;
+    }
+    return true;
+  });
+
+  if (!imageElements.length) {
+    return Promise.resolve();
+  }
+
+  return Promise.all(
+    imageElements.map((image) => new Promise((resolve) => {
+      if (image.complete && Number(image.naturalWidth || 0) > 0) {
+        resolve();
+        return;
+      }
+
+      const done = () => {
+        image.removeEventListener('load', done);
+        image.removeEventListener('error', done);
+        resolve();
+      };
+
+      image.addEventListener('load', done, { once: true });
+      image.addEventListener('error', done, { once: true });
+    })),
+  ).then(() => undefined);
+}
+
+function waitForFontsReady() {
+  if (!document.fonts?.ready) {
+    return Promise.resolve();
+  }
+  return document.fonts.ready.catch(() => {});
+}
+
+function waitForAnimationFrames(count) {
+  return new Promise((resolve) => {
+    const step = (remaining) => {
+      if (remaining <= 0) {
+        resolve();
+        return;
+      }
+      window.requestAnimationFrame(() => step(remaining - 1));
+    };
+    step(count);
+  });
+}
+
+function waitForPageStability(timeoutMs = 8000) {
+  return Promise.race([
+    Promise.all([
+      waitForWindowLoad(),
+      waitForVisibleImages(),
+      waitForFontsReady(),
+    ]).then(async () => {
+      await waitForAnimationFrames(2);
+      await new Promise((resolve) => window.setTimeout(resolve, 180));
+    }),
+    new Promise((resolve) => {
+      window.setTimeout(resolve, timeoutMs);
+    }),
+  ]);
+}
+
+function initPageLoader() {
+  if (!document.body?.classList.contains('is-view-loading')) {
+    return;
+  }
+
+  waitForPageStability().finally(() => {
+    document.body.classList.remove('is-view-loading');
+  });
+}
+
 function getFirestoreDb() {
   if (!firebaseAuthRequired || !window.firebase?.firestore || !window.firebase?.apps?.length) {
     return null;
@@ -2357,6 +2448,7 @@ renderProcessedHistory([]);
 syncRailCurrentByPath();
 initFirebaseAuth();
 checkHealth();
+initPageLoader();
 
 historyRangeEl?.addEventListener('change', () => {
   historyRange = normalizeHistoryRange(historyRangeEl.value);
