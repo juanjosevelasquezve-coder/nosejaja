@@ -111,7 +111,6 @@ const STATIC_PROCESSING_PRESETS = {
 const STATIC_HISTORY_LIMIT = 25;
 const STATIC_ACTIVE_WINDOW_MS = 90000;
 const STATIC_JPEG_QUALITY = 0.96;
-
 function getFirestoreDb() {
   if (!firebaseAuthRequired || !window.firebase?.firestore || !window.firebase?.apps?.length) {
     return null;
