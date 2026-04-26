@@ -4361,7 +4361,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="is-view-loading">
     <button
       class="page-menu-toggle"
       type="button"
@@ -6330,7 +6330,7 @@
             return;
           }
           const canShowMenu = Boolean(firebaseAuthRequired && firebaseAuthReady && firebaseUser && !authAvatarWrapEl.hidden);
-          const showMenu = canShowMenu && (isBuzonContenidosPage || authMenuOpen);
+          const showMenu = canShowMenu;
           authLogoutBtn.hidden = !showMenu;
           authAvatarWrapEl.classList.toggle('is-open', showMenu);
           authAvatarWrapEl.setAttribute('aria-expanded', showMenu ? 'true' : 'false');
@@ -9392,6 +9392,76 @@
           resetWorkflow();
         }
         initFirebaseAuth();
+
+        const PAGE_LOADER_MIN_MS = 1500;
+        const pageLoaderStartedAt = Date.now();
+
+        function waitForVisibleImages() {
+          const imageElements = Array.from(document.images || []).filter((image) => {
+            const src = String(image.currentSrc || image.getAttribute('src') || '').trim();
+            if (!src) {
+              return false;
+            }
+            if (image.hidden || image.closest('[hidden]')) {
+              return false;
+            }
+            return true;
+          });
+
+          if (!imageElements.length) {
+            return Promise.resolve();
+          }
+
+          return Promise.all(
+            imageElements.map((image) => new Promise((resolve) => {
+              if (image.complete && Number(image.naturalWidth || 0) > 0) {
+                resolve();
+                return;
+              }
+
+              const done = () => {
+                image.removeEventListener('load', done);
+                image.removeEventListener('error', done);
+                resolve();
+              };
+
+              image.addEventListener('load', done, { once: true });
+              image.addEventListener('error', done, { once: true });
+            })),
+          ).then(() => undefined);
+        }
+
+        function waitForFontsReady() {
+          if (!document.fonts?.ready) {
+            return Promise.resolve();
+          }
+          return document.fonts.ready.catch(() => {});
+        }
+
+        function hidePageLoader() {
+          document.body.classList.remove('is-view-loading');
+        }
+
+        function scheduleHidePageLoader() {
+          const elapsed = Date.now() - pageLoaderStartedAt;
+          const waitMs = Math.max(0, PAGE_LOADER_MIN_MS - elapsed);
+          window.setTimeout(() => {
+            Promise.all([
+              waitForVisibleImages(),
+              waitForFontsReady(),
+            ]).finally(() => {
+              window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(hidePageLoader);
+              });
+            });
+          }, waitMs);
+        }
+
+        if (document.readyState === 'complete') {
+          scheduleHidePageLoader();
+        } else {
+          window.addEventListener('load', scheduleHidePageLoader, { once: true });
+        }
       })();
     </script>
     <script src="menu.js"></script>

@@ -1323,7 +1323,7 @@ function syncAuthMenuState() {
   }
 
   const canShowMenu = Boolean(firebaseAuthRequired && firebaseAuthReady && firebaseUser && !authAvatarWrapEl.hidden);
-  const showMenu = canShowMenu && (isAdaptadorPage || isAuthMenuOpen);
+  const showMenu = canShowMenu;
   authLogoutBtn.hidden = !showMenu;
   authAvatarWrapEl.classList.toggle('is-open', showMenu);
   authAvatarWrapEl.setAttribute('aria-expanded', showMenu ? 'true' : 'false');
