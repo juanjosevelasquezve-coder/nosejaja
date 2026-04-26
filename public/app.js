@@ -111,7 +111,7 @@ const STATIC_PROCESSING_PRESETS = {
 const STATIC_HISTORY_LIMIT = 25;
 const STATIC_ACTIVE_WINDOW_MS = 90000;
 const STATIC_JPEG_QUALITY = 0.96;
-const PAGE_LOADER_MIN_MS = 3000;
+const PAGE_LOADER_MIN_MS = 1500;
 
 function waitForWindowLoad() {
   if (document.readyState === 'complete') {
